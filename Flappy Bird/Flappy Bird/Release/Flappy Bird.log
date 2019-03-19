@@ -1,0 +1,253 @@
+﻿  stdafx.cpp
+d:\windows kits\10\include\10.0.17763.0\um\winbase.h(7417): warning C5039: “TpSetCallbackCleanupGroup”: 可能引发函数的指针或引用传递到 -EHc 下的外部 C 函数。如果该函数引发异常，未定义行为可能发生。
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\vcruntime_exception.h(25): warning C4820: “__std_exception_data”:“3”字节填充添加在 数据成员“__std_exception_data::_DoFree”后
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\vcruntime_typeinfo.h(44): warning C4820: “__std_type_info_data”:“3”字节填充添加在 数据成员“__std_type_info_data::_DecoratedName”后
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xutility(4183): warning C4820: “std::_Yarn<char>”:“3”字节填充添加在 数据成员“std::_Yarn<char>::_Nul”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocinfo(228): note: 参见对正在编译的 类 模板 实例化 "std::_Yarn<char>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xutility(4183): warning C4820: “std::_Yarn<wchar_t>”:“2”字节填充添加在 数据成员“std::_Yarn<wchar_t>::_Nul”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocinfo(230): note: 参见对正在编译的 类 模板 实例化 "std::_Yarn<wchar_t>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(247): warning C4820: “std::locale::_Locimp”:“3”字节填充添加在 数据成员“std::locale::_Locimp::_Xparent”后
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(488): warning C4820: “std::locale”:“3”字节填充添加在 基类“std::_Crt_new_delete”后
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(330): warning C4571: 信息: 自 Visual C++ 7.1 之后，catch(...) 语义发生了变化；不再捕获结构化的异常(SEH)
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(356): warning C4571: 信息: 自 Visual C++ 7.1 之后，catch(...) 语义发生了变化；不再捕获结构化的异常(SEH)
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(812): warning C4625: “std::codecvt_base”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(812): warning C4626: “std::codecvt_base”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(1353): warning C4625: “std::codecvt<char16_t,char,_Mbstatet>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(1353): warning C4626: “std::codecvt<char16_t,char,_Mbstatet>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(1678): warning C4625: “std::codecvt<char32_t,char,_Mbstatet>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(1678): warning C4626: “std::codecvt<char32_t,char,_Mbstatet>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(1922): warning C4625: “std::codecvt<wchar_t,char,_Mbstatet>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(1922): warning C4626: “std::codecvt<wchar_t,char,_Mbstatet>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(2171): warning C4625: “std::codecvt<unsigned short,char,_Mbstatet>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(2171): warning C4626: “std::codecvt<unsigned short,char,_Mbstatet>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(2219): warning C4625: “std::ctype_base”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(2219): warning C4626: “std::ctype_base”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(2721): warning C4625: “std::ctype<char>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(2721): warning C4626: “std::ctype<char>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(2962): warning C4625: “std::ctype<wchar_t>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(2962): warning C4626: “std::ctype<wchar_t>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(3205): warning C4625: “std::ctype<unsigned short>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(3205): warning C4626: “std::ctype<unsigned short>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(3250): warning C4625: “std::ctype_byname<char>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(3250): warning C4626: “std::ctype_byname<char>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(943): warning C4625: “std::codecvt<char,char,_Mbstatet>”: 已将复制构造函数隐式定义为“已删除”
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(3255): note: 参见对正在编译的 类 模板 实例化 "std::codecvt<char,char,_Mbstatet>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocale(943): warning C4626: “std::codecvt<char,char,_Mbstatet>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(498): warning C4625: “std::_Generic_error_category”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(498): warning C5026: “std::_Generic_error_category”: 已将移动构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(498): warning C4626: “std::_Generic_error_category”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(498): warning C5027: “std::_Generic_error_category”: 已将移动赋值运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(526): warning C4625: “std::_Iostream_error_category”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(526): warning C5026: “std::_Iostream_error_category”: 已将移动构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(526): warning C4626: “std::_Iostream_error_category”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(526): warning C5027: “std::_Iostream_error_category”: 已将移动赋值运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(574): warning C4625: “std::_System_error_category”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(574): warning C5026: “std::_System_error_category”: 已将移动构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(574): warning C4626: “std::_System_error_category”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\system_error(574): warning C5027: “std::_System_error_category”: 已将移动赋值运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xiosbase(657): warning C4820: “std::ios_base”:“4”字节填充添加在 数据成员“std::ios_base::_Ploc”后
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(263): warning C4820: “std::numpunct<char>”:“2”字节填充添加在 数据成员“std::numpunct<char>::_Kseparator”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1848): note: 参见对正在编译的 类 模板 实例化 "std::numpunct<char>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(265): warning C4625: “std::numpunct<char>”: 已将复制构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(265): warning C4626: “std::numpunct<char>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1394): warning C4625: “std::num_get<char,std::istreambuf_iterator<char,std::char_traits<char>>>”: 已将复制构造函数隐式定义为“已删除”
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1850): note: 参见对正在编译的 类 模板 实例化 "std::num_get<char,std::istreambuf_iterator<char,std::char_traits<char>>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1394): warning C4626: “std::num_get<char,std::istreambuf_iterator<char,std::char_traits<char>>>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1833): warning C4625: “std::num_put<char,std::ostreambuf_iterator<char,std::char_traits<char>>>”: 已将复制构造函数隐式定义为“已删除”
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1852): note: 参见对正在编译的 类 模板 实例化 "std::num_put<char,std::ostreambuf_iterator<char,std::char_traits<char>>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1833): warning C4626: “std::num_put<char,std::ostreambuf_iterator<char,std::char_traits<char>>>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(265): warning C4625: “std::numpunct<wchar_t>”: 已将复制构造函数隐式定义为“已删除”
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1854): note: 参见对正在编译的 类 模板 实例化 "std::numpunct<wchar_t>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(265): warning C4626: “std::numpunct<wchar_t>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1394): warning C4625: “std::num_get<wchar_t,std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>>”: 已将复制构造函数隐式定义为“已删除”
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1856): note: 参见对正在编译的 类 模板 实例化 "std::num_get<wchar_t,std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1394): warning C4626: “std::num_get<wchar_t,std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1833): warning C4625: “std::num_put<wchar_t,std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>>”: 已将复制构造函数隐式定义为“已删除”
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1858): note: 参见对正在编译的 类 模板 实例化 "std::num_put<wchar_t,std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1833): warning C4626: “std::num_put<wchar_t,std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>>”: 已将对齐运算符隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\ios(188): warning C4820: “std::basic_ios<char,std::char_traits<char>>”:“7”字节填充添加在 数据成员“std::basic_ios<char,std::char_traits<char>>::_Fillch”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\ios(194): note: 参见对正在编译的 类 模板 实例化 "std::basic_ios<char,std::char_traits<char>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\ios(188): warning C4820: “std::basic_ios<wchar_t,std::char_traits<wchar_t>>”:“6”字节填充添加在 数据成员“std::basic_ios<wchar_t,std::char_traits<wchar_t>>::_Fillch”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\ios(196): note: 参见对正在编译的 类 模板 实例化 "std::basic_ios<wchar_t,std::char_traits<wchar_t>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(743): warning C4820: “std::basic_istream<char,std::char_traits<char>>”:“4”字节填充添加在 数据成员“std::basic_istream<char,std::char_traits<char>>::_Chcount”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(773): note: 参见对正在编译的 类 模板 实例化 "std::basic_istream<char,std::char_traits<char>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(743): warning C4820: “std::basic_istream<wchar_t,std::char_traits<wchar_t>>”:“4”字节填充添加在 数据成员“std::basic_istream<wchar_t,std::char_traits<wchar_t>>::_Chcount”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(774): note: 参见对正在编译的 类 模板 实例化 "std::basic_istream<wchar_t,std::char_traits<wchar_t>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(834): warning C4820: “std::basic_iostream<char,std::char_traits<char>>”:“4”字节填充添加在 基类“std::basic_ostream<char,std::char_traits<char>>”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(839): note: 参见对正在编译的 类 模板 实例化 "std::basic_iostream<char,std::char_traits<char>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(834): warning C4820: “std::basic_iostream<char,std::char_traits<char>>”:“4”字节填充添加在 数据成员“<alignment member>”后
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(834): warning C4820: “std::basic_iostream<wchar_t,std::char_traits<wchar_t>>”:“4”字节填充添加在 基类“std::basic_ostream<wchar_t,std::char_traits<wchar_t>>”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(840): note: 参见对正在编译的 类 模板 实例化 "std::basic_iostream<wchar_t,std::char_traits<wchar_t>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\istream(834): warning C4820: “std::basic_iostream<wchar_t,std::char_traits<wchar_t>>”:“4”字节填充添加在 数据成员“<alignment member>”后
+d:\windows kits\10\include\10.0.17763.0\ucrt\time.h(36): warning C4820: “_timespec64”:“4”字节填充添加在 数据成员“_timespec64::tv_nsec”后
+d:\windows kits\10\include\10.0.17763.0\ucrt\time.h(43): warning C4820: “timespec”:“4”字节填充添加在 数据成员“timespec::tv_nsec”后
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\easyx.h(319): warning C4820: “MOUSEMSG”:“1”字节填充添加在 数据成员“MOUSEMSG::mkRButton”后
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\localexceptions.hpp(21): warning C4623: “invalidParameters”: 已将默认构造函数隐式定义为“已删除”
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\localexceptions.hpp(27): warning C4623: “createWindowFailed”: 已将默认构造函数隐式定义为“已删除”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\streambuf(710): warning C4820: “std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>”:“3”字节填充添加在 数据成员“std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>::_Failed”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1623): note: 参见对正在编译的 类 模板 实例化 "std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>" 的引用
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1623): note: 编译 类 模板 成员函数 "_OutIt std::num_put<wchar_t,_OutIt>::do_put(_OutIt,std::ios_base &,_Elem,const void *) const" 时
+          with
+          [
+              _OutIt=std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>,
+              _Elem=wchar_t
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1858): note: 参见对正在编译的 类 模板 实例化 "std::num_put<wchar_t,std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1616): warning C4774: “sprintf_s”: 参数 3 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1616): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1616): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1599): note: 编译 类 模板 成员函数 "_OutIt std::num_put<wchar_t,_OutIt>::do_put(_OutIt,std::ios_base &,_Elem,long double) const" 时
+          with
+          [
+              _OutIt=std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>,
+              _Elem=wchar_t
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1592): warning C4774: “sprintf_s”: 参数 3 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1592): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1592): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1575): note: 编译 类 模板 成员函数 "_OutIt std::num_put<wchar_t,_OutIt>::do_put(_OutIt,std::ios_base &,_Elem,double) const" 时
+          with
+          [
+              _OutIt=std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>,
+              _Elem=wchar_t
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1569): warning C4774: “sprintf_s”: 参数 3 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1569): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1569): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1565): note: 编译 类 模板 成员函数 "_OutIt std::num_put<wchar_t,_OutIt>::do_put(_OutIt,std::ios_base &,_Elem,unsigned __int64) const" 时
+          with
+          [
+              _OutIt=std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>,
+              _Elem=wchar_t
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1559): warning C4774: “sprintf_s”: 参数 3 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1559): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1559): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1555): note: 编译 类 模板 成员函数 "_OutIt std::num_put<wchar_t,_OutIt>::do_put(_OutIt,std::ios_base &,_Elem,__int64) const" 时
+          with
+          [
+              _OutIt=std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>,
+              _Elem=wchar_t
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1549): warning C4774: “sprintf_s”: 参数 3 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1549): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1549): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1545): note: 编译 类 模板 成员函数 "_OutIt std::num_put<wchar_t,_OutIt>::do_put(_OutIt,std::ios_base &,_Elem,unsigned long) const" 时
+          with
+          [
+              _OutIt=std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>,
+              _Elem=wchar_t
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1539): warning C4774: “sprintf_s”: 参数 3 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1539): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1539): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1535): note: 编译 类 模板 成员函数 "_OutIt std::num_put<wchar_t,_OutIt>::do_put(_OutIt,std::ios_base &,_Elem,long) const" 时
+          with
+          [
+              _OutIt=std::ostreambuf_iterator<wchar_t,std::char_traits<wchar_t>>,
+              _Elem=wchar_t
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\streambuf(631): warning C4820: “std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>”:“1”字节填充添加在 数据成员“std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>::_Got”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(775): note: 参见对正在编译的 类 模板 实例化 "std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>" 的引用
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(775): note: 编译 类 模板 成员函数 "_InIt std::num_get<wchar_t,_InIt>::do_get(_InIt,_InIt,std::ios_base &,std::ios_base::iostate &,void *&) const" 时
+          with
+          [
+              _InIt=std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1856): note: 参见对正在编译的 类 模板 实例化 "std::num_get<wchar_t,std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\streambuf(549): warning C4820: “std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>::_Istreambuf_proxy”:“2”字节填充添加在 数据成员“std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>::_Istreambuf_proxy::_Keep”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(767): note: 参见对正在编译的 类 模板 实例化 "std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>::_Istreambuf_proxy" 的引用
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(763): note: 编译 类 模板 成员函数 "_InIt std::num_get<wchar_t,_InIt>::do_get(_InIt,_InIt,std::ios_base &,std::ios_base::iostate &,long double &) const" 时
+          with
+          [
+              _InIt=std::istreambuf_iterator<wchar_t,std::char_traits<wchar_t>>
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\streambuf(710): warning C4820: “std::ostreambuf_iterator<char,std::char_traits<char>>”:“3”字节填充添加在 数据成员“std::ostreambuf_iterator<char,std::char_traits<char>>::_Failed”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1623): note: 参见对正在编译的 类 模板 实例化 "std::ostreambuf_iterator<char,std::char_traits<char>>" 的引用
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1623): note: 编译 类 模板 成员函数 "_OutIt std::num_put<char,_OutIt>::do_put(_OutIt,std::ios_base &,_Elem,const void *) const" 时
+          with
+          [
+              _OutIt=std::ostreambuf_iterator<char,std::char_traits<char>>,
+              _Elem=char
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1852): note: 参见对正在编译的 类 模板 实例化 "std::num_put<char,std::ostreambuf_iterator<char,std::char_traits<char>>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\streambuf(632): warning C4820: “std::istreambuf_iterator<char,std::char_traits<char>>”:“2”字节填充添加在 数据成员“std::istreambuf_iterator<char,std::char_traits<char>>::_Val”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(775): note: 参见对正在编译的 类 模板 实例化 "std::istreambuf_iterator<char,std::char_traits<char>>" 的引用
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(775): note: 编译 类 模板 成员函数 "_InIt std::num_get<char,_InIt>::do_get(_InIt,_InIt,std::ios_base &,std::ios_base::iostate &,void *&) const" 时
+          with
+          [
+              _InIt=std::istreambuf_iterator<char,std::char_traits<char>>
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1850): note: 参见对正在编译的 类 模板 实例化 "std::num_get<char,std::istreambuf_iterator<char,std::char_traits<char>>>" 的引用
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\streambuf(549): warning C4820: “std::istreambuf_iterator<char,std::char_traits<char>>::_Istreambuf_proxy”:“3”字节填充添加在 数据成员“std::istreambuf_iterator<char,std::char_traits<char>>::_Istreambuf_proxy::_Keep”后
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(767): note: 参见对正在编译的 类 模板 实例化 "std::istreambuf_iterator<char,std::char_traits<char>>::_Istreambuf_proxy" 的引用
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(763): note: 编译 类 模板 成员函数 "_InIt std::num_get<char,_InIt>::do_get(_InIt,_InIt,std::ios_base &,std::ios_base::iostate &,long double &) const" 时
+          with
+          [
+              _InIt=std::istreambuf_iterator<char,std::char_traits<char>>
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(530): warning C4774: “_scprintf”: 参数 1 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(530): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(530): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(583): note: 参见对正在编译的函数 模板 实例化“std::string std::_Floating_to_string<float>(const char *,_Ty)”的引用
+          with
+          [
+              _Ty=float
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(532): warning C4774: “sprintf_s”: 参数 3 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(532): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(532): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(542): warning C4774: “_scwprintf”: 参数 1 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(542): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(542): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(629): note: 参见对正在编译的函数 模板 实例化“std::wstring std::_Floating_to_wstring<float>(const wchar_t *,_Ty)”的引用
+          with
+          [
+              _Ty=float
+          ]
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(544): warning C4774: “swprintf_s”: 参数 3 中应存在的格式字符串不为字符串字面量
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(544): note: 例如，将 printf(name); 换用为 printf("%s", name);，因为“名称”中的格式说明符可能造成安全问题
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\string(544): note: 请考虑对已命名的字符串字面量使用 constexpr 说明符
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(212): warning C4571: 信息: 自 Visual C++ 7.1 之后，catch(...) 语义发生了变化；不再捕获结构化的异常(SEH)
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(200): note: 编译 类 模板 成员函数 "void std::numpunct<wchar_t>::_Init(const std::_Locinfo &,bool)" 时
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(160): note: 参见对正在编译的函数 模板 实例化“void std::numpunct<wchar_t>::_Init(const std::_Locinfo &,bool)”的引用
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xlocnum(1854): note: 参见对正在编译的 类 模板 实例化 "std::numpunct<wchar_t>" 的引用
+d:\windows kits\10\include\10.0.17763.0\ucrt\corecrt_wstdio.h(1530): warning C4710: “int swprintf_s(wchar_t *const ,const size_t,const wchar_t *const ,...)”: 函数未内联
+  d:\windows kits\10\include\10.0.17763.0\ucrt\corecrt_wstdio.h(1530): note: 参见“swprintf_s”的声明
+d:\windows kits\10\include\10.0.17763.0\ucrt\corecrt_wstdio.h(1761): warning C4710: “int _scwprintf(const wchar_t *const ,...)”: 函数未内联
+  d:\windows kits\10\include\10.0.17763.0\ucrt\corecrt_wstdio.h(1761): note: 参见“_scwprintf”的声明
+d:\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1833): warning C4710: “int sprintf_s(char *const ,const size_t,const char *const ,...)”: 函数未内联
+  d:\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1833): note: 参见“sprintf_s”的声明
+d:\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(2100): warning C4710: “int _scprintf(const char *const ,...)”: 函数未内联
+  d:\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(2100): note: 参见“_scprintf”的声明
+  Flappy Bird.cpp
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(24): warning C4571: 信息: 自 Visual C++ 7.1 之后，catch(...) 语义发生了变化；不再捕获结构化的异常(SEH)
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(47): warning C4571: 信息: 自 Visual C++ 7.1 之后，catch(...) 语义发生了变化；不再捕获结构化的异常(SEH)
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(53): warning C4365: “参数”: 从“int”转换到“unsigned int”，有符号/无符号不匹配
+  LocalExceptions.cpp
+  log.cpp
+  showHelp.cpp
+  WCexception.cpp
+  正在生成代码
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xstring(3891): warning C4710: “static void __cdecl std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> >::_Xlen(void)”: 函数未内联
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp : warning C4710: “virtual __thiscall stdWCexception::~stdWCexception(void)”: 函数未内联
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp : warning C4710: “virtual __thiscall stdWCexception::~stdWCexception(void)”: 函数未内联
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp : warning C4710: “virtual __thiscall stdWCexception::~stdWCexception(void)”: 函数未内联
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xstring(2676): warning C4710: “class std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> > & __thiscall std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> >::assign(wchar_t const * const,unsigned int)”: 函数未内联
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp : warning C4710: “__thiscall stdWCexception::stdWCexception(class stdWCexception const &)”: 函数未内联
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp : warning C4710: “__thiscall stdWCexception::stdWCexception(class stdWCexception const &)”: 函数未内联
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xstring(2676): warning C4711: 为自动内联扩展选定了函数“__thiscall stdWCexception::stdWCexception(wchar_t const *)”
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\xstring(2676): warning C4711: 为自动内联扩展选定了函数“__thiscall stdWCexception::stdWCexception(wchar_t const *)”
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(106): warning C4710: “__thiscall createWindowFailed::createWindowFailed(wchar_t const *)”: 函数未内联
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(79): warning C4710: “__thiscall invalidParameters::invalidParameters(wchar_t const *)”: 函数未内联
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(78): warning C4711: 为自动内联扩展选定了函数“int __cdecl strchrs(char const *,char const *,bool)”
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(78): warning C4711: 为自动内联扩展选定了函数“int __cdecl strchrs(char const *,char const *,bool)”
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(17): warning C4711: 为自动内联扩展选定了函数“bool __cdecl cmdLineCfg::parseCmdLine(int,char * * const)”
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(32): warning C4711: 为自动内联扩展选定了函数“void __cdecl showHelp(void)”
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(40): warning C4711: 为自动内联扩展选定了函数“struct HWND__ * __cdecl createEXWindow(int,int,bool)”
+c:\users\wxx9248\documents\programs\source code\projects\flappy bird\flappy bird\flappy bird.cpp(62): warning C4702: 无法访问的代码
+  72 of 96 functions (75.0%) were compiled, the rest were copied from previous compilation.
+    25 functions were new in current compilation
+    8 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  Flappy Bird.vcxproj -> C:\Users\wxx9248\Documents\Programs\Source Code\Projects\Flappy Bird\Release\Flappy Bird.exe
