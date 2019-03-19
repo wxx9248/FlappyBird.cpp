@@ -1,6 +1,6 @@
 # EasyX-FlappyBird
 Rewrite Flappy Bird in C++ with EasyX graphic library.
-Most importantly, this is the implementation of the assignment my C Advanced Programming course...
+Most importantly, this is the implementation of the assignment of my C Advanced Programming course...
 
 ## Attention
 * The UI language of this project is *Chinese*, currently.
