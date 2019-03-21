@@ -13,9 +13,12 @@
 #include <conio.h>
 #include <tchar.h>
 
+
 // C++ 库头文件
 #include <iostream>
+#include <fstream>
 #include <exception>
+#include <chrono>
 
 
 // STL 头文件
@@ -34,7 +37,6 @@
 // EasyX 图形库
 #include <easyx.h>
 #include <graphics.h>
-
 
 
 // 在此处引用程序需要的其他标头

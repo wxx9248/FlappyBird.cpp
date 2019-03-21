@@ -6,8 +6,8 @@
 #include "showHelp.hpp"
 #include "log.hpp"
 
-const INT WNDWIDTH					= 768;
-const INT WNDHEIGHT					= 896;
+const int WNDWIDTH					= 768;
+const int WNDHEIGHT					= 896;
 
 
 int main(_In_ int argc, _In_ char *argv[])
@@ -51,6 +51,8 @@ int main(_In_ int argc, _In_ char *argv[])
 	}
 
 	srand(static_cast<int>(time(static_cast<time_t>(0))));
+
+	/*
 	settextstyle(64, 0, L"宋体");
 	for (; ; )
 	{
@@ -58,6 +60,7 @@ int main(_In_ int argc, _In_ char *argv[])
 		outtextxy(rand() % WNDWIDTH, rand() % WNDHEIGHT, L"咕");
 		Sleep(200);
 	}
+	*/
 
 	_getch();
 	closegraph();
@@ -68,18 +71,19 @@ int main(_In_ int argc, _In_ char *argv[])
 
 bool cmdLineCfg::parseCmdLine(_In_ int argc, _In_ char *argv[])
 {
-	for (INT i = 1; i < argc; ++i)
+	for (int i = 1; i < argc; ++i)
 	{
 		if (!_stricmp(argv[i], "/?") || !_stricmp(argv[i], "/help"))
 			showHelp = true;
 
 		if (!_stricmp(argv[i], "/logfile"))
 		{
-			if (argv[i + 1] == NULL || (!strchrs(argv[i + 1], "\"/:*?<>|", true)))
+			if (argv[i + 1] == NULL || strchrs(argv[i + 1], "\"/:*?<>|", true))
 				throw invalidParameters(L"/logfile 开关参数解析失败：非法路径");
 			else
 			{
 				fileLogged = true;
+				argvLogFilePathIndex = i + 1;
 				isDebugMode = true;
 			}
 		}
@@ -94,7 +98,7 @@ bool cmdLineCfg::parseCmdLine(_In_ int argc, _In_ char *argv[])
 
 
 
-HWND createEXWindow(INT width, INT height, bool isWindowShow)
+HWND createEXWindow(int width, int height, bool isWindowShow)
 {
 	HWND hWnd;
 	if (isWindowShow)

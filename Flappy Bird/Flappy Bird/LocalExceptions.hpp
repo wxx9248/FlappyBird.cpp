@@ -14,13 +14,19 @@ protected:
 
 
 
-class invalidParameters : public stdWCexception
+extern class invalidParameters : public stdWCexception
 {
 public:
 	using stdWCexception::stdWCexception;
 };
 
-class createWindowFailed : public stdWCexception
+extern class createWindowFailed : public stdWCexception
+{
+public:
+	using stdWCexception::stdWCexception;
+};
+
+extern class openLogFileFailed : public stdWCexception
 {
 public:
 	using stdWCexception::stdWCexception;

@@ -1,6 +1,9 @@
 #pragma once
 #include "resource.h"
 
+extern class invalidParameters;
+extern class createWindowFailed;
+
 namespace cmdLineCfg
 {
 	// Varibles
@@ -14,6 +17,8 @@ namespace cmdLineCfg
 
 	
 	bool showHelp = false;
+	int argvLogFilePathIndex = 0;
+
 
 	// Functions
 	bool parseCmdLine(_In_ int argc, _In_ char *argv[]);
@@ -21,4 +26,4 @@ namespace cmdLineCfg
 
 
 
-HWND createEXWindow(INT width, INT height, bool isWindowShow);
+HWND createEXWindow(int width, int height, bool isWindowShow);
