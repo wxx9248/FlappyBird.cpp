@@ -8,7 +8,7 @@ Most importantly, this is the implementation of the assignment of my C Advanced 
 
 
 ## Architecture
-**x86**, because EasyX doesn't support x86-64.
+**x86** and **x86-64**
 
 ## IDE
 **Visual Studio 2017**
