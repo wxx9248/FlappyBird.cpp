@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 int strchrs(const char *str, const char *chrs, bool strictmode)
 {

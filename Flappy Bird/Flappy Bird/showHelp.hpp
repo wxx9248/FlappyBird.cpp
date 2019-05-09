@@ -1,13 +1,13 @@
-#pragma once
+﻿#pragma once
 
 LPCWSTR static hlpmsg = L"\
-�÷���\"Flappy Bird.exe\" [�����б�]\
+用法：\"Flappy Bird.exe\" [参数列表]\
 \n\n\
-��ǰFlappy Bird �����в���ѡ�\n\
-/help /��		��ʾ������ҳ�档\n\
-/debug		����ģʽ�����������д��ڣ����������Ϣ��\n\
-/logfile <·��>	ָ����־����ļ�·��\n\
-		�򿪴˿���ͬʱ������/debug����\n\
+当前Flappy Bird 命令行参数选项：\n\
+/help /？		显示本帮助页面。\n\
+/debug		调试模式，保留命令行窗口，输出调试信息。\n\
+/logfile <路径>	指定日志输出文件路径\n\
+		打开此开关同时会启动/debug开关\n\
 \
 ";
 

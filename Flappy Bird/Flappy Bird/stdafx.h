@@ -21,7 +21,6 @@
 #include <exception>
 #include <chrono>
 
-
 // STL 头文件
 #include <string>
 
@@ -31,6 +30,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
+#include <clocale>
 
 // C 库头文件
 

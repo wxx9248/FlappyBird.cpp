@@ -1,7 +1,7 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "showHelp.hpp"
 
 void showHelp()
 {
-	MessageBoxW(NULL, hlpmsg, L"°ïÖú", MB_ICONINFORMATION);
+	MessageBoxW(NULL, hlpmsg, L"å¸®åŠ©", MB_ICONINFORMATION);
 }

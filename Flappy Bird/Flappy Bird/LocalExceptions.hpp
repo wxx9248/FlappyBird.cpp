@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "WCexception.hpp"
 
 class stdWCexception: public WCexception

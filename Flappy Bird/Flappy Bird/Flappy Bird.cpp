@@ -12,6 +12,8 @@ const int WNDHEIGHT					= 896;
 
 int main(_In_ int argc, _In_ char *argv[])
 {
+	setlocale(LC_ALL, ".65001");
+	
 	try
 	{
 		cmdLineCfg::parseCmdLine(argc, argv);
@@ -72,7 +74,7 @@ int main(_In_ int argc, _In_ char *argv[])
 		}
 	}
 
-	*log << L"wwwww我";
+
 
 	_getch();
 	closegraph();
@@ -107,7 +109,6 @@ bool cmdLineCfg::parseCmdLine(_In_ int argc, _In_ char *argv[])
 	}
 	return true;
 }
-
 
 
 HWND createEXWindow(int width, int height, bool isWindowShow)

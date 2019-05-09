@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 // Exceptions
 extern class openFileFailed;
@@ -89,7 +89,7 @@ void Outdev::init()
 template<class T>
 bool Outdev::init(T &logFilePath)
 {
-	std::wstring excwstr = L"²»ÄÜ´ò¿ªÎÄ¼ş:";
+	std::wstring excwstr = L"ä¸èƒ½æ‰“å¼€æ–‡ä»¶:";
 	if (isInited)
 		close();
 
@@ -169,19 +169,19 @@ Outdev &operator<<(Outdev &od, T &msg)
 		std::wcout << msg;
 		if (od.logFile != NULL)
 		{
-			*od.logFile << msg << std::endl;
+			*od.logFile << msg;
 
-			od.badbit = std::cout.badbit || od.logFile->badbit;
-			od.failbit = std::cout.failbit || od.logFile->failbit;
-			od.eofbit = std::cout.eofbit || od.logFile->eofbit;
-			od.goodbit = od.badbit && od.failbit && od.eofbit;
+			od.badbit = std::wcout.bad() || od.logFile->bad();
+			od.failbit = std::wcout.fail() || od.logFile->fail();
+			od.eofbit = std::wcout.eof() || od.logFile->eof();
+			od.goodbit = !(od.badbit || od.failbit || od.eofbit);
 		}
 		else
 		{
-			od.badbit = std::cout.badbit;
-			od.failbit = std::cout.failbit;
-			od.eofbit = std::cout.eofbit;
-			od.goodbit = od.badbit && od.failbit && od.eofbit;
+			od.badbit = std::wcout.bad();
+			od.failbit = std::wcout.fail();
+			od.eofbit = std::wcout.eof();
+			od.goodbit = !(od.badbit || od.failbit || od.eofbit);
 		}
 	}
 	return od;
