@@ -41,6 +41,21 @@ int main(_In_ int argc, _In_ char *argv[])
 
 	try
 	{
+		log = new Log;
+	}
+	catch (std::bad_alloc e)
+	{
+		MessageBoxW(NULL, L"无法从系统处分配内存！", L"错误", MB_ICONERROR);
+		throw;
+	}
+	catch (...)
+	{
+		MessageBoxW(NULL, L"未知的内部错误", L"错误", MB_ICONERROR);
+		throw;
+	}
+
+	try
+	{
 		hWnd = createEXWindow(WNDWIDTH, WNDHEIGHT, cmdLineCfg::isDebugMode);
 	}
 	catch (createWindowFailed e)
@@ -54,34 +69,38 @@ int main(_In_ int argc, _In_ char *argv[])
 		throw;
 	}
 	
-	if (cmdLineCfg::isDebugMode)
+
+	if (cmdLineCfg::fileLogged)
 	{
-		log = new Log;
+		// Convert path to wstring.
+		int num = MultiByteToWideChar(CP_OEMCP, 0, argv[cmdLineCfg::argvLogFilePathIndex], -1, NULL, 0);
+		wchar_t *ws = new wchar_t[num];
+		MultiByteToWideChar(CP_OEMCP, 0, argv[cmdLineCfg::argvLogFilePathIndex], -1, ws, num);
+		wsLogPath = ws;
+		delete[] ws;
 
-		if (cmdLineCfg::fileLogged)
-		{
-			// Convert path to wstring.
-			int num = MultiByteToWideChar(CP_OEMCP, 0, argv[cmdLineCfg::argvLogFilePathIndex], -1, NULL, 0);
-			wchar_t *ws = new wchar_t[num];
-			MultiByteToWideChar(CP_OEMCP, 0, argv[cmdLineCfg::argvLogFilePathIndex], -1, ws, num);
-			wsLogPath = ws;
-			delete[] ws;
-
-			log->init(wsLogPath);
-		}
-		else
-		{
-			log->init();
-		}
+		log->init(wsLogPath);
+	}
+	else
+	{
+		log->init();
 	}
 
-	_getch();
-	closegraph();
+	*log << L"预初始化完成，正在启动游戏……";
 	
+	Game();
+
 	std::locale::global(prevLocale);
 
 	return EXIT_SUCCESS;
 }
+
+
+void Game()
+{
+
+}
+
 
 
 bool cmdLineCfg::parseCmdLine(_In_ int argc, _In_ char *argv[])
@@ -125,3 +144,4 @@ HWND createEXWindow(int width, int height, bool isWindowShow)
 
 	return hWnd;
 }
+

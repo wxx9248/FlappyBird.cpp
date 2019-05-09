@@ -15,6 +15,8 @@
 
 #include <corecrt_wtime.h>
 
+#include <atlimage.h>
+
 // C++ 库头文件
 #include <iostream>
 #include <fstream>

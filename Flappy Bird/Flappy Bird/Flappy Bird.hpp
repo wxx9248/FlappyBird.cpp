@@ -24,7 +24,7 @@ namespace cmdLineCfg
 	bool parseCmdLine(_In_ int argc, _In_ char *argv[]);
 }
 
+std::wstring wsLogPath;
 
 HWND createEXWindow(int width, int height, bool isWindowShow);
-
-std::wstring wsLogPath;
+void Game();

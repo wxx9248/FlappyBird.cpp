@@ -22,6 +22,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -105,13 +106,38 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// String Table
+// IMAGE
 //
 
-STRINGTABLE
-BEGIN
-    IDS_APP_TITLE           "Flappy Bird"
-END
+IDR_IMAGE_BG            IMAGE                   "res\\background.bmp"
+
+IDR_IMAGE_GND           IMAGE                   "res\\ground.bmp"
+
+IDR_IMAGE_RESTART       IMAGE                   "res\\restart.bmp"
+
+IDR_IMAGE_SCOREBOARD    IMAGE                   "res\\score.bmp"
+
+IDR_IMAGE_PIPE          IMAGE                   "res\\pipe.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_PNG_BIRD1           PNG                     "res\\bird1.png"
+
+IDB_PNG_BIRD2           PNG                     "res\\bird2.png"
+
+IDB_PNG_BIRD3           PNG                     "res\\bird3.png"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Font
+//
+
+IDR_TTF_DEFASC          TTF                     "res\\font.ttf"
 
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////

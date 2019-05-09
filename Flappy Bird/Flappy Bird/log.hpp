@@ -260,7 +260,7 @@ Log &operator<<(Log &log, T &msg)
 
 	wasctmbuf[wcslen(wasctmbuf) - 1] = L'\0';
 
-	(*log.od) << _T("[") << wasctmbuf << _T("] ") << msg << _T("\n");
+	(*log.od) << L"[" << wasctmbuf << L"] " << msg << L"\n";
 
 	return log;
 }

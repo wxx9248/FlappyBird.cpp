@@ -181,9 +181,18 @@
     <ResourceCompile Include="Flappy Bird.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bitmap1.bmp" />
-    <Image Include="bitmap2.bmp" />
     <Image Include="Flappy Bird.ico" />
+    <Image Include="res\background.bmp" />
+    <Image Include="res\bird1.png" />
+    <Image Include="res\bird2.png" />
+    <Image Include="res\bird3.png" />
+    <Image Include="res\ground.bmp" />
+    <Image Include="res\pipe.bmp" />
+    <Image Include="res\restart.bmp" />
+    <Image Include="res\score.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\font.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

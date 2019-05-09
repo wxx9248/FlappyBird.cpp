@@ -66,11 +66,34 @@
     <Image Include="Flappy Bird.ico">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="bitmap1.bmp">
+    <Image Include="res\background.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="bitmap2.bmp">
+    <Image Include="res\ground.bmp">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\restart.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\score.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\pipe.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird1.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird2.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird3.png">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\font.ttf">
+      <Filter>资源文件</Filter>
+    </Font>
   </ItemGroup>
 </Project>
