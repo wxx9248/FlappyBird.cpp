@@ -9,7 +9,7 @@ namespace cmdLineCfg
 	// Varibles
 #ifdef _DEBUG
 	bool isDebugMode = true;
-	bool fileLogged = true;
+	bool fileLogged = false;
 #else
 	bool isDebugMode = false;
 	bool fileLogged = false;
@@ -25,5 +25,6 @@ namespace cmdLineCfg
 }
 
 
-
 HWND createEXWindow(int width, int height, bool isWindowShow);
+
+std::wstring wsLogPath;

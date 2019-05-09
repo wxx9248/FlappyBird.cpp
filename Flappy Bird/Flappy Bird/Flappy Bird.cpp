@@ -34,6 +34,7 @@ int main(_In_ int argc, _In_ char *argv[])
 	}
 
 	HWND hWnd = NULL;
+	Log *log = NULL;
 
 	try
 	{
@@ -49,18 +50,29 @@ int main(_In_ int argc, _In_ char *argv[])
 		MessageBoxW(NULL, L"未知的内部错误", L"错误", MB_ICONERROR);
 		throw;
 	}
-
-	srand(static_cast<int>(time(static_cast<time_t>(0))));
-
-	/*
-	settextstyle(64, 0, L"宋体");
-	for (; ; )
+	
+	if (cmdLineCfg::isDebugMode)
 	{
-		cleardevice();
-		outtextxy(rand() % WNDWIDTH, rand() % WNDHEIGHT, L"咕");
-		Sleep(200);
+		log = new Log;
+
+		if (cmdLineCfg::fileLogged)
+		{
+			// Convert path to wstring.
+			int num = MultiByteToWideChar(CP_OEMCP, 0, argv[cmdLineCfg::argvLogFilePathIndex], -1, NULL, 0);
+			wchar_t *ws = new wchar_t[num];
+			MultiByteToWideChar(CP_OEMCP, 0, argv[cmdLineCfg::argvLogFilePathIndex], -1, ws, num);
+			wsLogPath = ws;
+			delete[] ws;
+
+			log->init(wsLogPath);
+		}
+		else
+		{
+			log->init();
+		}
 	}
-	*/
+
+	*log << L"wwwww我";
 
 	_getch();
 	closegraph();
@@ -111,4 +123,3 @@ HWND createEXWindow(int width, int height, bool isWindowShow)
 
 	return hWnd;
 }
-

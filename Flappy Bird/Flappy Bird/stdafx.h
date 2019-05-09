@@ -13,6 +13,7 @@
 #include <conio.h>
 #include <tchar.h>
 
+#include <corecrt_wtime.h>
 
 // C++ 库头文件
 #include <iostream>
@@ -29,7 +30,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
-#include <ctime>
+#include <cerrno>
 
 // C 库头文件
 
