@@ -75,9 +75,6 @@ int main(_In_ int argc, _In_ char *argv[])
 		}
 	}
 
-	*log << L"栗子最好惹QwQ";
-	*log << L"比心/\\";
-
 	_getch();
 	closegraph();
 	
