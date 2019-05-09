@@ -12,8 +12,9 @@ const int WNDHEIGHT					= 896;
 
 int main(_In_ int argc, _In_ char *argv[])
 {
-	setlocale(LC_ALL, ".65001");
-	
+	std::locale newLocale(std::locale(), "", std::locale::ctype);
+	std::locale prevLocale = std::locale::global(newLocale);
+
 	try
 	{
 		cmdLineCfg::parseCmdLine(argc, argv);
@@ -74,11 +75,14 @@ int main(_In_ int argc, _In_ char *argv[])
 		}
 	}
 
-
+	*log << L"栗子最好惹QwQ";
+	*log << L"比心/\\";
 
 	_getch();
 	closegraph();
 	
+	std::locale::global(prevLocale);
+
 	return EXIT_SUCCESS;
 }
 
