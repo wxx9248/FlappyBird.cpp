@@ -98,7 +98,9 @@ int main(_In_ int argc, _In_ char *argv[])
 
 void Game()
 {
-
+	HWND hWnd = createEXWindow(WNDWIDTH, WNDHEIGHT, cmdLineCfg::isDebugMode);
+	_getch();
+	closegraph();
 }
 
 
@@ -131,7 +133,7 @@ bool cmdLineCfg::parseCmdLine(_In_ int argc, _In_ char *argv[])
 }
 
 
-HWND createEXWindow(int width, int height, bool isWindowShow)
+HWND createEXWindow(_In_ int width, _In_ int height, _In_ bool isWindowShow)
 {
 	HWND hWnd;
 	if (isWindowShow)

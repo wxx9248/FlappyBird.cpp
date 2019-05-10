@@ -115,26 +115,30 @@ IDR_IMAGE_GND           IMAGE                   "res\\ground.bmp"
 
 IDR_IMAGE_RESTART       IMAGE                   "res\\restart.bmp"
 
-IDR_IMAGE_SCOREBOARD    IMAGE                   "res\\score.bmp"
+IDR_IMAGE_SCOREBOARD    IMAGE                   "res\\scoreboard.bmp"
+
+IDR_IMAGE_SCOREBOARD_M  IMAGE                   "res\\scoreboard_mask.bmp"
 
 IDR_IMAGE_PIPE          IMAGE                   "res\\pipe.bmp"
 
+IDR_IMAGE_PIPE_M        IMAGE                   "res\\pipe_mask.bmp"
+
+IDR_PNG_BIRD1           IMAGE                   "res\\bird1.bmp"
+
+IDR_PNG_BIRD1_M         IMAGE                   "res\\bird1_mask.bmp"
+
+IDR_PNG_BIRD2           IMAGE                   "res\\bird2.bmp"
+
+IDR_PNG_BIRD2_M         IMAGE                   "res\\bird1_mask.bmp"
+
+IDR_PNG_BIRD3           IMAGE                   "res\\bird3.bmp"
+
+IDR_PNG_BIRD3_M         IMAGE                   "res\\bird1_mask.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// PNG
-//
-
-IDB_PNG_BIRD1           PNG                     "res\\bird1.png"
-
-IDB_PNG_BIRD2           PNG                     "res\\bird2.png"
-
-IDB_PNG_BIRD3           PNG                     "res\\bird3.png"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Font
+// TTF
 //
 
 IDR_TTF_DEFASC          TTF                     "res\\font.ttf"

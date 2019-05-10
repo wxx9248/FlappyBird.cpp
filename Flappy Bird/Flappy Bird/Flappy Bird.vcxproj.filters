@@ -75,19 +75,34 @@
     <Image Include="res\restart.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\score.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\pipe.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\bird1.png">
+    <Image Include="res\scoreboard.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\bird2.png">
+    <Image Include="res\scoreboard_mask.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\bird3.png">
+    <Image Include="res\pipe_mask.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird1_mask.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird2.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird3.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird2_mask.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird3_mask.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
