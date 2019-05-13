@@ -22,9 +22,8 @@
 #include <fstream>
 #include <exception>
 #include <locale>
-
-// STL 头文件
 #include <string>
+#include <vector>
 
 // C++ C兼容性头文件
 #include <cctype>
@@ -42,12 +41,13 @@
 
 
 // 在此处引用程序需要的其他标头
-#include "LocalExceptions.hpp"
-#include "WCexception.hpp"
-
+#include "stdWCexception.hpp"
 
 
 // 自定义工具函数
 
 // 在字符串里匹配字符集
 int strchrs(const char *str, const char *chrs, bool strictmode = false);
+
+// 转换宽字符（使用new开辟内存，如不使用请用delete[]释放）
+wchar_t *char2wchar(char *cstr);

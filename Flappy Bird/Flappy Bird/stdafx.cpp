@@ -19,3 +19,10 @@ int strchrs(const char *str, const char *chrs, bool strictmode)
 	return cnt;
 }
 
+wchar_t *char2wchar(char *cstr)
+{
+	int num = MultiByteToWideChar(CP_OEMCP, 0, cstr, -1, NULL, 0);
+	wchar_t *ws = new wchar_t[num];
+	MultiByteToWideChar(CP_OEMCP, 0, cstr, -1, ws, num);
+	return ws;
+}

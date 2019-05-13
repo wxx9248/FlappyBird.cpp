@@ -111,7 +111,23 @@ END
 
 IDR_IMAGE_BG            IMAGE                   "res\\background.bmp"
 
+IDR_IMAGE_BIRD1         IMAGE                   "res\\bird1.bmp"
+
+IDR_IMAGE_BIRD1_M       IMAGE                   "res\\bird1_mask.bmp"
+
+IDR_IMAGE_BIRD2         IMAGE                   "res\\bird2.bmp"
+
+IDR_IMAGE_BIRD2_M       IMAGE                   "res\\bird2_mask.bmp"
+
+IDR_IMAGE_BIRD3         IMAGE                   "res\\bird3.bmp"
+
+IDR_IMAGE_BIRD3_M       IMAGE                   "res\\bird3_mask.bmp"
+
 IDR_IMAGE_GND           IMAGE                   "res\\ground.bmp"
+
+IDR_IMAGE_PIPE          IMAGE                   "res\\pipe.bmp"
+
+IDR_IMAGE_PIPE_M        IMAGE                   "res\\pipe_mask.bmp"
 
 IDR_IMAGE_RESTART       IMAGE                   "res\\restart.bmp"
 
@@ -119,29 +135,13 @@ IDR_IMAGE_SCOREBOARD    IMAGE                   "res\\scoreboard.bmp"
 
 IDR_IMAGE_SCOREBOARD_M  IMAGE                   "res\\scoreboard_mask.bmp"
 
-IDR_IMAGE_PIPE          IMAGE                   "res\\pipe.bmp"
-
-IDR_IMAGE_PIPE_M        IMAGE                   "res\\pipe_mask.bmp"
-
-IDR_PNG_BIRD1           IMAGE                   "res\\bird1.bmp"
-
-IDR_PNG_BIRD1_M         IMAGE                   "res\\bird1_mask.bmp"
-
-IDR_PNG_BIRD2           IMAGE                   "res\\bird2.bmp"
-
-IDR_PNG_BIRD2_M         IMAGE                   "res\\bird1_mask.bmp"
-
-IDR_PNG_BIRD3           IMAGE                   "res\\bird3.bmp"
-
-IDR_PNG_BIRD3_M         IMAGE                   "res\\bird1_mask.bmp"
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // TTF
 //
 
-IDR_TTF_DEFASC          TTF                     "res\\font.ttf"
+IDR_TTF_DEFAULT         TTF                     "res\\font.ttf"
 
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////

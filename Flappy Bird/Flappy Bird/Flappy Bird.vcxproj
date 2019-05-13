@@ -156,14 +156,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="LocalExceptions.hpp" />
     <ClInclude Include="Flappy Bird.hpp" />
     <ClInclude Include="log.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="showHelp.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="WCexception.hpp" />
+    <ClInclude Include="stdWCexception.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Flappy Bird.cpp" />
@@ -175,7 +174,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="WCexception.cpp" />
+    <ClCompile Include="stdWCexception.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Flappy Bird.rc" />

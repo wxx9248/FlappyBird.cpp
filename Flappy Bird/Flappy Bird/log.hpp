@@ -108,7 +108,7 @@ bool Outdev::init(T &logFilePath)
 
 	if (!(*logFile))
 	{
-		throw openLogFileFailed(excwstr + logFilePath);
+		throw stdWCexception(excwstr + logFilePath);
 		return false;
 	}
 	else

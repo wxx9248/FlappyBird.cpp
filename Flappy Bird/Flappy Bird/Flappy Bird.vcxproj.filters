@@ -24,12 +24,6 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="LocalExceptions.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WCexception.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="showHelp.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -37,6 +31,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Flappy Bird.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stdWCexception.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,10 +47,10 @@
     <ClCompile Include="LocalExceptions.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WCexception.cpp">
+    <ClCompile Include="showHelp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="showHelp.cpp">
+    <ClCompile Include="stdWCexception.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,24 +66,6 @@
     <Image Include="res\background.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\ground.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\restart.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\pipe.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\scoreboard.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\scoreboard_mask.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\pipe_mask.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\bird1.bmp">
       <Filter>资源文件</Filter>
     </Image>
@@ -96,13 +75,31 @@
     <Image Include="res\bird2.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\bird3.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\bird2_mask.bmp">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\bird3.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
     <Image Include="res\bird3_mask.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\ground.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\pipe.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\pipe_mask.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\restart.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\scoreboard.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\scoreboard_mask.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>
