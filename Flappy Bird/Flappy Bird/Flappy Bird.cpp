@@ -100,12 +100,14 @@ void Game::subGame()
 	// Initialize background picture
 	*logger << L"初始化背景图层……";
 	OBJIMG BG;
-	LAYER lBG;
 	INT ZERO = 0;
+	LAYER lBG;
 	loadimage(&(BG.im), L"IMAGE", L"IDR_IMAGE_BG");
 	BG.posx = BG.posy = &ZERO;
 	BG.dwRop = SRCCOPY;
 	lBG.push_back(BG);
+	mainScene.push_back(lBG);
+
 
 	// Initialize the picture of Bird
 	// with UNDEFINED position.
@@ -117,6 +119,16 @@ void Game::subGame()
 
 	Bird1_M.dwRop = SRCAND;
 	Bird1.dwRop = SRCPAINT;
+
+
+	// Initialize font resource
+	*logger << L"初始化字体资源……";
+	*logger << L"TTF名称：" << lpFontName;
+	HANDLE DefFont = GetFontHandleW(L"IDR_TTF_DEFAULT", L"TTF");
+	*logger << L"TTF资源句柄：" << DefFont;
+	if (NULL == DefFont)
+		throw stdWCexception(L"TTF资源句柄无效！");
+
 
 	// Initialize MUTEX
 	*logger << L"正在创建互斥锁（异步刷新线程）……";
@@ -132,32 +144,41 @@ void Game::subGame()
 	*logger << L"线程句柄：" << hThRef;
 	
 
-	// Test
-	Bird1.posx = Bird1_M.posx = &ZERO;
-	Bird1.posy = Bird1_M.posy = &ZERO;
+	// Game start.
 
-	DOUBLE rrot = 100;
-	Bird1.rot = Bird1_M.rot = &rrot;
-	
 	WaitForSingleObject(hMutRef, INFINITE);
 	OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
-	lBird.push_back(Bird1_M);
-	lBird.push_back(Bird1);
-	mainScene.push_back(lBG);
-	mainScene.push_back(lBird);
+
+	fxLayers.push_back(printGameTitle);
+
 	ReleaseMutex(hMutRef);
 
-	while (true)
+
+	for (; ; )
 	{
-		rrot += 0.01;
+		WaitForSingleObject(hMutRef, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+
+		ReleaseMutex(hMutRef);
 	}
 
-	_getch();
 	CloseHandle(hThRef);
 	closegraph();
 }
 
-HWND Game::createEXWindow(_In_ int width, _In_ int height, _In_ bool isWindowShow)
+void Game::printGameTitle()
+{
+	static LOGFONTW LogFontDef = { 0 };
+	LogFontDef.lfHeight = 72;
+	wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+
+	settextstyle(&LogFontDef);
+	setbkmode(TRANSPARENT);
+	outtextxy(100, 100, L"Flappy Bird");
+}
+
+
+HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In_ bool isWindowShow)
 {
 	HWND hWnd;
 	if (isWindowShow)
@@ -188,21 +209,19 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 			{
 				if (NULL != mainScene[i][j].posx && NULL != mainScene[i][j].posy)
 				{
-					if (NULL == mainScene[i][j].rot)
-						putimage(*mainScene[i][j].posx, *mainScene[i][j].posy, &(mainScene[i][j].im), mainScene[i][j].dwRop);
-					else
+					if (NULL != mainScene[i][j].rot)
 					{
-						// Rotation transformation
-						// [x', y']' = [cos θ, sin θ; -sin θ, cos θ][x, y]'
-						// Equivalent to:
-						// x' = x cos θ + y sin θ,
-						// y' = -x sin θ + y cos θ.
-						static int rx = *mainScene[i][j].posx * cos(*mainScene[i][j].rot) + *mainScene[i][j].posy * sin(*mainScene[i][j].rot);
-						static int ry = -*mainScene[i][j].posx * sin(*mainScene[i][j].rot) + *mainScene[i][j].posy * cos(*mainScene[i][j].rot);
-						putimage(rx, ry, &(mainScene[i][j].im), mainScene[i][j].dwRop);
+						// Rotate picture.
 					}
+					else
+						putimage(*mainScene[i][j].posx, *mainScene[i][j].posy, &(mainScene[i][j].im), mainScene[i][j].dwRop);
 				}
 			}
+
+		for (int i = 0; i < fxLayers.size(); ++i)
+			if (NULL != fxLayers[i])
+				fxLayers[i]();
+
 		EndBatchDraw();
 
 		ReleaseMutex((HANDLE *) lpParam);
@@ -211,33 +230,33 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 }
 
 
-Game::LPRFONT Game::getRawFontW(LPCWSTR lpResID, LPCWSTR lpResType)
+HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType)
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
-	{
 		throw stdWCexception(L"无法获取字体资源！");
-	}
 
 	HGLOBAL hGlobal = LoadResource(NULL, hResource);
 	if (NULL == hGlobal)
-	{
 		throw stdWCexception(L"无法装载字体资源！");
-	}
 
 	LPVOID lpRawFont = LockResource(hGlobal);
 	if (NULL == lpRawFont)
-	{
 		throw stdWCexception(L"字体资源无效！");
-	}
 
-	return lpRawFont;
+	size_t fontSize = SizeofResource(NULL, hResource);
+	DWORD NumFonts;
+	HANDLE hFont = AddFontMemResourceEx(lpRawFont, fontSize, NULL, &NumFonts);
+	if (NULL == hFont)
+		throw stdWCexception(L"无法获取字体句柄！");
+
+	return hFont;
 }
 
 
 // Namespace cmdLineCfg::
 
-bool cmdLineCfg::parseCmdLine(_In_ int argc, _In_ char *argv[])
+bool cmdLineCfg::parseCmdLine(const _In_ int argc, _In_ char *argv[])
 {
 	for (int i = 1; i < argc; ++i)
 	{
