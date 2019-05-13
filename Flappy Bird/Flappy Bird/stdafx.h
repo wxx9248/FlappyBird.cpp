@@ -31,6 +31,7 @@
 #include <cstring>
 #include <cerrno>
 #include <ctime>
+#include <cmath>
 
 // C 库头文件
 

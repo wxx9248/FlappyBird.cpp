@@ -36,8 +36,8 @@ namespace Game
 	struct OBJIMG
 	{
 		IMAGE im;
-		INT *posx, *posy;	// Optimize: store pointers instead of variables
-		DOUBLE *rot;		//			 to prevent intense alter of elements of vectors.
+		INT *posx = NULL, *posy = NULL;	// Optimize: store pointers instead of variables
+		DOUBLE *rot = NULL;		//			 to prevent intense alter of elements of vectors.
 		DWORD dwRop;
 	};
 

@@ -98,7 +98,7 @@ void Game::subGame()
 	*logger << L"窗口句柄：" << hWnd;
 
 	// Initialize background picture
-	*logger << L"初始化背景图……";
+	*logger << L"初始化背景图层……";
 	OBJIMG BG;
 	LAYER lBG;
 	INT ZERO = 0;
@@ -106,10 +106,10 @@ void Game::subGame()
 	BG.posx = BG.posy = &ZERO;
 	BG.dwRop = SRCCOPY;
 	lBG.push_back(BG);
-	
 
 	// Initialize the picture of Bird
 	// with UNDEFINED position.
+	*logger << L"初始化Bird图层（坐标未定）……";
 	OBJIMG Bird1, Bird1_M;
 	LAYER lBird;
 	loadimage(&(Bird1.im), L"IMAGE", L"IDR_IMAGE_BIRD1");
@@ -118,20 +118,39 @@ void Game::subGame()
 	Bird1_M.dwRop = SRCAND;
 	Bird1.dwRop = SRCPAINT;
 
-	lBird.push_back(Bird1_M);
-	lBird.push_back(Bird1);
-
-	mainScene.push_back(lBG);
+	// Initialize MUTEX
+	*logger << L"正在创建互斥锁（异步刷新线程）……";
+	HANDLE hMutRef = CreateMutexW(NULL, FALSE, L"MutexRefresh");
+	*logger << L"互斥锁句柄：" << hMutRef;
+	if (NULL == hMutRef)
+		throw stdWCexception(L"无效互斥锁句柄！");
 
 
 	// Initialize refresh thread
 	*logger << L"正在创建异步刷新线程……";
-	HANDLE hThRef = CreateThread(NULL, 0, refreshLoop, NULL, 0, NULL);
+	HANDLE hThRef = CreateThread(NULL, 0, refreshLoop, hMutRef, 0, NULL);
 	*logger << L"线程句柄：" << hThRef;
+	
 
+	// Test
+	Bird1.posx = Bird1_M.posx = &ZERO;
+	Bird1.posy = Bird1_M.posy = &ZERO;
 
+	DOUBLE rrot = 100;
+	Bird1.rot = Bird1_M.rot = &rrot;
+	
+	WaitForSingleObject(hMutRef, INFINITE);
+	OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+	lBird.push_back(Bird1_M);
+	lBird.push_back(Bird1);
+	mainScene.push_back(lBG);
+	mainScene.push_back(lBird);
+	ReleaseMutex(hMutRef);
 
-
+	while (true)
+	{
+		rrot += 0.01;
+	}
 
 	_getch();
 	CloseHandle(hThRef);
@@ -157,18 +176,38 @@ HWND Game::createEXWindow(_In_ int width, _In_ int height, _In_ bool isWindowSho
 
 
 DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
-{
-	static iLAYER iLayer;
-	static iSCENE iScene;
-
-	while (true)
+{	
+	for (;;)
 	{
+		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+
 		BeginBatchDraw();
-		for (iScene = mainScene.begin(); iScene != mainScene.end(); ++iScene)
-			for (iLayer = (*iScene).begin(); iLayer != (*iScene).end(); ++iLayer)
-				putimage(*(*iLayer).posx, *(*iLayer).posy, &((*iLayer).im), (*iLayer).dwRop);
+		for (int i = 0; i < mainScene.size(); ++i)
+			for (int j = 0; j < mainScene[i].size(); ++j)
+			{
+				if (NULL != mainScene[i][j].posx && NULL != mainScene[i][j].posy)
+				{
+					if (NULL == mainScene[i][j].rot)
+						putimage(*mainScene[i][j].posx, *mainScene[i][j].posy, &(mainScene[i][j].im), mainScene[i][j].dwRop);
+					else
+					{
+						// Rotation transformation
+						// [x', y']' = [cos θ, sin θ; -sin θ, cos θ][x, y]'
+						// Equivalent to:
+						// x' = x cos θ + y sin θ,
+						// y' = -x sin θ + y cos θ.
+						static int rx = *mainScene[i][j].posx * cos(*mainScene[i][j].rot) + *mainScene[i][j].posy * sin(*mainScene[i][j].rot);
+						static int ry = -*mainScene[i][j].posx * sin(*mainScene[i][j].rot) + *mainScene[i][j].posy * cos(*mainScene[i][j].rot);
+						putimage(rx, ry, &(mainScene[i][j].im), mainScene[i][j].dwRop);
+					}
+				}
+			}
 		EndBatchDraw();
+
+		ReleaseMutex((HANDLE *) lpParam);
 	}
+	return 0;
 }
 
 

@@ -44,9 +44,6 @@
     <ClCompile Include="Flappy Bird.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LocalExceptions.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="showHelp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
