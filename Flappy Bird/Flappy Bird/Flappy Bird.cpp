@@ -153,7 +153,6 @@ void Game::subGame()
 
 	ReleaseMutex(hMutRef);
 
-
 	for (; ; )
 	{
 		WaitForSingleObject(hMutRef, INFINITE);
@@ -168,13 +167,18 @@ void Game::subGame()
 
 void Game::printGameTitle()
 {
+	static bool firstrun = true;
 	static LOGFONTW LogFontDef = { 0 };
-	LogFontDef.lfHeight = 72;
-	wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+	if (firstrun)
+	{	
+		LogFontDef.lfHeight = 72;
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+		firstrun = false;
+	}
 
 	settextstyle(&LogFontDef);
 	setbkmode(TRANSPARENT);
-	outtextxy(100, 100, L"Flappy Bird");
+	outtextxy(175, 200, L"Flappy Bird");
 }
 
 
@@ -198,7 +202,7 @@ HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In
 
 DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 {	
-	for (;;)
+	for (; ; )
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
@@ -217,10 +221,11 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 						putimage(*mainScene[i][j].posx, *mainScene[i][j].posy, &(mainScene[i][j].im), mainScene[i][j].dwRop);
 				}
 			}
-
+		
 		for (int i = 0; i < fxLayers.size(); ++i)
 			if (NULL != fxLayers[i])
 				fxLayers[i]();
+		
 
 		EndBatchDraw();
 
