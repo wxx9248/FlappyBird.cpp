@@ -28,8 +28,6 @@ namespace cmdLineCfg
 namespace Game
 {
 	// Constants
-	const UINT INSERT_BEFORE	= 0;
-	const UINT INSERT_AFTER		= 1;
 	const LPCWSTR lpFontName = L"04b_19";
 	
 	// Data structures
@@ -55,6 +53,7 @@ namespace Game
 	void printGameTitle();
 	HWND createEXWindow(const int width, const int height, const bool isWindowShow);
 	DWORD WINAPI refreshLoop(LPVOID lpParam);
+	DWORD WINAPI KBELoop(LPVOID lpParam);
 	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 }
 

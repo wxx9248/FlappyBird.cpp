@@ -95,7 +95,7 @@ void Game::subGame()
 {
 	*logger << L"正在创建窗口……";
 	HWND hWnd = createEXWindow(WNDWIDTH, WNDHEIGHT, cmdLineCfg::isDebugMode);
-	*logger << L"窗口句柄：" << hWnd;
+	std::wcout << L"窗口句柄：0x" << hWnd << std::endl;
 
 	// Initialize background picture
 	*logger << L"初始化背景图层……";
@@ -123,9 +123,9 @@ void Game::subGame()
 
 	// Initialize font resource
 	*logger << L"初始化字体资源……";
-	*logger << L"TTF名称：" << lpFontName;
+	std::wcout << L"TTF名称：" << lpFontName << std::endl;
 	HANDLE DefFont = GetFontHandleW(L"IDR_TTF_DEFAULT", L"TTF");
-	*logger << L"TTF资源句柄：" << DefFont;
+	std::wcout << L"TTF资源句柄：0x" << DefFont << std::endl;
 	if (NULL == DefFont)
 		throw stdWCexception(L"TTF资源句柄无效！");
 
@@ -133,7 +133,7 @@ void Game::subGame()
 	// Initialize MUTEX
 	*logger << L"正在创建互斥锁（异步刷新线程）……";
 	HANDLE hMutRef = CreateMutexW(NULL, FALSE, L"MutexRefresh");
-	*logger << L"互斥锁句柄：" << hMutRef;
+	std::wcout << L"互斥锁句柄：0x" << hMutRef << std::endl;
 	if (NULL == hMutRef)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
@@ -141,8 +141,13 @@ void Game::subGame()
 	// Initialize refresh thread
 	*logger << L"正在创建异步刷新线程……";
 	HANDLE hThRef = CreateThread(NULL, 0, refreshLoop, hMutRef, 0, NULL);
-	*logger << L"线程句柄：" << hThRef;
+	std::wcout << L"线程句柄：0x" << hThRef << std::endl;
 	
+	// Initlialize keyboard event listening thread
+	*logger << L"正在创建键盘事件处理线程……";
+	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, hMutRef, 0, NULL);
+	std::wcout << L"线程句柄：0x" << hThKBEHandler << std::endl;
+
 
 	// Game start.
 
@@ -234,6 +239,22 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 	return 0;
 }
 
+DWORD WINAPI Game::KBELoop(LPVOID lpParam)
+{
+	for (; ; )
+	{
+		char c = _getch();
+		*logger << L"捕获到键盘事件：";
+		std::wcout << L"16进制机内码为：" << L"0x" << std::hex << (int) c << std::endl;
+		std::wcout << L"对应字符为：" << c << std::endl;
+		switch (c)
+		{
+		default:
+			break;
+		}
+	}
+	return 0;
+}
 
 HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType)
 {
