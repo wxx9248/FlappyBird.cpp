@@ -82,9 +82,12 @@ int main(_In_ int argc, _In_ char *argv[])
 	}
 	
 
-	*logger << L"预初始化完成，正在启动游戏……";
+	*logger << L"预初始化完成，正在启动游戏……" << (*logger).endl;
 	
 	Game::subGame();
+
+	*logger << L"关闭日志系统……" << (*logger).endl;
+	delete logger;
 
 	std::locale::global(prevLocale);
 
@@ -95,12 +98,12 @@ int main(_In_ int argc, _In_ char *argv[])
 
 void Game::subGame()
 {
-	*logger << L"正在创建窗口……";
+	*logger << L"正在创建窗口……" << (*logger).endl;
 	HWND hWnd = createEXWindow(WNDWIDTH, WNDHEIGHT, cmdLineCfg::isDebugMode);
-	std::wcout << L"窗口句柄：0x" << hWnd << std::endl;
+	*logger << L"窗口句柄：0x" << hWnd << (*logger).endl;
 
 	// Initialize background picture
-	*logger << L"初始化背景图层……";
+	*logger << L"初始化背景图层……" << (*logger).endl;
 	OBJIMG BG;
 	INT ZERO = 0;
 	LAYER lBG;
@@ -113,7 +116,7 @@ void Game::subGame()
 
 	// Initialize the picture of Bird
 	// with UNDEFINED position.
-	*logger << L"初始化Bird图层（坐标未定）……";
+	*logger << L"初始化Bird图层（坐标未定）……" << (*logger).endl;
 	OBJIMG Bird1, Bird1_M;
 	LAYER lBird;
 	loadimage(&(Bird1.im), L"IMAGE", L"IDR_IMAGE_BIRD1");
@@ -124,74 +127,99 @@ void Game::subGame()
 
 
 	// Initialize font resource
-	*logger << L"初始化字体资源……";
-	std::wcout << L"TTF名称：" << lpFontName << std::endl;
+	*logger << L"初始化字体资源……" << (*logger).endl;
+	*logger << L"TTF名称：" << lpFontName << (*logger).endl;
 	HANDLE DefFont = GetFontHandleW(L"IDR_TTF_DEFAULT", L"TTF");
-	std::wcout << L"TTF资源句柄：0x" << DefFont << std::endl;
+	*logger << L"TTF资源句柄：0x" << DefFont << (*logger).endl;
 	if (NULL == DefFont)
 		throw stdWCexception(L"TTF资源句柄无效！");
 
 
 	// Initialize MUTEX
-	*logger << L"正在创建互斥锁（异步刷新线程）……";
-	HANDLE hMutRef = CreateMutexW(NULL, FALSE, L"MutexRefresh");
-	std::wcout << L"互斥锁句柄：0x" << hMutRef << std::endl;
+	*logger << L"正在创建互斥锁（异步刷新线程）……" << (*logger).endl;
+	hMutRef = CreateMutexW(NULL, FALSE, L"MutexRefresh");
+	*logger << L"互斥锁句柄：0x" << hMutRef << (*logger).endl;
 	if (NULL == hMutRef)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
-	*logger << L"正在创建互斥锁（游戏中键盘事件处理线程）……";
-	HANDLE hMutKBE = CreateMutexW(NULL, FALSE, L"MutexKBE");
-	std::wcout << L"互斥锁句柄：0x" << hMutKBE << std::endl;
-	if (NULL == hMutKBE)
-		throw stdWCexception(L"无效互斥锁句柄！");
-
 	// Initialize refresh thread
-	*logger << L"正在创建异步刷新线程……";
+	*logger << L"正在创建异步刷新线程……" << (*logger).endl;
 	HANDLE hThRef = CreateThread(NULL, 0, refreshLoop, hMutRef, 0, NULL);
-	std::wcout << L"线程句柄：0x" << hThRef << std::endl;
+	*logger << L"线程句柄：0x" << hThRef << (*logger).endl;
 
 	// Initlialize keyboard event listening thread
-	*logger << L"正在创建游戏中键盘事件处理线程……";
-	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, hMutKBE, 0, NULL);
-	std::wcout << L"线程句柄：0x" << hThKBEHandler << std::endl;
+	*logger << L"正在创建游戏中键盘事件处理线程……" << (*logger).endl;
+	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, NULL, 0, NULL);
+	*logger << L"线程句柄：0x" << hThKBEHandler << (*logger).endl;
 
 	// Game start.
 
 	for (; ; )
 	{
-		*logger << L"等待互斥锁空闲……";
+		static char c = '\0';
+
+		*logger << L"等待互斥锁空闲……" << (*logger).endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 
-		*logger << L"尝试锁定互斥锁……";
+		*logger << L"尝试锁定互斥锁……" << (*logger).endl;
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 
 		*logger << L"标题显示函数指针：";
-		std::wcout << L"0x" << printGameTitle << std::endl;
+		*logger << L"0x" << printGameTitle << (*logger).endl;
 		fxLayers.push_back(printGameTitle);
 
 		*logger << L"游戏提示显示函数指针：";
-		std::wcout << L"0x" << printGameTitle << std::endl;
+		*logger << L"0x" << printGameTitle << (*logger).endl;
 		fxLayers.push_back(printGameStartHint);
 
-		*logger << L"释放互斥锁……";
+		*logger << L"释放互斥锁……" << (*logger).endl;
 		ReleaseMutex(hMutRef);
 		
-		*logger << L"等待用户开始信号……";
-		waitKBEvent();
+		*logger << L"等待用户开始信号……" << (*logger).endl;
+		c = waitKBEvent();
+		if (c == 0x1b)
+		{
+			*logger << L"退出动作捕获，执行退出指令" << (*logger).endl;
+			break;
+		}
 
-
-
-
-		fxLayers.clear();
-		waitKBEvent();
-		
+		// Clear texts
+		*logger << L"清除屏幕文字内容" << (*logger).endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
-
+		fxLayers.clear();
 		ReleaseMutex(hMutRef);
+		
+		// Countdown
+		*logger << L"倒计时……" << (*logger).endl;
+		for (cntdwnChar = L'3'; cntdwnChar > L'0'; --cntdwnChar)
+		{
+			*logger << cntdwnChar << (*logger).endl;
+			WaitForSingleObject(hMutRef, INFINITE);
+			OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+			fxLayers.push_back(printCountdown);
+			ReleaseMutex(hMutRef);
+			Sleep(1000);
+		}
+		
+
 	}
 
+	
+	// Game Ends
+
+	*logger << L"游戏退出中……" << (*logger).endl;
+
+	*logger << L"中止键盘事件处理线程……" << (*logger).endl;
+	TerminateThread(hThKBEHandler, 0);
+	*logger << L"关闭键盘事件处理句柄……" << (*logger).endl;
+	CloseHandle(hThKBEHandler);
+
+	*logger << L"中止异步刷新线程……" << (*logger).endl;
+	TerminateThread(hThRef, 0);
+	*logger << L"关闭异步刷新线程句柄……" << (*logger).endl;
 	CloseHandle(hThRef);
+	*logger << L"关闭图形界面……" << (*logger).endl;
 	closegraph();
 }
 
@@ -219,7 +247,7 @@ void Game::printGameStartHint()
 	if (firstrun)
 	{
 		LogFontDef.lfHeight = 32;
-		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof (LogFontDef.lfFaceName) / sizeof (WCHAR));
 		firstrun = false;
 	}
 
@@ -229,11 +257,25 @@ void Game::printGameStartHint()
 }
 
 
+void Game::printCountdown()
+{
+	static bool firstrun = true;
+	static LOGFONTW LogFontDef = { 0 };
+	if (firstrun)
+	{
+		LogFontDef.lfHeight = 72;
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+		firstrun = false;
+	}
+
+	settextstyle(&LogFontDef);
+	setbkmode(TRANSPARENT);
+	outtextxy(365, 100, cntdwnChar);
+}
+
 void Game::postKBEvent(KBE event)
 {
 	KBEMsgQueue.push(event);
-	*logger << L"已发出键盘消息";
-	std::wcout << L"消息内容：" << event << std::endl;
 }
 
 Game::KBE Game::asyncGetKBEvent()
@@ -244,8 +286,6 @@ Game::KBE Game::asyncGetKBEvent()
 	{
 		event = KBEMsgQueue.front();
 		KBEMsgQueue.pop();
-		*logger << L"已取出键盘消息";
-		std::wcout << L"消息内容：" << event << std::endl;
 	}
 	return event;
 }
@@ -254,13 +294,10 @@ Game::KBE Game::waitKBEvent()
 {
 	static KBE event = '\0';
 
-	*logger << L"等待键盘消息";
 	while (!KBEMsgQueue.size());
 
 	event = KBEMsgQueue.front();
 	KBEMsgQueue.pop();
-	*logger << L"已取出键盘消息";
-	std::wcout << L"消息内容：" << event << std::endl;
 
 	return event;
 }
@@ -319,12 +356,16 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 
 DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 {
+	static char c;
+	static int asc;
+	
 	for (; ; )
 	{
-		char c = _getch();
-		*logger << L"捕获到键盘事件：";
-		std::wcout << L"16进制机内码为：" << L"0x" << std::hex << (int) c << std::endl;
-		std::wcout << L"对应字符为：" << c << std::endl;
+		c = _getch();
+		asc = c;
+		*logger << L"捕获到键盘事件：" << (*logger).endl;
+		*logger << L"16进制机内码为：" << L"0x" << std::hex << asc << (*logger).endl;
+		*logger << L"对应字符为：" << c << (*logger).endl;
 		postKBEvent(c);
 	}
 	return 0;

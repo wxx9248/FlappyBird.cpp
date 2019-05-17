@@ -16,6 +16,7 @@ public:
 
 	bool init(std::wstring &logFilePath);
 
+	void reset();
 	void close();
 	bool clear();
 
@@ -43,6 +44,7 @@ public:
 	void init();
 	bool init(std::wstring &logFilePath);
 
+	void reset();
 	void close();
 	bool clear();
 
@@ -52,13 +54,8 @@ public:
 
 private:
 	Outdev *od = NULL;
-
-	// For thread safety, I have to add a buffer to avoid the thread-unsafe std::ostream and std::wofstream.
 	bool isBOL = true;
-	HANDLE hThflushLogQueue = NULL;
-	std::wstring tmsg;
-	std::queue<std::wstring> logQueue;
-	static DWORD WINAPI flushLogQueue(LPVOID lpParam);
+	volatile bool isIdle = false;
 };
 
 
@@ -144,6 +141,19 @@ bool Outdev::clear()
 
 void Outdev::close()
 {
+	if (isInited)
+	{
+		if (isOpened)
+		{
+			if(Outdev::logFile != NULL)
+				logFile->close();
+			isOpened = false;
+		}
+	}
+}
+
+void Outdev::reset()
+{
 	// Dumping all things out and reset!
 
 	isInited = isOpened = goodbit = badbit = failbit = eofbit = false;
@@ -214,7 +224,7 @@ void Log::init()
 
 	od = new Outdev;
 	od->init();
-	Log::hThflushLogQueue = CreateThread(NULL, 0, Log::flushLogQueue, this, 0, NULL);
+	Log::isIdle = true;
 }
 
 bool Log::init(std::wstring &logFilePath)
@@ -224,6 +234,16 @@ bool Log::init(std::wstring &logFilePath)
 
 	od = new Outdev;
 	return od->init(logFilePath);
+	Log::isIdle = true;
+}
+
+void Log::reset()
+{
+	if (od != NULL)
+		od->reset();
+
+	isBOL = true;
+	isIdle = false;
 }
 
 void Log::close()
@@ -252,6 +272,9 @@ Log &operator<<(Log &log, T &msg)
 	static wchar_t wasctmbuf[32];
 	static errno_t en;
 
+	while (!log.isIdle);
+	log.isIdle = false;
+
 	if (log.isBOL)
 	{
 		time(&timer);
@@ -262,36 +285,24 @@ Log &operator<<(Log &log, T &msg)
 			throw en;
 		
 		wasctmbuf[wcslen(wasctmbuf) - 1] = L'\0';
-		log.tmsg += L"[";
-		log.tmsg += wasctmbuf;
-		log.tmsg += L"] ";
+		*log.od <<  L"[" << wasctmbuf << L"] ";
+		log.isBOL = false;
 	}
 
-	log.tmsg += msg;
+	*log.od << msg;
+	log.isIdle = true;
 
 	return log;
 }
-
 
 Log &operator<<(Log &log, Log::_myendl &endl)
 {
 	log.isBOL = true;
-	log.logQueue.push(log.tmsg);
-	log.tmsg.clear();
+
+	while (!log.isIdle);
+	log.isIdle = false;
+	*log.od << L"\n";
+	log.isIdle = true;
 
 	return log;
-}
-
-
-DWORD WINAPI Log::flushLogQueue(LPVOID lpParam)
-{	
-	while (NULL != lpParam && NULL != ((Log *) lpParam)->od && ((Log *)lpParam)->od->isInited)
-	{
-		if (((Log *)lpParam)->logQueue.size())
-		{
-			*(((Log *)lpParam)->od) << ((Log *)lpParam)->logQueue.front() << L"\n";
-			((Log *)lpParam)->logQueue.pop();
-		}
-	}
-	return 0;
 }

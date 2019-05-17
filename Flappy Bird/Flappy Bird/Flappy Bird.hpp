@@ -48,14 +48,22 @@ namespace Game
 	typedef std::vector<fxpDrawing> FXLAYERS;
 	typedef std::queue<KBE> KBEMSGQUEUE;
 	
+	// Variables
+	volatile WCHAR cntdwnChar = L'3';
+
 	// Instances
 	SCENE mainScene;
 	FXLAYERS fxLayers;
 	KBEMSGQUEUE KBEMsgQueue;
 
+	// Handles
+	HANDLE hMutRef = NULL;
+
+	// Functions
 	void subGame();
 	void printGameTitle();
 	void printGameStartHint();
+	void printCountdown();
 	void postKBEvent(KBE event);
 	KBE asyncGetKBEvent();
 	KBE waitKBEvent();
