@@ -24,6 +24,7 @@
 #include <locale>
 #include <string>
 #include <vector>
+#include <queue>
 
 // C++ C兼容性头文件
 #include <cctype>

@@ -39,18 +39,27 @@ namespace Game
 		DWORD dwRop;
 	};
 
+	typedef CHAR KBE;
+
 	typedef std::vector<OBJIMG> LAYER;
 	typedef std::vector<LAYER> SCENE;
 
 	typedef void (*fxpDrawing)();
 	typedef std::vector<fxpDrawing> FXLAYERS;
-
+	typedef std::queue<KBE> KBEMSGQUEUE;
+	
 	// Instances
 	SCENE mainScene;
 	FXLAYERS fxLayers;
+	KBEMSGQUEUE KBEMsgQueue;
 
 	void subGame();
 	void printGameTitle();
+	void printGameStartHint();
+	void postKBEvent(KBE event);
+	KBE asyncGetKBEvent();
+	KBE waitKBEvent();
+
 	HWND createEXWindow(const int width, const int height, const bool isWindowShow);
 	DWORD WINAPI refreshLoop(LPVOID lpParam);
 	DWORD WINAPI KBELoop(LPVOID lpParam);

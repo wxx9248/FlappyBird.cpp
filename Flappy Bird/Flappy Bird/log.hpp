@@ -8,15 +8,13 @@ class Outdev
 public:
 	Outdev();
 
-	template<class T>
-	Outdev(T &logFilePath);
+	Outdev(std::wstring &logFilePath);
 
 	~Outdev();
 
 	void init();
 
-	template<class T>
-	bool init(T &logFilePath);
+	bool init(std::wstring &logFilePath);
 
 	void close();
 	bool clear();
@@ -35,25 +33,32 @@ private:
 class Log
 {
 public:
-	Log();
+	class _myendl {} endl;
 
-	template<class T>
-	Log(T &logFilePath);
+	Log();
+	Log(std::wstring &logFilePath);
 
 	~Log();
 
 	void init();
-
-	template<class T>
-	bool init(T &logFilePath);
+	bool init(std::wstring &logFilePath);
 
 	void close();
 	bool clear();
 
 	template<class T>
 	friend Log &operator<<(Log &log, T &msg);
+	friend Log &operator<<(Log &log, _myendl &endl);
+
 private:
 	Outdev *od = NULL;
+
+	// For thread safety, I have to add a buffer to avoid the thread-unsafe std::ostream and std::wofstream.
+	bool isBOL = true;
+	HANDLE hThflushLogQueue = NULL;
+	std::wstring tmsg;
+	std::queue<std::wstring> logQueue;
+	static DWORD WINAPI flushLogQueue(LPVOID lpParam);
 };
 
 
@@ -63,8 +68,7 @@ Outdev::Outdev()
 	init();
 }
 
-template<class T>
-Outdev::Outdev(T &logFilePath)
+Outdev::Outdev(std::wstring &logFilePath)
 {
 	init(logFilePath);
 }
@@ -86,8 +90,7 @@ void Outdev::init()
 	Outdev::logFile = NULL;
 }
 
-template<class T>
-bool Outdev::init(T &logFilePath)
+bool Outdev::init(std::wstring &logFilePath)
 {
 	std::wstring excwstr = L"不能打开文件:";
 	if (isInited)
@@ -141,7 +144,7 @@ bool Outdev::clear()
 
 void Outdev::close()
 {
-	// Dumping all things!
+	// Dumping all things out and reset!
 
 	isInited = isOpened = goodbit = badbit = failbit = eofbit = false;
 
@@ -194,8 +197,7 @@ Log::Log()
 	init();
 }
 
-template<class T>
-Log::Log(T &logFilePath)
+Log::Log(std::wstring &logFilePath)
 {
 	init(logFilePath);
 }
@@ -212,10 +214,10 @@ void Log::init()
 
 	od = new Outdev;
 	od->init();
+	Log::hThflushLogQueue = CreateThread(NULL, 0, Log::flushLogQueue, this, 0, NULL);
 }
 
-template<class T>
-bool Log::init(T &logFilePath)
+bool Log::init(std::wstring &logFilePath)
 {
 	if (od != NULL)
 		close();
@@ -250,17 +252,46 @@ Log &operator<<(Log &log, T &msg)
 	static wchar_t wasctmbuf[32];
 	static errno_t en;
 
-	time(&timer);
-	localtime_s(&ts, &timer);
+	if (log.isBOL)
+	{
+		time(&timer);
+		localtime_s(&ts, &timer);
+		en = _wasctime_s(wasctmbuf, &ts);
 
-	en = _wasctime_s(wasctmbuf, &ts);
+		if (en)
+			throw en;
+		
+		wasctmbuf[wcslen(wasctmbuf) - 1] = L'\0';
+		log.tmsg += L"[";
+		log.tmsg += wasctmbuf;
+		log.tmsg += L"] ";
+	}
 
-	if (en)
-		throw en;
-
-	wasctmbuf[wcslen(wasctmbuf) - 1] = L'\0';
-
-	(*log.od) << L"[" << wasctmbuf << L"] " << msg << L"\n";
+	log.tmsg += msg;
 
 	return log;
+}
+
+
+Log &operator<<(Log &log, Log::_myendl &endl)
+{
+	log.isBOL = true;
+	log.logQueue.push(log.tmsg);
+	log.tmsg.clear();
+
+	return log;
+}
+
+
+DWORD WINAPI Log::flushLogQueue(LPVOID lpParam)
+{	
+	while (NULL != lpParam && NULL != ((Log *) lpParam)->od && ((Log *)lpParam)->od->isInited)
+	{
+		if (((Log *)lpParam)->logQueue.size())
+		{
+			*(((Log *)lpParam)->od) << ((Log *)lpParam)->logQueue.front() << L"\n";
+			((Log *)lpParam)->logQueue.pop();
+		}
+	}
+	return 0;
 }

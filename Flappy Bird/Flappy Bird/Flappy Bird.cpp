@@ -7,6 +7,8 @@
 
 int main(_In_ int argc, _In_ char *argv[])
 {
+	std::ios::sync_with_stdio(false);
+	
 	std::locale newLocale(std::locale(), "", std::locale::ctype);
 	std::locale prevLocale = std::locale::global(newLocale);
 
@@ -137,29 +139,52 @@ void Game::subGame()
 	if (NULL == hMutRef)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
+	*logger << L"正在创建互斥锁（游戏中键盘事件处理线程）……";
+	HANDLE hMutKBE = CreateMutexW(NULL, FALSE, L"MutexKBE");
+	std::wcout << L"互斥锁句柄：0x" << hMutKBE << std::endl;
+	if (NULL == hMutKBE)
+		throw stdWCexception(L"无效互斥锁句柄！");
 
 	// Initialize refresh thread
 	*logger << L"正在创建异步刷新线程……";
 	HANDLE hThRef = CreateThread(NULL, 0, refreshLoop, hMutRef, 0, NULL);
 	std::wcout << L"线程句柄：0x" << hThRef << std::endl;
-	
-	// Initlialize keyboard event listening thread
-	*logger << L"正在创建键盘事件处理线程……";
-	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, hMutRef, 0, NULL);
-	std::wcout << L"线程句柄：0x" << hThKBEHandler << std::endl;
 
+	// Initlialize keyboard event listening thread
+	*logger << L"正在创建游戏中键盘事件处理线程……";
+	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, hMutKBE, 0, NULL);
+	std::wcout << L"线程句柄：0x" << hThKBEHandler << std::endl;
 
 	// Game start.
 
-	WaitForSingleObject(hMutRef, INFINITE);
-	OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
-
-	fxLayers.push_back(printGameTitle);
-
-	ReleaseMutex(hMutRef);
-
 	for (; ; )
 	{
+		*logger << L"等待互斥锁空闲……";
+		WaitForSingleObject(hMutRef, INFINITE);
+
+		*logger << L"尝试锁定互斥锁……";
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+
+		*logger << L"标题显示函数指针：";
+		std::wcout << L"0x" << printGameTitle << std::endl;
+		fxLayers.push_back(printGameTitle);
+
+		*logger << L"游戏提示显示函数指针：";
+		std::wcout << L"0x" << printGameTitle << std::endl;
+		fxLayers.push_back(printGameStartHint);
+
+		*logger << L"释放互斥锁……";
+		ReleaseMutex(hMutRef);
+		
+		*logger << L"等待用户开始信号……";
+		waitKBEvent();
+
+
+
+
+		fxLayers.clear();
+		waitKBEvent();
+		
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 
@@ -183,9 +208,62 @@ void Game::printGameTitle()
 
 	settextstyle(&LogFontDef);
 	setbkmode(TRANSPARENT);
-	outtextxy(175, 200, L"Flappy Bird");
+	outtextxy(180, 200, L"Flappy Bird");
 }
 
+
+void Game::printGameStartHint()
+{
+	static bool firstrun = true;
+	static LOGFONTW LogFontDef = { 0 };
+	if (firstrun)
+	{
+		LogFontDef.lfHeight = 32;
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+		firstrun = false;
+	}
+
+	settextstyle(&LogFontDef);
+	setbkmode(TRANSPARENT);
+	outtextxy(190, 600, L"Press any key to start");
+}
+
+
+void Game::postKBEvent(KBE event)
+{
+	KBEMsgQueue.push(event);
+	*logger << L"已发出键盘消息";
+	std::wcout << L"消息内容：" << event << std::endl;
+}
+
+Game::KBE Game::asyncGetKBEvent()
+{
+	static KBE event = '\0';
+
+	if (KBEMsgQueue.size())
+	{
+		event = KBEMsgQueue.front();
+		KBEMsgQueue.pop();
+		*logger << L"已取出键盘消息";
+		std::wcout << L"消息内容：" << event << std::endl;
+	}
+	return event;
+}
+
+Game::KBE Game::waitKBEvent()
+{
+	static KBE event = '\0';
+
+	*logger << L"等待键盘消息";
+	while (!KBEMsgQueue.size());
+
+	event = KBEMsgQueue.front();
+	KBEMsgQueue.pop();
+	*logger << L"已取出键盘消息";
+	std::wcout << L"消息内容：" << event << std::endl;
+
+	return event;
+}
 
 HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In_ bool isWindowShow)
 {
@@ -247,11 +325,7 @@ DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 		*logger << L"捕获到键盘事件：";
 		std::wcout << L"16进制机内码为：" << L"0x" << std::hex << (int) c << std::endl;
 		std::wcout << L"对应字符为：" << c << std::endl;
-		switch (c)
-		{
-		default:
-			break;
-		}
+		postKBEvent(c);
 	}
 	return 0;
 }
