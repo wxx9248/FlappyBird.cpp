@@ -181,12 +181,9 @@
   <ItemGroup>
     <Image Include="Flappy Bird.ico" />
     <Image Include="res\background.bmp" />
-    <Image Include="res\bird1.bmp" />
-    <Image Include="res\bird1_mask.bmp" />
-    <Image Include="res\bird2.bmp" />
-    <Image Include="res\bird2_mask.bmp" />
-    <Image Include="res\bird3.bmp" />
-    <Image Include="res\bird3_mask.bmp" />
+    <Image Include="res\bird1.png" />
+    <Image Include="res\bird2.png" />
+    <Image Include="res\bird3.png" />
     <Image Include="res\ground.bmp" />
     <Image Include="res\pipe.bmp" />
     <Image Include="res\pipe_mask.bmp" />

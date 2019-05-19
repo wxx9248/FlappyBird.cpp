@@ -103,7 +103,7 @@ void Game::subGame()
 	*logger << L"窗口句柄：0x" << hWnd << (*logger).endl;
 
 	// Initialize background picture
-	*logger << L"初始化背景图层……" << (*logger).endl;
+	*logger << L"初始化背景图层对象(BMP, IMAGE)……" << (*logger).endl;
 	OBJIMG BG;
 	INT ZERO = 0;
 	LAYER lBG;
@@ -114,16 +114,17 @@ void Game::subGame()
 	mainScene.push_back(lBG);
 
 
-	// Initialize the picture of Bird
-	// with UNDEFINED position.
-	*logger << L"初始化Bird图层（坐标未定）……" << (*logger).endl;
-	OBJIMG Bird1, Bird1_M;
-	LAYER lBird;
-	loadimage(&(Bird1.im), L"IMAGE", L"IDR_IMAGE_BIRD1");
-	loadimage(&(Bird1_M.im), L"IMAGE", L"IDR_IMAGE_BIRD1_M");
+	// Initialize the picture object of the Bird
+	*logger << L"初始化Bird对象(PNG, CImage)……" << (*logger).endl;
+	CImage Bird[3];
+	Bird[0].Load(GetPNGStreamW(L"IDR_PNG_BIRD1", L"IMAGE"));
+	Bird[0].Load(GetPNGStreamW(L"IDR_PNG_BIRD2", L"IMAGE"));
+	Bird[0].Load(GetPNGStreamW(L"IDR_PNG_BIRD3", L"IMAGE"));
 
-	Bird1_M.dwRop = SRCAND;
-	Bird1.dwRop = SRCPAINT;
+	// Initialize the picture object of pipes
+
+	*logger << L"初始化管道图层对象(PNG, CImage)……" << (*logger).endl;
+	CImage pipe[3];
 
 
 	// Initialize font resource
@@ -169,7 +170,7 @@ void Game::subGame()
 		fxLayers.push_back(printGameTitle);
 
 		*logger << L"游戏提示显示函数指针：";
-		*logger << L"0x" << printGameTitle << (*logger).endl;
+		*logger << L"0x" << printGameStartHint << (*logger).endl;
 		fxLayers.push_back(printGameStartHint);
 
 		*logger << L"释放互斥锁……" << (*logger).endl;
@@ -190,18 +191,22 @@ void Game::subGame()
 		fxLayers.clear();
 		ReleaseMutex(hMutRef);
 		
+		// TODO: Loading the Bird
+
 		// Countdown
+		WaitForSingleObject(hMutRef, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+		fxLayers.push_back(printCountdown);
+		ReleaseMutex(hMutRef);
 		*logger << L"倒计时……" << (*logger).endl;
 		for (cntdwnChar = L'3'; cntdwnChar > L'0'; --cntdwnChar)
 		{
 			*logger << cntdwnChar << (*logger).endl;
-			WaitForSingleObject(hMutRef, INFINITE);
-			OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
-			fxLayers.push_back(printCountdown);
-			ReleaseMutex(hMutRef);
 			Sleep(1000);
 		}
-		
+		fxLayers.clear();
+
+		// Battle control online :P
 
 	}
 
@@ -328,20 +333,17 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 
 		BeginBatchDraw();
+
+		// For IMAGE
 		for (int i = 0; i < mainScene.size(); ++i)
 			for (int j = 0; j < mainScene[i].size(); ++j)
-			{
 				if (NULL != mainScene[i][j].posx && NULL != mainScene[i][j].posy)
-				{
-					if (NULL != mainScene[i][j].rot)
-					{
-						// Rotate picture.
-					}
-					else
-						putimage(*mainScene[i][j].posx, *mainScene[i][j].posy, &(mainScene[i][j].im), mainScene[i][j].dwRop);
-				}
-			}
+					putimage(*mainScene[i][j].posx, *mainScene[i][j].posy, &(mainScene[i][j].im), mainScene[i][j].dwRop);
+
 		
+		// For CImage
+
+		// For Function layers
 		for (int i = 0; i < fxLayers.size(); ++i)
 			if (NULL != fxLayers[i])
 				fxLayers[i]();
@@ -357,7 +359,7 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 {
 	static char c;
-	static int asc;
+	static UCHAR asc;
 	
 	for (; ; )
 	{
@@ -392,6 +394,42 @@ HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType)
 		throw stdWCexception(L"无法获取字体句柄！");
 
 	return hFont;
+}
+
+LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType)
+{
+	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
+	if (NULL == hResource)
+		throw stdWCexception(L"无法获取PNG图像资源！");
+
+	HGLOBAL hGlobal = LoadResource(NULL, hResource);
+	if (NULL == hGlobal)
+		throw stdWCexception(L"无法装载PNG图像资源！");
+
+	LPVOID lpRawPNG = LockResource(hGlobal);
+	if (NULL == lpRawPNG)
+		throw stdWCexception(L"PNG图像资源无效！");
+
+	LPSTREAM lpStream = NULL;
+
+	DWORD dwSize = SizeofResource(NULL, hResource);
+	HGLOBAL hGlNew = GlobalAlloc(GHND, dwSize);
+	if (NULL == hGlNew)
+		throw stdWCexception(L"全局堆内存申请失败！");
+	LPBYTE lpByte = (LPBYTE)GlobalLock(hGlNew);
+	if (NULL == lpByte)
+		throw stdWCexception(L"全局堆内存锁定失败！");
+	memcpy(lpByte, lpRawPNG, dwSize);
+	GlobalUnlock(hGlNew);
+
+	HRESULT hResult = CreateStreamOnHGlobal(hGlNew, TRUE, &lpStream);
+	if (hResult != S_OK && lpStream == NULL)
+	{
+		GlobalFree(hGlNew);
+		throw stdWCexception(L"创建PNG流失败！");
+	}
+	else
+		return lpStream;
 }
 
 

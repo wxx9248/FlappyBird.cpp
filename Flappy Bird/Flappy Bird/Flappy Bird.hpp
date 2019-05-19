@@ -35,8 +35,16 @@ namespace Game
 	{
 		IMAGE im;
 		INT *posx = NULL, *posy = NULL;	// Optimize: store pointers instead of variables
-		DOUBLE *rot = NULL;				//			 to prevent intense alter of elements of vectors.
+										//			 to prevent intense alter of elements of vectors.
 		DWORD dwRop;
+	};
+
+	struct OBJCIMG
+	{
+		CImage cim;
+		INT *posx = NULL, *posy = NULL;
+
+		DOUBLE *rot = NULL;
 	};
 
 	typedef CHAR KBE;
@@ -72,12 +80,13 @@ namespace Game
 	DWORD WINAPI refreshLoop(LPVOID lpParam);
 	DWORD WINAPI KBELoop(LPVOID lpParam);
 	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType);
+	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 }
 
 
 // Constants
 const int WNDWIDTH = 768;
-const int WNDHEIGHT = 896;
+const int WNDHEIGHT = 1024;
 
 // Global variables
 std::wstring wsLogPath;

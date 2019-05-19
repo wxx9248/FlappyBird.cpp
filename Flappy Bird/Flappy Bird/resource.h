@@ -4,22 +4,22 @@
 //
 #define _IDI_FLAPPYBIRD                  101
 
-#define _IDR_IMAGE_BG                    178
-#define _IDR_IMAGE_BIRD1                 179
-#define _IDR_IMAGE_BIRD1_M               180
-#define _IDR_IMAGE_BIRD2                 181
-#define _IDR_IMAGE_BIRD2_M               182
-#define _IDR_IMAGE_BIRD3                 183
-#define _IDR_IMAGE_BIRD3_M               184
+#define _IDR_IMAGE_BG                    110
+#define _IDR_IMAGE_GND                   111
 
-#define _IDR_IMAGE_GND                   185
-#define _IDR_IMAGE_PIPE                  186
-#define _IDR_IMAGE_PIPE_M                187
-#define _IDR_IMAGE_RESTART               188
-#define _IDR_IMAGE_SCOREBOARD            189
-#define _IDR_IMAGE_SCOREBOARD_M          190
+#define _IDR_IMAGE_PIPE                  120
+#define _IDR_IMAGE_PIPE_M                121
 
-#define _IDR_TTF_DEFAULT                 193
+#define _IDR_IMAGE_RESTART               130
+#define _IDR_IMAGE_SCOREBOARD            131
+#define _IDR_IMAGE_SCOREBOARD_M          132
+
+#define _IDR_PNG_BIRD1					 201
+#define _IDR_PNG_BIRD2					 202
+#define _IDR_PNG_BIRD3					 203
+#define _IDR_PNG_PIPE					 204 
+
+#define _IDR_TTF_DEFAULT                 300
 
 // Next default values for new objects
 // 
