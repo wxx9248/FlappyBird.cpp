@@ -113,19 +113,19 @@ IDR_IMAGE_BG            IMAGE                   "res\\background.bmp"
 
 IDR_IMAGE_GND           IMAGE                   "res\\ground.bmp"
 
-IDR_IMAGE_RESTART       IMAGE                   "res\\restart.bmp"
-
-IDR_IMAGE_SCOREBOARD    IMAGE                   "res\\scoreboard.bmp"
-
-IDR_IMAGE_SCOREBOARD_M  IMAGE                   "res\\scoreboard_mask.bmp"
-
 IDR_PNG_BIRD1           IMAGE					"res\\bird1.png"
 
 IDR_PNG_BIRD2           IMAGE					"res\\bird2.png"
 
 IDR_PNG_BIRD3           IMAGE				    "res\\bird3.png"
 
-IDR_PNG_PIPE			IMAGE					"res\\pipe.png"
+IDR_PNG_PIPE_UP			IMAGE					"res\\pipe_up.png"
+
+IDR_PNG_PIPE_DN			IMAGE					"res\\pipe_dn.png"
+
+IDR_PNG_RESTART		    IMAGE                   "res\\restart.png"
+
+IDR_PNG_SCOREBOARD      IMAGE                   "res\\scoreboard.png"
 
 /////////////////////////////////////////////////////////////////////////////
 //

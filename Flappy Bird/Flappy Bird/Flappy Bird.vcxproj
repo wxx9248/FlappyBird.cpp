@@ -185,11 +185,10 @@
     <Image Include="res\bird2.png" />
     <Image Include="res\bird3.png" />
     <Image Include="res\ground.bmp" />
-    <Image Include="res\pipe.bmp" />
-    <Image Include="res\pipe_mask.bmp" />
-    <Image Include="res\restart.bmp" />
-    <Image Include="res\scoreboard.bmp" />
-    <Image Include="res\scoreboard_mask.bmp" />
+    <Image Include="res\pipe_dn.png" />
+    <Image Include="res\pipe_up.png" />
+    <Image Include="res\restart.png" />
+    <Image Include="res\scoreboard.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="res\font.ttf" />

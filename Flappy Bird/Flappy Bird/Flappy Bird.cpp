@@ -33,8 +33,6 @@ int main(_In_ int argc, _In_ char *argv[])
 		return EXIT_SUCCESS;
 	}
 
-	HWND hWnd = NULL;
-
 	// Initiate log object
 	try
 	{
@@ -68,7 +66,7 @@ int main(_In_ int argc, _In_ char *argv[])
 
 	try
 	{
-		hWnd = Game::createEXWindow(WNDWIDTH, WNDHEIGHT, cmdLineCfg::isDebugMode);
+		Game::hWnd = Game::createEXWindow(WNDWIDTH, WNDHEIGHT, cmdLineCfg::isDebugMode);
 	}
 	catch (stdWCexception e)
 	{
@@ -82,11 +80,11 @@ int main(_In_ int argc, _In_ char *argv[])
 	}
 	
 
-	*logger << L"预初始化完成，正在启动游戏……" << (*logger).endl;
+	*logger << L"预初始化完成，正在启动游戏……" << logger->endl;
 	
 	Game::subGame();
 
-	*logger << L"关闭日志系统……" << (*logger).endl;
+	*logger << L"关闭日志系统……" << logger->endl;
 	delete logger;
 
 	std::locale::global(prevLocale);
@@ -98,12 +96,10 @@ int main(_In_ int argc, _In_ char *argv[])
 
 void Game::subGame()
 {
-	*logger << L"正在创建窗口……" << (*logger).endl;
-	HWND hWnd = createEXWindow(WNDWIDTH, WNDHEIGHT, cmdLineCfg::isDebugMode);
-	*logger << L"窗口句柄：0x" << hWnd << (*logger).endl;
+	*logger << L"窗口句柄：0x" << hWnd << logger->endl;
 
-	// Initialize background picture
-	*logger << L"初始化背景图层对象(BMP, IMAGE)……" << (*logger).endl;
+	// Initialize background picture object
+	*logger << L"初始化背景图层(BMP, IMAGE)……" << logger->endl;
 	OBJIMG BG;
 	INT ZERO = 0;
 	LAYER lBG;
@@ -111,47 +107,111 @@ void Game::subGame()
 	BG.posx = BG.posy = &ZERO;
 	BG.dwRop = SRCCOPY;
 	lBG.push_back(BG);
+	
+	// Initlialize groud picture object
+	// Total number: 22
+	// Total width: 22 * 37 px = 814 px
+	// Screen width: 768 px
+	// Difference: 46 px (MAX_POSX_GND)
+	OBJIMG Ground;
+	INT posyGND = BG.im.getheight();
+	loadimage(&(Ground.im), L"IMAGE", L"IDR_IMAGE_GND");
+	Ground.posx = &posxGND;
+	Ground.posy = &posyGND;
+	Ground.dwRop = SRCCOPY;
+	lBG.push_back(Ground);
+
 	mainScene.push_back(lBG);
 
+	// Initlialize scoreboard layer
+	*logger << L"初始化结算界面图层(PNG, CImage)……" << logger->endl;
+	OBJCIMG SB;
+	OBJCIMG bRestart;
+	CLayer lSB;
+	INT posxSB = 0;
+	INT posySB = 0;
+	INT posxbRes = 0;
+	INT posybRes = 0;
 
-	// Initialize the picture object of the Bird
-	*logger << L"初始化Bird对象(PNG, CImage)……" << (*logger).endl;
-	CImage Bird[3];
-	Bird[0].Load(GetPNGStreamW(L"IDR_PNG_BIRD1", L"IMAGE"));
-	Bird[0].Load(GetPNGStreamW(L"IDR_PNG_BIRD2", L"IMAGE"));
-	Bird[0].Load(GetPNGStreamW(L"IDR_PNG_BIRD3", L"IMAGE"));
+	SB.cim.Load(GetPNGStreamW(L"IDR_PNG_SCOREBOARD", L"IMAGE"));
+	SB.posx = &posxSB;
+	SB.posy = &posySB;
+	lSB.push_back(SB);
+
+	bRestart.cim.Load(GetPNGStreamW(L"IDR_PNG_RESTART", L"IMAGE"));
+	bRestart.posx = &posxbRes;
+	bRestart.posy = &posybRes;
+	lSB.push_back(bRestart);
 
 	// Initialize the picture object of pipes
+	*logger << L"初始化管道图层对象(PNG, CImage)……" << logger->endl;
+	OBJCIMG Pipe[6];
+	CLayer lPipe;
+	Pipe[0].cim.Load(GetPNGStreamW(L"IDR_PNG_PIPE_UP", L"IMAGE"));
+	Pipe[0].posx = &posxPipe;
+	Pipe[0].posy = &posyPipeDn;
 
-	*logger << L"初始化管道图层对象(PNG, CImage)……" << (*logger).endl;
-	CImage pipe[3];
+	Pipe[1].cim.Load(GetPNGStreamW(L"IDR_PNG_PIPE_DN", L"IMAGE"));
+	posyPipeUp = posyPipeDn - Game::dPipeHeight - Pipe[0].cim.GetHeight();
+	Pipe[1].posx = &posxPipe;
+	Pipe[1].posy = &posyPipeUp;
 
+	// Initialize the picture object of the Bird
+	*logger << L"初始化Bird对象(PNG, CImage)……" << logger->endl;
+	OBJCIMG Bird[3];
+	CLayer lBird;
+
+	Bird[0].cim.Load(GetPNGStreamW(L"IDR_PNG_BIRD1", L"IMAGE"));
+	Bird[1].cim.Load(GetPNGStreamW(L"IDR_PNG_BIRD2", L"IMAGE"));
+	Bird[2].cim.Load(GetPNGStreamW(L"IDR_PNG_BIRD3", L"IMAGE"));
+
+	INT posxBird = (BG.im.getwidth() - Bird[0].cim.GetWidth()) / 2;
+
+	for (INT i = 0; i < 3; ++i)
+	{
+		Bird[i].posx = &posxBird;
+		Bird[i].posy = &posyBird;
+		Bird[i].rot = &rotBird;
+		lBird.push_back(Bird[i]);
+	}
 
 	// Initialize font resource
-	*logger << L"初始化字体资源……" << (*logger).endl;
-	*logger << L"TTF名称：" << lpFontName << (*logger).endl;
+	*logger << L"初始化字体资源……" << logger->endl;
+	*logger << L"TTF名称：" << lpFontName << logger->endl;
 	HANDLE DefFont = GetFontHandleW(L"IDR_TTF_DEFAULT", L"TTF");
-	*logger << L"TTF资源句柄：0x" << DefFont << (*logger).endl;
+	*logger << L"TTF资源句柄：0x" << DefFont << logger->endl;
 	if (NULL == DefFont)
 		throw stdWCexception(L"TTF资源句柄无效！");
 
 
 	// Initialize MUTEX
-	*logger << L"正在创建互斥锁（异步刷新线程）……" << (*logger).endl;
+	*logger << L"正在创建互斥锁（异步刷新线程）……" << logger->endl;
 	hMutRef = CreateMutexW(NULL, FALSE, L"MutexRefresh");
-	*logger << L"互斥锁句柄：0x" << hMutRef << (*logger).endl;
+	*logger << L"互斥锁句柄：0x" << hMutRef << logger->endl;
 	if (NULL == hMutRef)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
+	*logger << L"正在创建互斥锁（动画计算线程，已锁定）……" << logger->endl;
+	hMutAni = CreateMutexW(NULL, TRUE, L"MutexAnimation");
+	*logger << L"互斥锁句柄：0x" << hMutAni << logger->endl;
+	if (NULL == hMutAni)
+		throw stdWCexception(L"无效互斥锁句柄！");
+
+
 	// Initialize refresh thread
-	*logger << L"正在创建异步刷新线程……" << (*logger).endl;
+	*logger << L"正在创建异步刷新线程……" << logger->endl;
 	HANDLE hThRef = CreateThread(NULL, 0, refreshLoop, hMutRef, 0, NULL);
-	*logger << L"线程句柄：0x" << hThRef << (*logger).endl;
+	*logger << L"线程句柄：0x" << hThRef << logger->endl;
+
+	// Initialize animation thread
+	*logger << L"正在创建动画计算线程……" << logger->endl;
+	HANDLE hThAni = CreateThread(NULL, 0, animationLoop, hMutAni, 0, NULL);
+	*logger << L"线程句柄：0x" << hThAni << logger->endl;
 
 	// Initlialize keyboard event listening thread
-	*logger << L"正在创建游戏中键盘事件处理线程……" << (*logger).endl;
+	*logger << L"正在创建游戏中键盘事件处理线程……" << logger->endl;
 	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, NULL, 0, NULL);
-	*logger << L"线程句柄：0x" << hThKBEHandler << (*logger).endl;
+	*logger << L"线程句柄：0x" << hThKBEHandler << logger->endl;
 
 	// Game start.
 
@@ -159,72 +219,107 @@ void Game::subGame()
 	{
 		static char c = '\0';
 
-		*logger << L"等待互斥锁空闲……" << (*logger).endl;
+		*logger << L"等待互斥锁空闲……" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 
-		*logger << L"尝试锁定互斥锁……" << (*logger).endl;
+		*logger << L"尝试锁定互斥锁……" << logger->endl;
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 
 		*logger << L"标题显示函数指针：";
-		*logger << L"0x" << printGameTitle << (*logger).endl;
+		*logger << L"0x" << printGameTitle << logger->endl;
 		fxLayers.push_back(printGameTitle);
 
 		*logger << L"游戏提示显示函数指针：";
-		*logger << L"0x" << printGameStartHint << (*logger).endl;
+		*logger << L"0x" << printGameStartHint << logger->endl;
 		fxLayers.push_back(printGameStartHint);
 
-		*logger << L"释放互斥锁……" << (*logger).endl;
+		*logger << L"释放互斥锁……" << logger->endl;
 		ReleaseMutex(hMutRef);
 		
-		*logger << L"等待用户开始信号……" << (*logger).endl;
+		*logger << L"等待用户开始信号……" << logger->endl;
 		c = waitKBEvent();
 		if (c == 0x1b)
 		{
-			*logger << L"退出动作捕获，执行退出指令" << (*logger).endl;
+			*logger << L"退出动作捕获，执行退出指令" << logger->endl;
 			break;
 		}
 
 		// Clear texts
-		*logger << L"清除屏幕文字内容" << (*logger).endl;
+		*logger << L"清除屏幕文字内容" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 		fxLayers.clear();
 		ReleaseMutex(hMutRef);
 		
-		// TODO: Loading the Bird
+		// TODO: Loading the Bird and pipes and release animation thread
+		*logger << L"释放动画计算线程" << logger->endl;
+		ReleaseMutex(hMutAni);
+
 
 		// Countdown
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 		fxLayers.push_back(printCountdown);
 		ReleaseMutex(hMutRef);
-		*logger << L"倒计时……" << (*logger).endl;
+		*logger << L"倒计时……" << logger->endl;
 		for (cntdwnChar = L'3'; cntdwnChar > L'0'; --cntdwnChar)
 		{
-			*logger << cntdwnChar << (*logger).endl;
+			*logger << cntdwnChar << logger->endl;
 			Sleep(1000);
 		}
 		fxLayers.clear();
 
 		// Battle control online :P
+		*logger << L"清空键盘事件队列" << logger->endl;
+		KBEMsgQueue.empty();
+		fxLayers.clear();
 
+		WaitForSingleObject(hMutRef, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+		//fxLayers.push_back(printScore);
+		ReleaseMutex(hMutRef);
+
+
+
+
+		// Battle control terminated.
+		*logger << L"游戏结束" << logger->endl;
+		*logger << L"锁定动画计算线程" << logger->endl;
+		WaitForSingleObject(hMutAni, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
+		*logger << L"锁定异步刷新线程" << logger->endl;
+		WaitForSingleObject(hMutRef, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+
+		*logger << L"显示分数结算界面" << logger->endl;
+
+
+		
+		ReleaseMutex(hMutRef);
+		waitKBEvent();
 	}
 
 	
 	// Game Ends
 
-	*logger << L"游戏退出中……" << (*logger).endl;
+	*logger << L"游戏退出中……" << logger->endl;
 
-	*logger << L"中止键盘事件处理线程……" << (*logger).endl;
+	*logger << L"中止键盘事件处理线程……" << logger->endl;
 	TerminateThread(hThKBEHandler, 0);
-	*logger << L"关闭键盘事件处理句柄……" << (*logger).endl;
+	*logger << L"关闭键盘事件处理句柄……" << logger->endl;
 	CloseHandle(hThKBEHandler);
 
-	*logger << L"中止异步刷新线程……" << (*logger).endl;
+	*logger << L"中止动画计算线程……" << logger->endl;
+	TerminateThread(hThAni, 0);
+	*logger << L"关闭动画计算线程句柄……" << logger->endl;
+	CloseHandle(hThAni);
+
+	*logger << L"中止异步刷新线程……" << logger->endl;
 	TerminateThread(hThRef, 0);
-	*logger << L"关闭异步刷新线程句柄……" << (*logger).endl;
+	*logger << L"关闭异步刷新线程句柄……" << logger->endl;
 	CloseHandle(hThRef);
-	*logger << L"关闭图形界面……" << (*logger).endl;
+
+	*logger << L"关闭图形界面……" << logger->endl;
 	closegraph();
 }
 
@@ -316,17 +411,16 @@ HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In
 		hWnd = initgraph(width, height);
 
 	if (NULL == hWnd)
-	{
-		*logger << L"无法创建窗口：窗口句柄无效";
 		throw stdWCexception(L"无法创建窗口");
-	}
 
 	return hWnd;
 }
 
 
 DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
-{	
+{
+	HDC hDC;
+
 	for (; ; )
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
@@ -340,18 +434,33 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 				if (NULL != mainScene[i][j].posx && NULL != mainScene[i][j].posy)
 					putimage(*mainScene[i][j].posx, *mainScene[i][j].posy, &(mainScene[i][j].im), mainScene[i][j].dwRop);
 
-		
 		// For CImage
+
+		/*
+		if (CmainScene.size() && CmainScene[0].size())
+		{
+			hDC = CreateCompatibleDC(CmainScene[0][0].cim.GetDC());
+			HBITMAP hBmp = CreateCompatibleBitmap(hDC, WNDWIDTH, WNDHEIGHT);
+			SelectObject(hDC, (HGDIOBJ)hBmp);
+
+			for (int i = 0; i < CmainScene.size(); ++i)
+				for (int j = 0; j < CmainScene[i].size(); ++j)
+				{
+					if (NULL != CmainScene[i][j].posx && NULL != CmainScene[i][j].posy)
+						CmainScene[i][j].cim.Draw(hDC, *CmainScene[i][j].posx, *CmainScene[i][j].posy);
+					// Temporarily not supporting rotation...
+				}
+			StretchBlt(GetDC(hWnd), 0, 0, WNDWIDTH, WNDHEIGHT, hDC, 0, 0, WNDWIDTH, WNDHEIGHT, SRCCOPY);
+		}
+		*/
 
 		// For Function layers
 		for (int i = 0; i < fxLayers.size(); ++i)
 			if (NULL != fxLayers[i])
 				fxLayers[i]();
-		
-
 		EndBatchDraw();
 
-		ReleaseMutex((HANDLE *) lpParam);
+		ReleaseMutex((HANDLE *)lpParam);
 	}
 	return 0;
 }
@@ -365,12 +474,31 @@ DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 	{
 		c = _getch();
 		asc = c;
-		*logger << L"捕获到键盘事件：" << (*logger).endl;
-		*logger << L"16进制机内码为：" << L"0x" << std::hex << asc << (*logger).endl;
-		*logger << L"对应字符为：" << c << (*logger).endl;
+		*logger << L"捕获到键盘事件：" << logger->endl;
+		*logger << L"16进制机内码为：" << L"0x" << std::hex << asc << logger->endl;
+		*logger << L"对应字符为：" << c << logger->endl;
 		postKBEvent(c);
 	}
 	return 0;
+}
+
+
+DWORD WINAPI Game::animationLoop(LPVOID lpParam)
+{
+	for (; ; )
+	{
+		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
+		{
+			WaitForSingleObject(hMutRef, INFINITE);
+			OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+
+
+
+			ReleaseMutex(hMutRef);
+		}
+		ReleaseMutex((HANDLE *)lpParam);
+	}
 }
 
 HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType)

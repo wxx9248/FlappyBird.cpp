@@ -7,17 +7,13 @@
 #define _IDR_IMAGE_BG                    110
 #define _IDR_IMAGE_GND                   111
 
-#define _IDR_IMAGE_PIPE                  120
-#define _IDR_IMAGE_PIPE_M                121
-
-#define _IDR_IMAGE_RESTART               130
-#define _IDR_IMAGE_SCOREBOARD            131
-#define _IDR_IMAGE_SCOREBOARD_M          132
-
 #define _IDR_PNG_BIRD1					 201
 #define _IDR_PNG_BIRD2					 202
 #define _IDR_PNG_BIRD3					 203
-#define _IDR_PNG_PIPE					 204 
+#define _IDR_PNG_PIPE_UP				 204
+#define _IDR_PNG_PIPE_DN				 205
+#define _IDR_PNG_RESTART				 206
+#define _IDR_PNG_SCOREBOARD				 207
 
 #define _IDR_TTF_DEFAULT                 300
 
