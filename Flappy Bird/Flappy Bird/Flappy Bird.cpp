@@ -82,7 +82,20 @@ int main(_In_ int argc, _In_ char *argv[])
 
 	*logger << L"预初始化完成，正在启动游戏……" << logger->endl;
 	
-	Game::subGame();
+	try
+	{
+		Game::subGame();
+	}
+	catch (stdWCexception e)
+	{
+		MessageBoxW(NULL, e.WCwhat(), L"错误", MB_ICONERROR);
+		throw;
+	}
+	catch (...)
+	{
+		MessageBoxW(NULL, L"未知的内部错误", L"错误", MB_ICONERROR);
+		throw;
+	}
 
 	*logger << L"关闭日志系统……" << logger->endl;
 	delete logger;
@@ -128,20 +141,20 @@ void Game::subGame()
 	OBJCIMG SB;
 	OBJCIMG bRestart;
 	CLayer lSB;
-	INT posxSB = 0;
-	INT posySB = 0;
-	INT posxbRes = 0;
-	INT posybRes = 0;
+	INT posxSB = 293;
+	INT posySB = 240;
+	INT posxbRes = 275;
+	INT posybRes = 550;
 
 	SB.cim.Load(GetPNGStreamW(L"IDR_PNG_SCOREBOARD", L"IMAGE"));
 	SB.posx = &posxSB;
 	SB.posy = &posySB;
-	lSB.push_back(SB);
+	// lSB.push_back(SB);
 
 	bRestart.cim.Load(GetPNGStreamW(L"IDR_PNG_RESTART", L"IMAGE"));
 	bRestart.posx = &posxbRes;
 	bRestart.posy = &posybRes;
-	lSB.push_back(bRestart);
+	// lSB.push_back(bRestart);
 
 	// Initialize the picture object of pipes
 	*logger << L"初始化管道图层对象(PNG, CImage)……" << logger->endl;
@@ -191,8 +204,8 @@ void Game::subGame()
 	if (NULL == hMutRef)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
-	*logger << L"正在创建互斥锁（动画计算线程，已锁定）……" << logger->endl;
-	hMutAni = CreateMutexW(NULL, TRUE, L"MutexAnimation");
+	*logger << L"正在创建互斥锁（动画计算线程）……" << logger->endl;
+	hMutAni = CreateMutexW(NULL, FALSE, L"MutexAnimation");
 	*logger << L"互斥锁句柄：0x" << hMutAni << logger->endl;
 	if (NULL == hMutAni)
 		throw stdWCexception(L"无效互斥锁句柄！");
@@ -220,22 +233,20 @@ void Game::subGame()
 		static char c = '\0';
 
 		*logger << L"等待互斥锁空闲……" << logger->endl;
+		WaitForSingleObject(hMutAni, INFINITE);
+
+		*logger << L"尝试锁定互斥锁……" << logger->endl;
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
+
+		*logger << L"等待互斥锁空闲……" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 
 		*logger << L"尝试锁定互斥锁……" << logger->endl;
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 
-		*logger << L"标题显示函数指针：";
-		*logger << L"0x" << printGameTitle << logger->endl;
-		fxLayers.push_back(printGameTitle);
+		printGameTitle();
+		printGameStartHint();
 
-		*logger << L"游戏提示显示函数指针：";
-		*logger << L"0x" << printGameStartHint << logger->endl;
-		fxLayers.push_back(printGameStartHint);
-
-		*logger << L"释放互斥锁……" << logger->endl;
-		ReleaseMutex(hMutRef);
-		
 		*logger << L"等待用户开始信号……" << logger->endl;
 		c = waitKBEvent();
 		if (c == 0x1b)
@@ -245,12 +256,9 @@ void Game::subGame()
 		}
 
 		// Clear texts
-		*logger << L"清除屏幕文字内容" << logger->endl;
-		WaitForSingleObject(hMutRef, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
-		fxLayers.clear();
+		*logger << L"释放异步刷新线程" << logger->endl;
 		ReleaseMutex(hMutRef);
-		
+
 		// TODO: Loading the Bird and pipes and release animation thread
 		*logger << L"释放动画计算线程" << logger->endl;
 		ReleaseMutex(hMutAni);
@@ -281,7 +289,6 @@ void Game::subGame()
 
 
 
-
 		// Battle control terminated.
 		*logger << L"游戏结束" << logger->endl;
 		*logger << L"锁定动画计算线程" << logger->endl;
@@ -293,10 +300,18 @@ void Game::subGame()
 
 		*logger << L"显示分数结算界面" << logger->endl;
 
+		printGameOver();
+		SB.cim.GetDC();
+		SB.cim.Draw(GetDC(hWnd), *SB.posx, *SB.posy);
+		bRestart.cim.GetDC();
+		bRestart.cim.Draw(GetDC(hWnd), *bRestart.posx, *bRestart.posy);
+		printEndScore();
+		printEndHighScore();
 
-		
-		ReleaseMutex(hMutRef);
 		waitKBEvent();
+
+		*logger << L"释放异步刷新线程" << logger->endl;
+		ReleaseMutex(hMutRef);
 	}
 
 	
@@ -371,6 +386,77 @@ void Game::printCountdown()
 	settextstyle(&LogFontDef);
 	setbkmode(TRANSPARENT);
 	outtextxy(365, 100, cntdwnChar);
+}
+
+
+void Game::printScore()
+{
+	static bool firstrun = true;
+	static LOGFONTW LogFontDef = { 0 };
+	static WCHAR wstrScore[11];
+	if (firstrun)
+	{
+		LogFontDef.lfHeight = 72;
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+		firstrun = false;
+	}
+
+	settextstyle(&LogFontDef);
+	setbkmode(TRANSPARENT);
+	_itow_s(score, wstrScore, 10);
+	outtextxy(350, 100, wstrScore);
+}
+
+void Game::printGameOver()
+{
+	static bool firstrun = true;
+	static LOGFONTW LogFontDef = { 0 };
+	if (firstrun)
+	{
+		LogFontDef.lfHeight = 72;
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+		firstrun = false;
+	}
+
+	settextstyle(&LogFontDef);
+	setbkmode(TRANSPARENT);
+	outtextxy(195, 100, L"Game Over");
+}
+
+void Game::printEndScore()
+{
+	static bool firstrun = true;
+	static LOGFONTW LogFontDef = { 0 };
+	static WCHAR wstrScore[11];
+	if (firstrun)
+	{
+		LogFontDef.lfHeight = 48;
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+		firstrun = false;
+	}
+
+	settextstyle(&LogFontDef);
+	setbkmode(TRANSPARENT);
+	_itow_s(score, wstrScore, 10);
+	outtextxy(353, 305, wstrScore);
+}
+
+void Game::printEndHighScore()
+{
+	static bool firstrun = true;
+	static LOGFONTW LogFontDef = { 0 };
+	static WCHAR wstrHScore[11];
+	if (firstrun)
+	{
+		LogFontDef.lfHeight = 48;
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
+		firstrun = false;
+	}
+
+	settextstyle(&LogFontDef);
+	setbkmode(TRANSPARENT);
+	_itow_s(highscore, wstrHScore, 10);
+	outtextxy(353, 390, wstrHScore);
 }
 
 void Game::postKBEvent(KBE event)

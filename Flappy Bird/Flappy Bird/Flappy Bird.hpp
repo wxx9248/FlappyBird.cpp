@@ -91,6 +91,7 @@ namespace Game
 	void printGameStartHint();
 	void printCountdown();
 	void printScore();
+	void printGameOver();
 	void printEndScore();
 	void printEndHighScore();
 	void postKBEvent(KBE event);
