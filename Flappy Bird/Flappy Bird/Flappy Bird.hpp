@@ -95,13 +95,17 @@ namespace Game
 	void printEndScore();
 	void printEndHighScore();
 	void postKBEvent(KBE event);
+	void stimulate();
+
 	KBE asyncGetKBEvent();
 	KBE waitKBEvent();
 
 	HWND createEXWindow(const int width, const int height, const bool isWindowShow);
 	DWORD WINAPI refreshLoop(LPVOID lpParam);
 	DWORD WINAPI KBELoop(LPVOID lpParam);
+	DWORD WINAPI MSELoop(LPVOID lpParam);
 	DWORD WINAPI animationLoop(LPVOID lpParam);
+	DWORD WINAPI judgeLoop(LPVOID lpParam);
 	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 }

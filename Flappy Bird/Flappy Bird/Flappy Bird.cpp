@@ -210,7 +210,6 @@ void Game::subGame()
 	if (NULL == hMutAni)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
-
 	// Initialize refresh thread
 	*logger << L"正在创建异步刷新线程……" << logger->endl;
 	HANDLE hThRef = CreateThread(NULL, 0, refreshLoop, hMutRef, 0, NULL);
@@ -222,11 +221,17 @@ void Game::subGame()
 	*logger << L"线程句柄：0x" << hThAni << logger->endl;
 
 	// Initlialize keyboard event listening thread
-	*logger << L"正在创建游戏中键盘事件处理线程……" << logger->endl;
+	*logger << L"正在创建键盘事件处理线程……" << logger->endl;
 	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, NULL, 0, NULL);
 	*logger << L"线程句柄：0x" << hThKBEHandler << logger->endl;
 
-	// Game start.
+	// Initlialize keyboard event listening thread
+	*logger << L"正在创建鼠标事件转换线程……" << logger->endl;
+	HANDLE hThMSEHandler = CreateThread(NULL, 0, MSELoop, NULL, 0, NULL);
+	*logger << L"线程句柄：0x" << hThMSEHandler << logger->endl;
+
+
+	// Main loop start
 
 	for (; ; )
 	{
@@ -282,14 +287,33 @@ void Game::subGame()
 		KBEMsgQueue.empty();
 		fxLayers.clear();
 
+		*logger << L"插入分数显示函数图层" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
-		//fxLayers.push_back(printScore);
+		fxLayers.push_back(printScore);
 		ReleaseMutex(hMutRef);
 
 
+		// Game start
+
+		for (; ; )
+		{
+			waitKBEvent();
+
+
+		}
+
+
+		// Game Ends
+
 
 		// Battle control terminated.
+		*logger << L"删除分数显示函数图层" << logger->endl;
+		WaitForSingleObject(hMutRef, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+		fxLayers.pop_back();
+		ReleaseMutex(hMutRef);
+
 		*logger << L"游戏结束" << logger->endl;
 		*logger << L"锁定动画计算线程" << logger->endl;
 		WaitForSingleObject(hMutAni, INFINITE);
@@ -297,6 +321,8 @@ void Game::subGame()
 		*logger << L"锁定异步刷新线程" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+
+		highscore = score > highscore ? score : highscore;
 
 		*logger << L"显示分数结算界面" << logger->endl;
 
@@ -315,7 +341,7 @@ void Game::subGame()
 	}
 
 	
-	// Game Ends
+	// Main loop ends
 
 	*logger << L"游戏退出中……" << logger->endl;
 
@@ -568,6 +594,20 @@ DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 	return 0;
 }
 
+DWORD WINAPI Game::MSELoop(LPVOID lpParam)
+{
+	static MOUSEMSG MouseMsg;
+	for (; ; )
+	{
+		MouseMsg = GetMouseMsg();
+		if (MouseMsg.uMsg == WM_LBUTTONDOWN)
+		{
+			while (GetMouseMsg().uMsg != WM_LBUTTONUP);
+			postKBEvent('\n');
+		}
+	}
+}
+
 
 DWORD WINAPI Game::animationLoop(LPVOID lpParam)
 {
@@ -576,16 +616,33 @@ DWORD WINAPI Game::animationLoop(LPVOID lpParam)
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
 		{
-			WaitForSingleObject(hMutRef, INFINITE);
-			OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+			//WaitForSingleObject(hMutRef, INFINITE);
+			//OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+
+			posxGND -= 1;
+			if (posxGND < -36)
+				posxGND = 0;
 
 
 
-			ReleaseMutex(hMutRef);
+
+
+			//ReleaseMutex(hMutRef);
 		}
 		ReleaseMutex((HANDLE *)lpParam);
+		Sleep(5);
 	}
 }
+
+
+DWORD WINAPI judgeLoop(LPVOID lpParam)
+{
+	for (; ; )
+	{
+
+	}
+}
+
 
 HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType)
 {
