@@ -64,17 +64,25 @@ namespace Game
 			LPCWSTR pResName3, LPCWSTR pResName3_m,
 			LPCWSTR pResType
 		) throw();
+		
+		void changeState();
+		void changeVisibility();
+		bool getVisibility();
+		void gain(INT val);
+		void drop(INT val);
+		INT getX();
+		INT getY();
 
 		void draw();
-		void getX();
-		void getY();
-		OBJIMG &operator[](INT index);
+
+		IMAGE &operator[](INT index);
 	private:
 		IMAGE imgBird[6] = { 0 };
 		INT posxBird = 0;
 		INT posyBird = 500;
-		INT birdState = 0;
-	};
+		INT birdState = 0;		// 0, 1, 2
+		bool isVisible = false;
+	} *pBird = NULL;
 
 	typedef CHAR KBE;
 
@@ -90,8 +98,9 @@ namespace Game
 	WCHAR cntdwnChar = L'3';
 	INT score = 0;
 	INT highscore = 0;
-	BOOL lockPipe = TRUE;
-	BOOL lockBird = TRUE;
+	volatile bool lockPipe = true;
+	volatile bool lockBird = true;
+	
 
 	// Instances
 	SCENE mainScene;
@@ -149,6 +158,8 @@ namespace Game
 // Constants
 const int WNDWIDTH = 768;
 const int WNDHEIGHT = 1024;
+const int birdGain = 20;
+
 
 // Global variables
 std::wstring wsLogPath;
