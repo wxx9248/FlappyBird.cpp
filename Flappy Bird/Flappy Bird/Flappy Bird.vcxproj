@@ -141,15 +141,16 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Custom</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -184,12 +185,17 @@
   <ItemGroup>
     <Image Include="Flappy Bird.ico" />
     <Image Include="res\background.bmp" />
-    <Image Include="res\bird1.png" />
-    <Image Include="res\bird2.png" />
-    <Image Include="res\bird3.png" />
+    <Image Include="res\bird1.bmp" />
+    <Image Include="res\bird1_m.bmp" />
+    <Image Include="res\bird2.bmp" />
+    <Image Include="res\bird2_m.bmp" />
+    <Image Include="res\bird3.bmp" />
+    <Image Include="res\bird3_m.bmp" />
     <Image Include="res\ground.bmp" />
-    <Image Include="res\pipe_dn.png" />
-    <Image Include="res\pipe_up.png" />
+    <Image Include="res\pipe_dn.bmp" />
+    <Image Include="res\pipe_dn_m.bmp" />
+    <Image Include="res\pipe_up.bmp" />
+    <Image Include="res\pipe_up_m.bmp" />
     <Image Include="res\restart.png" />
     <Image Include="res\scoreboard.png" />
   </ItemGroup>

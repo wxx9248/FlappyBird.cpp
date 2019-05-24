@@ -107,85 +107,135 @@ int main(_In_ int argc, _In_ char *argv[])
 
 // Namespace: Game::
 
+// Class Bird
+
+Game::Bird::Bird
+(
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResName2, LPCWSTR pResName2_m,
+	LPCWSTR pResName3, LPCWSTR pResName3_m,
+	LPCWSTR pResType
+) throw()
+{
+	init
+	(
+		pResName1, pResName1_m,
+		pResName2, pResName2_m,
+		pResName3, pResName3_m,
+		pResType
+	);
+}
+
+void Game::Bird::init
+(
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResName2, LPCWSTR pResName2_m,
+	LPCWSTR pResName3, LPCWSTR pResName3_m,
+	LPCWSTR pResType
+)
+{
+	loadimage(imgBird, pResName1, pResType);
+	if (!(imgBird->getwidth() && imgBird->getheight()))
+	{
+		throw stdWCexception(L"Bird1 资源加载失败！");
+	}
+	loadimage(imgBird + 1, pResName1_m, pResType);
+	if (!(imgBird[1].getwidth() && imgBird[1].getheight()))
+	{
+		throw stdWCexception(L"Bird1_mask 资源加载失败！");
+	}
+
+	loadimage(imgBird + 2, pResName1_m, pResType);
+	if (!(imgBird[2].getwidth() && imgBird[2].getheight()))
+	{
+		throw stdWCexception(L"Bird2 资源加载失败！");
+	}
+	loadimage(imgBird + 3, pResName1_m, pResType);
+	if (!(imgBird[3].getwidth() && imgBird[3].getheight()))
+	{
+		throw stdWCexception(L"Bird2_mask 资源加载失败！");
+	}
+
+	loadimage(imgBird + 4, pResName1_m, pResType);
+	if (!(imgBird[4].getwidth() && imgBird[4].getheight()))
+	{
+		throw stdWCexception(L"Bird3 资源加载失败！");
+	}
+	loadimage(imgBird + 5, pResName1_m, pResType);
+	if (!(imgBird[5].getwidth() && imgBird[5].getheight()))
+	{
+		throw stdWCexception(L"Bird3_mask 资源加载失败！");
+	}
+
+	posxBird = (WNDWIDTH - imgBird[0].getwidth()) / 2;
+}
+
+
+
+
+
+
+
+
+
 void Game::subGame()
 {
 	*logger << L"窗口句柄：0x" << hWnd << logger->endl;
 
 	// Initialize background picture object
 	*logger << L"初始化背景图层(BMP, IMAGE)……" << logger->endl;
-	OBJIMG BG;
-	INT ZERO = 0;
-	LAYER lBG;
 	loadimage(&(BG.im), L"IMAGE", L"IDR_IMAGE_BG");
-	BG.posx = BG.posy = &ZERO;
+	BG.posx = BG.posy = 0;
 	BG.dwRop = SRCCOPY;
-	lBG.push_back(BG);
+	lBG.push_back(&BG);
 	
 	// Initlialize groud picture object
 	// Total number: 22
 	// Total width: 22 * 37 px = 814 px
 	// Screen width: 768 px
 	// Difference: 46 px (MAX_POSX_GND)
-	OBJIMG Ground;
-	INT posyGND = BG.im.getheight();
 	loadimage(&(Ground.im), L"IMAGE", L"IDR_IMAGE_GND");
-	Ground.posx = &posxGND;
-	Ground.posy = &posyGND;
+	Ground.posx = 0;
+	Ground.posy = BG.im.getheight();
 	Ground.dwRop = SRCCOPY;
-	lBG.push_back(Ground);
+	lBG.push_back(&Ground);
 
 	mainScene.push_back(lBG);
 
 	// Initlialize scoreboard layer
 	*logger << L"初始化结算界面图层(PNG, CImage)……" << logger->endl;
-	OBJCIMG SB;
-	OBJCIMG bRestart;
-	CLayer lSB;
-	INT posxSB = 293;
-	INT posySB = 240;
-	INT posxbRes = 275;
-	INT posybRes = 550;
 
 	SB.cim.Load(GetPNGStreamW(L"IDR_PNG_SCOREBOARD", L"IMAGE"));
-	SB.posx = &posxSB;
-	SB.posy = &posySB;
+	SB.posx = 293;
+	SB.posy = 240;
 	// lSB.push_back(SB);
 
 	bRestart.cim.Load(GetPNGStreamW(L"IDR_PNG_RESTART", L"IMAGE"));
-	bRestart.posx = &posxbRes;
-	bRestart.posy = &posybRes;
+	bRestart.posx = 275;
+	bRestart.posy = 550;
 	// lSB.push_back(bRestart);
 
 	// Initialize the picture object of pipes
-	*logger << L"初始化管道图层对象(PNG, CImage)……" << logger->endl;
-	OBJCIMG Pipe[6];
-	CLayer lPipe;
-	Pipe[0].cim.Load(GetPNGStreamW(L"IDR_PNG_PIPE_UP", L"IMAGE"));
-	Pipe[0].posx = &posxPipe;
-	Pipe[0].posy = &posyPipeDn;
-
-	Pipe[1].cim.Load(GetPNGStreamW(L"IDR_PNG_PIPE_DN", L"IMAGE"));
-	posyPipeUp = posyPipeDn - Game::dPipeHeight - Pipe[0].cim.GetHeight();
-	Pipe[1].posx = &posxPipe;
-	Pipe[1].posy = &posyPipeUp;
+	*logger << L"初始化管道图层对象(BMP, IMAGE, Sealed)……" << logger->endl;
 
 	// Initialize the picture object of the Bird
-	*logger << L"初始化Bird对象(PNG, CImage)……" << logger->endl;
-	OBJCIMG Bird[3];
-	CLayer lBird;
+	*logger << L"初始化Bird对象(BMP, IMAGE, Sealed)……" << logger->endl;
 
-	Bird[0].cim.Load(GetPNGStreamW(L"IDR_PNG_BIRD1", L"IMAGE"));
-	Bird[1].cim.Load(GetPNGStreamW(L"IDR_PNG_BIRD2", L"IMAGE"));
-	Bird[2].cim.Load(GetPNGStreamW(L"IDR_PNG_BIRD3", L"IMAGE"));
-
-	INT posxBird = (BG.im.getwidth() - Bird[0].cim.GetWidth()) / 2;
-
-	for (INT i = 0; i < 3; ++i)
+	try
 	{
-		Bird[i].posx = &posxBird;
-		Bird[i].posy = &posyBird;
-		Bird[i].rot = &rotBird;
-		lBird.push_back(Bird[i]);
+		Bird bird
+		(
+			L"IDR_IMAGE_BIRD1", L"IDR_IMAGE_BIRD1_M",
+			L"IDR_IMAGE_BIRD2", L"IDR_IMAGE_BIRD2_M",
+			L"IDR_IMAGE_BIRD3", L"IDR_IMAGE_BIRD3_M",
+			L"IMAGE"
+		);
+	}
+	catch (stdWCexception e)
+	{
+	}
+	catch (...)
+	{
 	}
 
 	// Initialize font resource
@@ -231,24 +281,26 @@ void Game::subGame()
 	*logger << L"线程句柄：0x" << hThMSEHandler << logger->endl;
 
 
+	*logger << L"等待互斥锁空闲……" << logger->endl;
+	WaitForSingleObject(hMutAni, INFINITE);
+
+	*logger << L"尝试锁定互斥锁……" << logger->endl;
+	OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
+
+	*logger << L"等待互斥锁空闲……" << logger->endl;
+	WaitForSingleObject(hMutRef, INFINITE);
+
+	*logger << L"尝试锁定互斥锁……" << logger->endl;
+	OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+
+
 	// Main loop start
 
 	for (; ; )
 	{
 		static char c = '\0';
 
-		*logger << L"等待互斥锁空闲……" << logger->endl;
-		WaitForSingleObject(hMutAni, INFINITE);
-
-		*logger << L"尝试锁定互斥锁……" << logger->endl;
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
-
-		*logger << L"等待互斥锁空闲……" << logger->endl;
-		WaitForSingleObject(hMutRef, INFINITE);
-
-		*logger << L"尝试锁定互斥锁……" << logger->endl;
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
-
+		printBG();
 		printGameTitle();
 		printGameStartHint();
 
@@ -264,7 +316,6 @@ void Game::subGame()
 		*logger << L"释放异步刷新线程" << logger->endl;
 		ReleaseMutex(hMutRef);
 
-		// TODO: Loading the Bird and pipes and release animation thread
 		*logger << L"释放动画计算线程" << logger->endl;
 		ReleaseMutex(hMutAni);
 
@@ -298,9 +349,9 @@ void Game::subGame()
 
 		for (; ; )
 		{
-			waitKBEvent();
-
-
+			char c = waitKBEvent();
+			if (c == 0x1b)
+				break;
 		}
 
 
@@ -327,17 +378,12 @@ void Game::subGame()
 		*logger << L"显示分数结算界面" << logger->endl;
 
 		printGameOver();
-		SB.cim.GetDC();
-		SB.cim.Draw(GetDC(hWnd), *SB.posx, *SB.posy);
-		bRestart.cim.GetDC();
-		bRestart.cim.Draw(GetDC(hWnd), *bRestart.posx, *bRestart.posy);
+		SB.cim.Draw(GetDC(hWnd), SB.posx, SB.posy);;
+		bRestart.cim.Draw(GetDC(hWnd), bRestart.posx, bRestart.posy);
 		printEndScore();
 		printEndHighScore();
 
 		waitKBEvent();
-
-		*logger << L"释放异步刷新线程" << logger->endl;
-		ReleaseMutex(hMutRef);
 	}
 
 	
@@ -363,6 +409,12 @@ void Game::subGame()
 	*logger << L"关闭图形界面……" << logger->endl;
 	closegraph();
 }
+
+void Game::printBG()
+{
+	putimage(BG.posx, BG.posy, &BG.im, BG.dwRop);
+}
+
 
 void Game::printGameTitle()
 {
@@ -490,6 +542,12 @@ void Game::postKBEvent(KBE event)
 	KBEMsgQueue.push(event);
 }
 
+void Game::stimulate()
+{
+
+}
+
+
 Game::KBE Game::asyncGetKBEvent()
 {
 	static KBE event = '\0';
@@ -540,36 +598,21 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 
 		BeginBatchDraw();
 
-		// For IMAGE
+		// For regular IMAGE
 		for (int i = 0; i < mainScene.size(); ++i)
 			for (int j = 0; j < mainScene[i].size(); ++j)
-				if (NULL != mainScene[i][j].posx && NULL != mainScene[i][j].posy)
-					putimage(*mainScene[i][j].posx, *mainScene[i][j].posy, &(mainScene[i][j].im), mainScene[i][j].dwRop);
+				if (NULL != mainScene[i][j])
+					putimage(mainScene[i][j]->posx, mainScene[i][j]->posy, &(mainScene[i][j]->im), mainScene[i][j]->dwRop);
+		
 
-		// For CImage
+		// For class Bird
 
-		/*
-		if (CmainScene.size() && CmainScene[0].size())
-		{
-			hDC = CreateCompatibleDC(CmainScene[0][0].cim.GetDC());
-			HBITMAP hBmp = CreateCompatibleBitmap(hDC, WNDWIDTH, WNDHEIGHT);
-			SelectObject(hDC, (HGDIOBJ)hBmp);
-
-			for (int i = 0; i < CmainScene.size(); ++i)
-				for (int j = 0; j < CmainScene[i].size(); ++j)
-				{
-					if (NULL != CmainScene[i][j].posx && NULL != CmainScene[i][j].posy)
-						CmainScene[i][j].cim.Draw(hDC, *CmainScene[i][j].posx, *CmainScene[i][j].posy);
-					// Temporarily not supporting rotation...
-				}
-			StretchBlt(GetDC(hWnd), 0, 0, WNDWIDTH, WNDHEIGHT, hDC, 0, 0, WNDWIDTH, WNDHEIGHT, SRCCOPY);
-		}
-		*/
 
 		// For Function layers
 		for (int i = 0; i < fxLayers.size(); ++i)
 			if (NULL != fxLayers[i])
 				fxLayers[i]();
+
 		EndBatchDraw();
 
 		ReleaseMutex((HANDLE *)lpParam);
@@ -611,23 +654,14 @@ DWORD WINAPI Game::MSELoop(LPVOID lpParam)
 
 DWORD WINAPI Game::animationLoop(LPVOID lpParam)
 {
-	for (; ; )
+	static UINT Bird_state = 0;
+
+	for (UINT iSync = 0; ; ++iSync)
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
 		{
-			//WaitForSingleObject(hMutRef, INFINITE);
-			//OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 
-			posxGND -= 1;
-			if (posxGND < -36)
-				posxGND = 0;
-
-
-
-
-
-			//ReleaseMutex(hMutRef);
 		}
 		ReleaseMutex((HANDLE *)lpParam);
 		Sleep(5);
@@ -635,7 +669,8 @@ DWORD WINAPI Game::animationLoop(LPVOID lpParam)
 }
 
 
-DWORD WINAPI judgeLoop(LPVOID lpParam)
+
+DWORD WINAPI Game::judgeLoop(LPVOID lpParam)
 {
 	for (; ; )
 	{

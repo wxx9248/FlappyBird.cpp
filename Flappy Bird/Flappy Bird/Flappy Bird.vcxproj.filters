@@ -66,25 +66,40 @@
     <Image Include="res\ground.bmp">
       <Filter>资源文件</Filter>
     </Image>
-    <Image Include="res\bird1.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\bird2.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\bird3.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\pipe_dn.png">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\pipe_up.png">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\restart.png">
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\scoreboard.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird1_m.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird2.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird2_m.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird3.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bird3_m.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\pipe_dn.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\pipe_dn_m.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\pipe_up.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\pipe_up_m.bmp">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

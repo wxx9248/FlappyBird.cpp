@@ -113,15 +113,20 @@ IDR_IMAGE_BG            IMAGE                   "res\\background.bmp"
 
 IDR_IMAGE_GND           IMAGE                   "res\\ground.bmp"
 
-IDR_PNG_BIRD1           IMAGE					"res\\bird1.png"
+IDR_IMAGE_BIRD1         IMAGE					"res\\bird1.bmp"
+IDR_IMAGE_BIRD1_M       IMAGE					"res\\bird1_m.bmp"
 
-IDR_PNG_BIRD2           IMAGE					"res\\bird2.png"
+IDR_IMAGE_BIRD2         IMAGE					"res\\bird2.bmp"
+IDR_IMAGE_BIRD2_M       IMAGE					"res\\bird2_m.bmp"
 
-IDR_PNG_BIRD3           IMAGE				    "res\\bird3.png"
+IDR_IMAGE_BIRD3         IMAGE					"res\\bird3.bmp"
+IDR_IMAGE_BIRD3_M       IMAGE					"res\\bird3_m.bmp"
 
-IDR_PNG_PIPE_UP			IMAGE					"res\\pipe_up.png"
+IDR_IMAGE_PIPE_UP       IMAGE					"res\\pipe_up.bmp"
+IDR_IMAGE_PIPE_UP_M     IMAGE					"res\\pipe_up_m.bmp"
 
-IDR_PNG_PIPE_DN			IMAGE					"res\\pipe_dn.png"
+IDR_IMAGE_PIPE_DN       IMAGE					"res\\pipe_dn.bmp"
+IDR_IMAGE_PIPE_DN_M     IMAGE					"res\\pipe_dn_m.bmp"
 
 IDR_PNG_RESTART		    IMAGE                   "res\\restart.png"
 

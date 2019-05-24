@@ -36,26 +36,50 @@ namespace Game
 	struct OBJIMG
 	{
 		IMAGE im;
-		INT *posx = NULL, *posy = NULL;	// Optimize: store pointers instead of variables
-										//			 to prevent intense alter of elements of vectors.
+		INT posx = NULL, posy = NULL;
 		DWORD dwRop;
 	};
 
 	struct OBJCIMG
 	{
 		CImage cim;
-		INT *posx = NULL, *posy = NULL;
+		INT posx = NULL, posy = NULL;
+	};
+	
+	class Bird
+	{
+	public:
+		Bird
+		(
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResName2, LPCWSTR pResName2_m,
+			LPCWSTR pResName3, LPCWSTR pResName3_m,
+			LPCWSTR pResType
+		) throw();
 
-		DOUBLE *rot = NULL;
+		void init
+		(
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResName2, LPCWSTR pResName2_m,
+			LPCWSTR pResName3, LPCWSTR pResName3_m,
+			LPCWSTR pResType
+		) throw();
+
+		void draw();
+		void getX();
+		void getY();
+		OBJIMG &operator[](INT index);
+	private:
+		IMAGE imgBird[6] = { 0 };
+		INT posxBird = 0;
+		INT posyBird = 500;
+		INT birdState = 0;
 	};
 
 	typedef CHAR KBE;
 
-	typedef std::vector<OBJIMG> LAYER;
+	typedef std::vector<OBJIMG *> LAYER;
 	typedef std::vector<LAYER> SCENE;
-
-	typedef std::vector<OBJCIMG> CLayer;
-	typedef std::vector<CLayer> CScene;
 
 	typedef void (*fxpDrawing)();
 	typedef std::vector<fxpDrawing> FXLAYERS;
@@ -66,19 +90,21 @@ namespace Game
 	WCHAR cntdwnChar = L'3';
 	INT score = 0;
 	INT highscore = 0;
-	INT posxGND = 0;
-	INT posyBird = 0;
-	DOUBLE rotBird = 0;
-	INT posxPipe = 0;
-	INT posyPipeDn = 0;
-	INT posyPipeUp = 0;
-
+	BOOL lockPipe = TRUE;
+	BOOL lockBird = TRUE;
 
 	// Instances
 	SCENE mainScene;
-	CScene CmainScene;
 	FXLAYERS fxLayers;
 	KBEMSGQUEUE KBEMsgQueue;
+
+	OBJIMG BG;
+	OBJIMG Ground;
+
+	LAYER lBG;
+
+	OBJCIMG SB;
+	OBJCIMG bRestart;
 
 	// Handles
 	HANDLE hMutRef = NULL;
@@ -87,6 +113,10 @@ namespace Game
 
 	// Functions
 	void subGame();
+	HWND createEXWindow(const int width, const int height, const bool isWindowShow);
+
+	// - Static drawing functions
+	void printBG();
 	void printGameTitle();
 	void printGameStartHint();
 	void printCountdown();
@@ -94,18 +124,23 @@ namespace Game
 	void printGameOver();
 	void printEndScore();
 	void printEndHighScore();
-	void postKBEvent(KBE event);
-	void stimulate();
 
+	// - Behavior functions
+	void stimulate();
+	DWORD WINAPI judgeLoop(LPVOID lpParam);
+
+	// - Event handler functions
+	void postKBEvent(KBE event);
 	KBE asyncGetKBEvent();
 	KBE waitKBEvent();
-
-	HWND createEXWindow(const int width, const int height, const bool isWindowShow);
-	DWORD WINAPI refreshLoop(LPVOID lpParam);
 	DWORD WINAPI KBELoop(LPVOID lpParam);
 	DWORD WINAPI MSELoop(LPVOID lpParam);
+
+	// - Dynamic drawing functions
+	DWORD WINAPI refreshLoop(LPVOID lpParam);
 	DWORD WINAPI animationLoop(LPVOID lpParam);
-	DWORD WINAPI judgeLoop(LPVOID lpParam);
+
+	// - Tool functions
 	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 }
