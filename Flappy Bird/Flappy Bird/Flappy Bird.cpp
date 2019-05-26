@@ -109,6 +109,8 @@ int main(_In_ int argc, _In_ char *argv[])
 
 // Class Bird
 
+Game::Bird::Bird(){}
+
 Game::Bird::Bird
 (
 	LPCWSTR pResName1, LPCWSTR pResName1_m,
@@ -119,10 +121,10 @@ Game::Bird::Bird
 {
 	init
 	(
-			pResName1, pResName1_m,
-			pResName2, pResName2_m,
-			pResName3, pResName3_m,
-			pResType
+		pResName1, pResName1_m,
+		pResName2, pResName2_m,
+		pResName3, pResName3_m,
+		pResType
 	);
 }
 
@@ -137,7 +139,7 @@ void Game::Bird::init
 	loadimage(imgBird, pResType, pResName1_m);
 	if (!(imgBird[0].getwidth() && imgBird[0].getheight()))
 	{
-		throw stdWCexception(L"Bird1_mask 资源加载失败！");
+		throw stdWCexception(L"Bird1 mask 资源加载失败！");
 	}
 
 	loadimage(imgBird + 1, pResType, pResName1);
@@ -149,7 +151,7 @@ void Game::Bird::init
 	loadimage(imgBird + 2, pResType, pResName2_m);
 	if (!(imgBird[2].getwidth() && imgBird[2].getheight()))
 	{
-		throw stdWCexception(L"Bird2_mask 资源加载失败！");
+		throw stdWCexception(L"Bird2 mask 资源加载失败！");
 	}
 	loadimage(imgBird + 3, pResType, pResName2);
 	if (!(imgBird[3].getwidth() && imgBird[3].getheight()))
@@ -169,7 +171,6 @@ void Game::Bird::init
 	}
 
 	posxBird = (WNDWIDTH - imgBird[0].getwidth()) / 2;
-	pBird = this;
 }
 
 void Game::Bird::draw()
@@ -230,7 +231,101 @@ IMAGE &Game::Bird::operator[](INT index)
 	return imgBird[index];
 }
 
+// Class Pipe
 
+Game::Pipe::Pipe() {}
+Game::Pipe::Pipe
+(
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResName2, LPCWSTR pResName2_m,
+	LPCWSTR pResType
+)
+{
+	init
+	(
+		pResName1, pResName1_m,
+		pResName2, pResName2_m,
+		pResType
+	);
+}
+
+void Game::Pipe::init
+(
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResName2, LPCWSTR pResName2_m,
+	LPCWSTR pResType
+)
+{
+	loadimage(imgPipe, pResType, pResName1_m);
+	if (!(imgPipe[0].getwidth() && imgPipe[0].getheight()))
+	{
+		throw stdWCexception(L"Pipe DN mask 资源加载失败！");
+	}
+
+	loadimage(imgPipe + 1, pResType, pResName1);
+	if (!(imgPipe[1].getwidth() && imgPipe[1].getheight()))
+	{
+		throw stdWCexception(L"Pipe DN 资源加载失败！");
+	}
+
+	loadimage(imgPipe + 2, pResType, pResName2_m);
+	if (!(imgPipe[2].getwidth() && imgPipe[2].getheight()))
+	{
+		throw stdWCexception(L"Pipe UP mask 资源加载失败！");
+	}
+	loadimage(imgPipe + 3, pResType, pResName2);
+	if (!(imgPipe[3].getwidth() && imgPipe[3].getheight()))
+	{
+		throw stdWCexception(L"Bird2 UP 资源加载失败！");
+	}
+}
+
+void Game::Pipe::changeVisibility()
+{
+	isVisible = !isVisible;
+}
+
+
+bool Game::Pipe::getVisibility()
+{
+	return isVisible;
+}
+
+
+void Game::Pipe::setX(INT pos)
+{
+	posxPipe = pos;
+}
+
+void Game::Pipe::setYDn(INT pos)
+{
+	posyPipeDn = pos;
+}
+
+INT Game::Pipe::getX()
+{
+	return posxPipe;
+}
+
+INT Game::Pipe::getYDn()
+{
+	return posyPipeDn;
+}
+
+
+void Game::Pipe::draw()
+{
+	putimage(posxPipe, posyPipeDn, imgPipe, SRCAND);
+	putimage(posxPipe, posyPipeDn, imgPipe + 1, SRCPAINT);
+	putimage(posxPipe, posyPipeDn - dPipeHeight - imgPipe[2].getheight(), imgPipe + 2, SRCAND);
+	putimage(posxPipe, posyPipeDn - dPipeHeight - imgPipe[3].getheight(), imgPipe + 3, SRCPAINT);
+}
+
+
+IMAGE &Game::Pipe::operator[](INT index)
+{
+	return imgPipe[index];
+}
 
 void Game::subGame()
 {
@@ -269,17 +364,30 @@ void Game::subGame()
 
 	// Initialize the picture object of pipes
 	*logger << L"初始化管道图层对象(BMP, IMAGE, Sealed)……" << logger->endl;
+	Pipe pipe[3];
+
+	for (INT i = 0; i < 3; ++i)
+		pipe->init
+		(
+			L"IDR_IMAGE_PIPE_DN", L"IDR_IMAGE_PIPE_DN_M",
+			L"IDR_IMAGE_PIPE_UP", L"IDR_IMAGE_PIPE_UP_M",
+			L"IMAGE"
+		);
+
+	pPipe = pipe;
 
 	// Initialize the picture object of the Bird
 	*logger << L"初始化Bird对象(BMP, IMAGE, Sealed)……" << logger->endl;
 
 	Bird bird
-		(
-			L"IDR_IMAGE_BIRD1", L"IDR_IMAGE_BIRD1_M",
-			L"IDR_IMAGE_BIRD2", L"IDR_IMAGE_BIRD2_M",
-			L"IDR_IMAGE_BIRD3", L"IDR_IMAGE_BIRD3_M",
-			L"IMAGE"
-		);
+	(
+		L"IDR_IMAGE_BIRD1", L"IDR_IMAGE_BIRD1_M",
+		L"IDR_IMAGE_BIRD2", L"IDR_IMAGE_BIRD2_M",
+		L"IDR_IMAGE_BIRD3", L"IDR_IMAGE_BIRD3_M",
+		L"IMAGE"
+	);
+
+	pBird = &bird;
 
 	// Initialize font resource
 	*logger << L"初始化字体资源……" << logger->endl;
@@ -335,13 +443,6 @@ void Game::subGame()
 	HANDLE hThMSEHandler = CreateThread(NULL, 0, MSELoop, NULL, 0, NULL);
 	*logger << L"线程句柄：0x" << hThMSEHandler << logger->endl;
 
-	/*
-	*logger << L"等待互斥锁空闲……" << logger->endl;
-	WaitForSingleObject(hMutGNDAni, INFINITE);
-
-	*logger << L"尝试锁定互斥锁……" << logger->endl;
-	OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
-	*/
 
 	*logger << L"等待互斥锁空闲……" << logger->endl;
 	WaitForSingleObject(hMutRef, INFINITE);
@@ -370,7 +471,7 @@ void Game::subGame()
 		}
 
 		bird.setY(birdDefPosY);
-		downSpeed = 1.41;
+		downSpeed = sqrt(2);
 		lockBird = true;
 		
 		// Clear texts
@@ -392,7 +493,6 @@ void Game::subGame()
 			*logger << cntdwnChar << logger->endl;
 			Sleep(500);
 		}
-		fxLayers.clear();
 
 		// Battle control online :P
 		fxLayers.clear();
@@ -620,6 +720,7 @@ void Game::stimulate()
 		Sleep(3);
 	}
 	pBird->changeState(2);
+	KBEMsgQueue.empty();
 	lockBird = false;
 }
 
@@ -721,10 +822,7 @@ DWORD WINAPI Game::MSELoop(LPVOID lpParam)
 	{
 		MouseMsg = GetMouseMsg();
 		if (MouseMsg.uMsg == WM_LBUTTONDOWN)
-		{
-			//while (GetMouseMsg().uMsg != WM_LBUTTONUP);
 			postKBEvent('\n');
-		}
 	}
 }
 
@@ -735,7 +833,7 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexBirdAnimation");
 
-		if (lockBird)
+		if (lockBird)					// Bird animation (static)
 		{
 			if (!(iSync % 30))
 				pBird->changeState();
@@ -743,12 +841,12 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 			if (!(iSync % 15))
 				pBird->gain(2 * sinf(0.05 * iSync));
 		}
-		else
+		else							// Bird animation (dynamic)		
 		{
 			if (asyncGetKBEvent())
 			{
 				stimulate();
-				downSpeed = 1.41;
+				downSpeed = sqrt(2);
 			}
 			downSpeed += 0.05;
 			pBird->gain(0.2 * downSpeed * downSpeed);
@@ -768,12 +866,12 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
 
-		Ground.posx -= 1;			// Flying animation
+		Ground.posx -= 1;			// Going-forward animation
 		if (Ground.posx < -36)
 			Ground.posx = 0;
 
 
-		if (!lockPipe)
+		if (!lockPipe)				// Pipe animation (in sync with ground)
 		{
 
 		}

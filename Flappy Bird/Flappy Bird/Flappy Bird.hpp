@@ -29,7 +29,7 @@ namespace Game
 {
 	// Constants
 	const LPCWSTR lpFontName = L"04b_19";
-	const INT dPipeHeight = 60;
+	const INT dPipeHeight = 200;
 	const int WNDWIDTH = 768;
 	const int WNDHEIGHT = 1024;
 	const int birdDefPosY = 450;
@@ -52,6 +52,7 @@ namespace Game
 	class Bird
 	{
 	public:
+		Bird();
 		Bird
 		(
 			LPCWSTR pResName1, LPCWSTR pResName1_m,
@@ -88,6 +89,43 @@ namespace Game
 		INT birdState = 0;		// 0, 1, 2
 		bool isVisible = false;
 	} *pBird = NULL;
+
+	class Pipe
+	{
+	public:
+		Pipe();
+		Pipe
+		(
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResName2, LPCWSTR pResName2_m,
+			LPCWSTR pResType
+		) throw();
+
+		void init
+		(
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResName2, LPCWSTR pResName2_m,
+			LPCWSTR pResType
+		) throw();
+
+		void changeVisibility();
+		bool getVisibility();
+		void setX(INT pos);
+		void setYDn(INT pos);
+		INT getX();
+		INT getYDn();
+
+		void draw();
+
+		IMAGE &operator[](INT index);
+
+	private:
+		IMAGE imgPipe[4] = { 0 };
+		INT posxPipe = 0;
+		INT posyPipeDn = 0;
+		bool isVisible = false;
+	} *pPipe;
+
 
 	typedef CHAR KBE;
 
