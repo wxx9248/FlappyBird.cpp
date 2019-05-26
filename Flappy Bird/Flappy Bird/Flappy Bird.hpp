@@ -30,7 +30,10 @@ namespace Game
 	// Constants
 	const LPCWSTR lpFontName = L"04b_19";
 	const INT dPipeHeight = 60;
-
+	const int WNDWIDTH = 768;
+	const int WNDHEIGHT = 1024;
+	const int birdDefPosY = 450;
+	const int birdGain = 20;
 
 	// Data structures
 	struct OBJIMG
@@ -66,10 +69,12 @@ namespace Game
 		) throw();
 		
 		void changeState();
+		void changeState(INT state);
 		void changeVisibility();
 		bool getVisibility();
 		void gain(INT val);
-		void drop(INT val);
+		void setX(INT pos);
+		void setY(INT pos);
 		INT getX();
 		INT getY();
 
@@ -79,7 +84,7 @@ namespace Game
 	private:
 		IMAGE imgBird[6] = { 0 };
 		INT posxBird = 0;
-		INT posyBird = 500;
+		INT posyBird = birdDefPosY;
 		INT birdState = 0;		// 0, 1, 2
 		bool isVisible = false;
 	} *pBird = NULL;
@@ -100,7 +105,7 @@ namespace Game
 	INT highscore = 0;
 	volatile bool lockPipe = true;
 	volatile bool lockBird = true;
-	
+	DOUBLE downSpeed;
 
 	// Instances
 	SCENE mainScene;
@@ -117,7 +122,8 @@ namespace Game
 
 	// Handles
 	HANDLE hMutRef = NULL;
-	HANDLE hMutAni = NULL;
+	HANDLE hMutGNDAni = NULL;
+	HANDLE hMutBirdAni = NULL;
 	HWND hWnd = NULL;
 
 	// Functions
@@ -147,19 +153,13 @@ namespace Game
 
 	// - Dynamic drawing functions
 	DWORD WINAPI refreshLoop(LPVOID lpParam);
-	DWORD WINAPI animationLoop(LPVOID lpParam);
+	DWORD WINAPI GNDAnimationLoop(LPVOID lpParam);
+	DWORD WINAPI BirdAnimationLoop(LPVOID lpParam);
 
 	// - Tool functions
 	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 }
-
-
-// Constants
-const int WNDWIDTH = 768;
-const int WNDHEIGHT = 1024;
-const int birdGain = 20;
-
 
 // Global variables
 std::wstring wsLogPath;

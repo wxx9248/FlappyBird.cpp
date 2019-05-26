@@ -66,7 +66,7 @@ int main(_In_ int argc, _In_ char *argv[])
 
 	try
 	{
-		Game::hWnd = Game::createEXWindow(WNDWIDTH, WNDHEIGHT, cmdLineCfg::isDebugMode);
+		Game::hWnd = Game::createEXWindow(Game::WNDWIDTH, Game::WNDHEIGHT, cmdLineCfg::isDebugMode);
 	}
 	catch (stdWCexception e)
 	{
@@ -184,6 +184,11 @@ void Game::Bird::changeState()
 		birdState = 0;
 }
 
+void Game::Bird::changeState(INT state)
+{
+	birdState = state;
+}
+
 void Game::Bird::changeVisibility()
 {
 	isVisible = !isVisible;
@@ -197,12 +202,17 @@ bool Game::Bird::getVisibility()
 
 void Game::Bird::gain(INT val)
 {
-
+	posyBird += val;
 }
 
-void Game::Bird::drop(INT val)
+void Game::Bird::setX(INT pos)
 {
+	posxBird = pos;
+}
 
+void Game::Bird::setY(INT pos)
+{
+	posyBird = pos;
 }
 
 INT Game::Bird::getX()
@@ -287,11 +297,18 @@ void Game::subGame()
 	if (NULL == hMutRef)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
-	*logger << L"正在创建互斥锁（动画计算线程）……" << logger->endl;
-	hMutAni = CreateMutexW(NULL, FALSE, L"MutexAnimation");
-	*logger << L"互斥锁句柄：0x" << hMutAni << logger->endl;
-	if (NULL == hMutAni)
+	*logger << L"正在创建互斥锁（动画计算线程，地面）……" << logger->endl;
+	hMutGNDAni = CreateMutexW(NULL, TRUE, L"MutexGNDAnimation");
+	*logger << L"互斥锁句柄：0x" << hMutGNDAni << logger->endl;
+	if (NULL == hMutGNDAni)
 		throw stdWCexception(L"无效互斥锁句柄！");
+
+	*logger << L"正在创建互斥锁（动画计算线程，Bird）……" << logger->endl;
+	hMutBirdAni = CreateMutexW(NULL, TRUE, L"MutexBirdAnimation");
+	*logger << L"互斥锁句柄：0x" << hMutBirdAni << logger->endl;
+	if (NULL == hMutBirdAni)
+		throw stdWCexception(L"无效互斥锁句柄！");
+
 
 	// Initialize refresh thread
 	*logger << L"正在创建异步刷新线程……" << logger->endl;
@@ -299,9 +316,14 @@ void Game::subGame()
 	*logger << L"线程句柄：0x" << hThRef << logger->endl;
 
 	// Initialize animation thread
-	*logger << L"正在创建动画计算线程……" << logger->endl;
-	HANDLE hThAni = CreateThread(NULL, 0, animationLoop, hMutAni, 0, NULL);
-	*logger << L"线程句柄：0x" << hThAni << logger->endl;
+	*logger << L"正在创建动画计算线程（地面）……" << logger->endl;
+	HANDLE hThGNDAni = CreateThread(NULL, 0, GNDAnimationLoop, hMutGNDAni, 0, NULL);
+	*logger << L"线程句柄：0x" << hThGNDAni << logger->endl;
+
+	*logger << L"正在创建动画计算线程（Bird）……" << logger->endl;
+	HANDLE hThBirdAni = CreateThread(NULL, 0, BirdAnimationLoop, hMutBirdAni, 0, NULL);
+	*logger << L"线程句柄：0x" << hThBirdAni << logger->endl;
+
 
 	// Initlialize keyboard event listening thread
 	*logger << L"正在创建键盘事件处理线程……" << logger->endl;
@@ -313,12 +335,13 @@ void Game::subGame()
 	HANDLE hThMSEHandler = CreateThread(NULL, 0, MSELoop, NULL, 0, NULL);
 	*logger << L"线程句柄：0x" << hThMSEHandler << logger->endl;
 
-
+	/*
 	*logger << L"等待互斥锁空闲……" << logger->endl;
-	WaitForSingleObject(hMutAni, INFINITE);
+	WaitForSingleObject(hMutGNDAni, INFINITE);
 
 	*logger << L"尝试锁定互斥锁……" << logger->endl;
-	OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
+	OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
+	*/
 
 	*logger << L"等待互斥锁空闲……" << logger->endl;
 	WaitForSingleObject(hMutRef, INFINITE);
@@ -346,13 +369,17 @@ void Game::subGame()
 			break;
 		}
 
+		bird.setY(birdDefPosY);
+		downSpeed = 1.41;
+		lockBird = true;
+		
 		// Clear texts
 		*logger << L"释放异步刷新线程" << logger->endl;
 		ReleaseMutex(hMutRef);
 
 		*logger << L"释放动画计算线程" << logger->endl;
-		ReleaseMutex(hMutAni);
-
+		ReleaseMutex(hMutGNDAni);
+		ReleaseMutex(hMutBirdAni);
 
 		// Countdown
 		WaitForSingleObject(hMutRef, INFINITE);
@@ -363,13 +390,11 @@ void Game::subGame()
 		for (cntdwnChar = L'3'; cntdwnChar > L'0'; --cntdwnChar)
 		{
 			*logger << cntdwnChar << logger->endl;
-			Sleep(1000);
+			Sleep(500);
 		}
 		fxLayers.clear();
 
 		// Battle control online :P
-		*logger << L"清空键盘事件队列" << logger->endl;
-		KBEMsgQueue.empty();
 		fxLayers.clear();
 
 		*logger << L"插入分数显示函数图层" << logger->endl;
@@ -378,13 +403,15 @@ void Game::subGame()
 		fxLayers.push_back(printScore);
 		ReleaseMutex(hMutRef);
 
+		lockBird = false;
+
 
 		// Game start
-
+		*logger << L"清空键盘事件队列" << logger->endl;
+		KBEMsgQueue.empty();
 		for (; ; )
 		{
-			char c = waitKBEvent();
-			if (c == 0x1b)
+			if (bird.getY() + bird[0].getheight() > BG.im.getheight() + BG.posy)
 				break;
 		}
 
@@ -404,8 +431,10 @@ void Game::subGame()
 
 		*logger << L"游戏结束" << logger->endl;
 		*logger << L"锁定动画计算线程" << logger->endl;
-		WaitForSingleObject(hMutAni, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
+		WaitForSingleObject(hMutGNDAni, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
+		WaitForSingleObject(hMutBirdAni, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexBirdAnimation");
 		*logger << L"锁定异步刷新线程" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
@@ -420,6 +449,8 @@ void Game::subGame()
 		printEndScore();
 		printEndHighScore();
 
+		*logger << L"清空键盘事件队列" << logger->endl;
+		KBEMsgQueue.empty();
 		waitKBEvent();
 	}
 
@@ -434,9 +465,9 @@ void Game::subGame()
 	CloseHandle(hThKBEHandler);
 
 	*logger << L"中止动画计算线程……" << logger->endl;
-	TerminateThread(hThAni, 0);
+	TerminateThread(hThGNDAni, 0);
 	*logger << L"关闭动画计算线程句柄……" << logger->endl;
-	CloseHandle(hThAni);
+	CloseHandle(hThGNDAni);
 
 	*logger << L"中止异步刷新线程……" << logger->endl;
 	TerminateThread(hThRef, 0);
@@ -582,16 +613,20 @@ void Game::postKBEvent(KBE event)
 void Game::stimulate()
 {
 	lockBird = true;
-
-	pBird->gain(birdGain);
-
+	pBird->changeState(0);
+	for (double i = birdGain; i >= 10 && pBird->getY() >= 0; i -= 0.2)
+	{
+		pBird->gain(0.01 * -i * i);
+		Sleep(3);
+	}
+	pBird->changeState(2);
 	lockBird = false;
 }
 
 
 Game::KBE Game::asyncGetKBEvent()
 {
-	static KBE event = '\0';
+	KBE event = '\0';
 
 	if (KBEMsgQueue.size())
 	{
@@ -687,37 +722,63 @@ DWORD WINAPI Game::MSELoop(LPVOID lpParam)
 		MouseMsg = GetMouseMsg();
 		if (MouseMsg.uMsg == WM_LBUTTONDOWN)
 		{
-			while (GetMouseMsg().uMsg != WM_LBUTTONUP);
+			//while (GetMouseMsg().uMsg != WM_LBUTTONUP);
 			postKBEvent('\n');
 		}
 	}
 }
 
-
-DWORD WINAPI Game::animationLoop(LPVOID lpParam)
+DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 {
 	for (UINT iSync = 0; ; ++iSync)
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexAnimation");
-		{
-			Ground.posx -= 1;			// Flying animation
-			if (Ground.posx < -36)
-				Ground.posx = 0;
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexBirdAnimation");
 
+		if (lockBird)
+		{
 			if (!(iSync % 30))
 				pBird->changeState();
 
-			if (!lockBird)
-			{
-
-			}
-
-			if (!lockPipe)
-			{
-
-			}
+			if (!(iSync % 15))
+				pBird->gain(2 * sinf(0.05 * iSync));
 		}
+		else
+		{
+			if (asyncGetKBEvent())
+			{
+				stimulate();
+				downSpeed = 1.41;
+			}
+			downSpeed += 0.05;
+			pBird->gain(0.2 * downSpeed * downSpeed);
+		}
+
+		ReleaseMutex((HANDLE *)lpParam);
+		Sleep(5);
+	}
+	return 0;
+
+}
+
+DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
+{
+	for (UINT iSync = 0; ; ++iSync)
+	{
+		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
+
+		Ground.posx -= 1;			// Flying animation
+		if (Ground.posx < -36)
+			Ground.posx = 0;
+
+
+		if (!lockPipe)
+		{
+
+		}
+
+
 		ReleaseMutex((HANDLE *)lpParam);
 		Sleep(5);
 	}
