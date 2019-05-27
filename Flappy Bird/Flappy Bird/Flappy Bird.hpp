@@ -29,9 +29,9 @@ namespace Game
 {
 	// Constants
 	const LPCWSTR lpFontName = L"04b_19";
-	const INT dPipeHeight = 200;
 	const int WNDWIDTH = 768;
 	const int WNDHEIGHT = 1024;
+	const INT dPipeVertical = 200;
 	const int birdDefPosY = 450;
 	const int birdGain = 20;
 
@@ -110,6 +110,7 @@ namespace Game
 
 		void changeVisibility();
 		bool getVisibility();
+		void gain(INT val);
 		void setX(INT pos);
 		void setYDn(INT pos);
 		INT getX();
@@ -126,16 +127,13 @@ namespace Game
 		bool isVisible = false;
 	} *pPipe;
 
-
-	typedef CHAR KBE;
-
 	typedef std::vector<OBJIMG *> LAYER;
 	typedef std::vector<LAYER> SCENE;
 
 	typedef void (*fxpDrawing)();
 	typedef std::vector<fxpDrawing> FXLAYERS;
 
-	typedef std::queue<KBE> KBEMSGQUEUE;
+	typedef std::queue<CHAR> KBEMSGQUEUE;
 	
 	// Variables
 	WCHAR cntdwnChar = L'3';
@@ -143,12 +141,17 @@ namespace Game
 	INT highscore = 0;
 	volatile bool lockPipe = true;
 	volatile bool lockBird = true;
+	volatile bool canIgetonepoint = false;
+	bool gameState = false;
+	bool isGrounded = false;
 	DOUBLE downSpeed;
-
 	// Instances
 	SCENE mainScene;
 	FXLAYERS fxLayers;
 	KBEMSGQUEUE KBEMsgQueue;
+
+	static std::default_random_engine rand;
+	static std::uniform_int_distribution<unsigned> rangePipeDn(320, 768 - 40);
 
 	OBJIMG BG;
 	OBJIMG Ground;
@@ -180,12 +183,11 @@ namespace Game
 
 	// - Behavior functions
 	void stimulate();
-	DWORD WINAPI judgeLoop(LPVOID lpParam);
 
 	// - Event handler functions
-	void postKBEvent(KBE event);
-	KBE asyncGetKBEvent();
-	KBE waitKBEvent();
+	void postKBEvent(CHAR event);
+	CHAR asyncGetKBEvent();
+	CHAR waitKBEvent();
 	DWORD WINAPI KBELoop(LPVOID lpParam);
 	DWORD WINAPI MSELoop(LPVOID lpParam);
 
@@ -197,6 +199,8 @@ namespace Game
 	// - Tool functions
 	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType);
 	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType);
+	template<class T>
+	std::queue<T> &clearQueue(std::queue<T> &q);
 }
 
 // Global variables

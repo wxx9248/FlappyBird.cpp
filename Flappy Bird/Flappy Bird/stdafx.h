@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <random>
 
 // C++ C兼容性头文件
 #include <cctype>

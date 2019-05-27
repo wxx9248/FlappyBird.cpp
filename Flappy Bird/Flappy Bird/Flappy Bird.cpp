@@ -162,7 +162,7 @@ void Game::Bird::init
 	loadimage(imgBird + 4, pResType, pResName3_m);
 	if (!(imgBird[4].getwidth() && imgBird[4].getheight()))
 	{
-		throw stdWCexception(L"Bird3_mask 资源加载失败！");
+		throw stdWCexception(L"Bird3 mask 资源加载失败！");
 	}
 	loadimage(imgBird + 5, pResType, pResName3);
 	if (!(imgBird[5].getwidth() && imgBird[5].getheight()))
@@ -291,6 +291,10 @@ bool Game::Pipe::getVisibility()
 	return isVisible;
 }
 
+void Game::Pipe::gain(INT val)
+{
+	posxPipe += val;
+}
 
 void Game::Pipe::setX(INT pos)
 {
@@ -317,8 +321,8 @@ void Game::Pipe::draw()
 {
 	putimage(posxPipe, posyPipeDn, imgPipe, SRCAND);
 	putimage(posxPipe, posyPipeDn, imgPipe + 1, SRCPAINT);
-	putimage(posxPipe, posyPipeDn - dPipeHeight - imgPipe[2].getheight(), imgPipe + 2, SRCAND);
-	putimage(posxPipe, posyPipeDn - dPipeHeight - imgPipe[3].getheight(), imgPipe + 3, SRCPAINT);
+	putimage(posxPipe, posyPipeDn - dPipeVertical - imgPipe[2].getheight(), imgPipe + 2, SRCAND);
+	putimage(posxPipe, posyPipeDn - dPipeVertical - imgPipe[3].getheight(), imgPipe + 3, SRCPAINT);
 }
 
 
@@ -347,7 +351,7 @@ void Game::subGame()
 	Ground.posx = 0;
 	Ground.posy = BG.im.getheight();
 	Ground.dwRop = SRCCOPY;
-	lBG.push_back(&Ground);
+	//lBG.push_back(&Ground);
 
 	mainScene.push_back(lBG);
 
@@ -364,17 +368,15 @@ void Game::subGame()
 
 	// Initialize the picture object of pipes
 	*logger << L"初始化管道图层对象(BMP, IMAGE, Sealed)……" << logger->endl;
-	Pipe pipe[3];
+	Pipe pipe
+	(
+		L"IDR_IMAGE_PIPE_DN", L"IDR_IMAGE_PIPE_DN_M",
+		L"IDR_IMAGE_PIPE_UP", L"IDR_IMAGE_PIPE_UP_M",
+		L"IMAGE"
+	);
 
-	for (INT i = 0; i < 3; ++i)
-		pipe->init
-		(
-			L"IDR_IMAGE_PIPE_DN", L"IDR_IMAGE_PIPE_DN_M",
-			L"IDR_IMAGE_PIPE_UP", L"IDR_IMAGE_PIPE_UP_M",
-			L"IMAGE"
-		);
 
-	pPipe = pipe;
+	pPipe = &pipe;
 
 	// Initialize the picture object of the Bird
 	*logger << L"初始化Bird对象(BMP, IMAGE, Sealed)……" << logger->endl;
@@ -460,8 +462,7 @@ void Game::subGame()
 		printBG();
 		printGameTitle();
 		printGameStartHint();
-		bird.changeVisibility();
-
+		
 		*logger << L"等待用户开始信号……" << logger->endl;
 		c = waitKBEvent();
 		if (c == 0x1b)
@@ -470,10 +471,18 @@ void Game::subGame()
 			break;
 		}
 
+		*logger << L"设定初始数据" << logger->endl;
 		bird.setY(birdDefPosY);
-		downSpeed = sqrt(2);
+		downSpeed = 1.414213562373095;
+		pPipe->setX(768);
+		pPipe->setYDn(rangePipeDn(rand));
+		bird.changeVisibility();
+		lockPipe = true;
 		lockBird = true;
-		
+		isGrounded = false;
+		score = 0;
+		canIgetonepoint = true;
+
 		// Clear texts
 		*logger << L"释放异步刷新线程" << logger->endl;
 		ReleaseMutex(hMutRef);
@@ -504,24 +513,54 @@ void Game::subGame()
 		ReleaseMutex(hMutRef);
 
 		lockBird = false;
+		*logger << L"清空键盘事件队列" << logger->endl;
+		clearQueue(KBEMsgQueue);
 
+		pPipe->changeVisibility();
 
 		// Game start
-		*logger << L"清空键盘事件队列" << logger->endl;
-		KBEMsgQueue.empty();
+		gameState = true;
+		lockPipe = false;
+
 		for (; ; )
 		{
-			if (bird.getY() + bird[0].getheight() > BG.im.getheight() + BG.posy)
+			if (bird.getY() + bird[0].getheight() - 6 > BG.im.getheight() + BG.posy)	// Grounded
+			{
+				isGrounded = true;
 				break;
+			}
+
+			else if (bird.getX() + bird[0].getwidth() - 2 >= pipe.getX() && bird.getX() + 2 <= pipe.getX() + pipe[0].getwidth())
+			{
+				if (bird.getY() + 2 < pipe.getYDn() - dPipeVertical || bird.getY() + bird[0].getheight() - 2 > pipe.getYDn())		// On no...
+					break;
+				
+				if (bird.getX() == pipe.getX())		// Got one score~
+					if (canIgetonepoint)
+					{
+						++score;
+						canIgetonepoint = false;
+					}
+			}
 		}
 
-
 		// Game Ends
-
+		gameState = false;
 
 		// Battle control terminated.
+		*logger << L"游戏结束" << logger->endl;
+		*logger << L"锁定动画计算线程" << logger->endl;
+		WaitForSingleObject(hMutGNDAni, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
+
+		while (bird.getY() + bird[0].getheight() - 2 <= BG.im.getheight() + BG.posy);
+		WaitForSingleObject(hMutBirdAni, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexBirdAnimation");
+		Sleep(1000);
+
 		*logger << L"删除 Bird 图层" << logger->endl;
 		bird.changeVisibility();
+		pPipe->changeVisibility();
 
 		*logger << L"删除分数显示函数图层" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
@@ -529,17 +568,14 @@ void Game::subGame()
 		fxLayers.pop_back();
 		ReleaseMutex(hMutRef);
 
-		*logger << L"游戏结束" << logger->endl;
-		*logger << L"锁定动画计算线程" << logger->endl;
-		WaitForSingleObject(hMutGNDAni, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
-		WaitForSingleObject(hMutBirdAni, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexBirdAnimation");
 		*logger << L"锁定异步刷新线程" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 
 		highscore = score > highscore ? score : highscore;
+
+		*logger << L"清空键盘事件队列" << logger->endl;
+		clearQueue(KBEMsgQueue);;
 
 		*logger << L"显示分数结算界面" << logger->endl;
 
@@ -550,7 +586,7 @@ void Game::subGame()
 		printEndHighScore();
 
 		*logger << L"清空键盘事件队列" << logger->endl;
-		KBEMsgQueue.empty();
+		clearQueue(KBEMsgQueue);
 		waitKBEvent();
 	}
 
@@ -582,7 +618,6 @@ void Game::printBG()
 {
 	putimage(BG.posx, BG.posy, &BG.im, BG.dwRop);
 }
-
 
 void Game::printGameTitle()
 {
@@ -705,7 +740,7 @@ void Game::printEndHighScore()
 	outtextxy(353, 390, wstrHScore);
 }
 
-void Game::postKBEvent(KBE event)
+void Game::postKBEvent(CHAR event)
 {
 	KBEMsgQueue.push(event);
 }
@@ -714,22 +749,22 @@ void Game::stimulate()
 {
 	lockBird = true;
 	pBird->changeState(0);
-	for (double i = birdGain; i >= 10 && pBird->getY() >= 0; i -= 0.2)
+	for (double i = birdGain; i >= 11 && pBird->getY() >= 0; i -= 0.2)
 	{
 		pBird->gain(0.01 * -i * i);
 		Sleep(3);
 	}
 	pBird->changeState(2);
-	KBEMsgQueue.empty();
+	clearQueue(KBEMsgQueue);
 	lockBird = false;
 }
 
 
-Game::KBE Game::asyncGetKBEvent()
+CHAR Game::asyncGetKBEvent()
 {
-	KBE event = '\0';
+	CHAR event = '\0';
 
-	if (KBEMsgQueue.size())
+	if (!KBEMsgQueue.empty())
 	{
 		event = KBEMsgQueue.front();
 		KBEMsgQueue.pop();
@@ -737,11 +772,11 @@ Game::KBE Game::asyncGetKBEvent()
 	return event;
 }
 
-Game::KBE Game::waitKBEvent()
+CHAR Game::waitKBEvent()
 {
-	static KBE event = '\0';
+	static CHAR event = '\0';
 
-	while (!KBEMsgQueue.size());
+	while (KBEMsgQueue.empty());
 
 	event = KBEMsgQueue.front();
 	KBEMsgQueue.pop();
@@ -781,6 +816,12 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 				if (NULL != mainScene[i][j])
 					putimage(mainScene[i][j]->posx, mainScene[i][j]->posy, &(mainScene[i][j]->im), mainScene[i][j]->dwRop);
 		
+		// For class Pipe
+		if (pPipe->getVisibility())
+			pPipe->draw();
+
+		// For Ground
+		putimage(Ground.posx, Ground.posy, &Ground.im, SRCCOPY);
 
 		// For class Bird
 		if (pBird->getVisibility())
@@ -843,10 +884,10 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 		}
 		else							// Bird animation (dynamic)		
 		{
-			if (asyncGetKBEvent())
+			if (asyncGetKBEvent() && gameState)
 			{
 				stimulate();
-				downSpeed = sqrt(2);
+				downSpeed = 1.414213562373095;
 			}
 			downSpeed += 0.05;
 			pBird->gain(0.2 * downSpeed * downSpeed);
@@ -861,7 +902,8 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 
 DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 {
-	for (UINT iSync = 0; ; ++iSync)
+
+	for (; ; )
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
@@ -873,22 +915,18 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 
 		if (!lockPipe)				// Pipe animation (in sync with ground)
 		{
-
+			if (pPipe->getX() + (*pPipe)[0].getwidth() < 0)
+			{
+				rand.seed((UINT) time(NULL));
+				pPipe->setX(768);
+				pPipe->setYDn(rangePipeDn(rand));
+				canIgetonepoint = true;
+			}
+			pPipe->gain(-1);
 		}
 
-
 		ReleaseMutex((HANDLE *)lpParam);
-		Sleep(5);
-	}
-}
-
-
-
-DWORD WINAPI Game::judgeLoop(LPVOID lpParam)
-{
-	for (; ; )
-	{
-
+		Sleep(4);
 	}
 }
 
@@ -950,6 +988,14 @@ LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType)
 	}
 	else
 		return lpStream;
+}
+
+template<class T>
+std::queue<T> &Game::clearQueue(std::queue<T> &q)
+{
+	std::queue<T> empty;
+	swap(empty, q);
+	return q;
 }
 
 
