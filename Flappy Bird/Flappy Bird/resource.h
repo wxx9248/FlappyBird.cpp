@@ -19,10 +19,22 @@
 #define _IDR_IMAGE_PIPE_DN				 209
 #define _IDR_IMAGE_PIPE_DN_M			 210
 
-#define _IDR_PNG_RESTART				 211
-#define _IDR_PNG_SCOREBOARD				 212
+#define _IDR_PNG_LOGO					 250
+#define _IDR_PNG_RESTART				 251
+#define _IDR_PNG_GAMEOVER				 252
+#define _IDR_PNG_SCOREBOARD				 253
+#define _IDR_PNG_HIGHSCORE				 254
+#define _IDR_PNG_PT_MEDAL				 255
+#define _IDR_PNG_GOLDEN_MEDAL			 256
+#define _IDR_PNG_SILVER_MEDAL			 257
+#define _IDR_PNG_BRONZE_MEDAL			 258
 
-#define _IDR_TTF_DEFAULT                 301
+#define _IDR_FONT_DEFAULT                301
+
+#define _IDR_AUDIO_DIE					 401
+#define _IDR_AUDIO_HIT					 402
+#define _IDR_AUDIO_POINT				 403
+#define _IDR_AUDIO_WING					 404
 
 // Next default values for new objects
 // 

@@ -71,8 +71,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,0
- PRODUCTVERSION 1,0,0,0
+ FILEVERSION 1,0,1,0
+ PRODUCTVERSION 1,0,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -89,12 +89,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "wxx9248"
             VALUE "FileDescription", "Flappy Bird"
-            VALUE "FileVersion", "1.0.0.0"
+            VALUE "FileVersion", "1.0.1.0"
             VALUE "internalName", "Flappy Bird.exe"
             VALUE "LegalCopyright", "Copyright (C) 2019 wxx9248"
             VALUE "OriginalFilename", "Flappy Bird.exe"
             VALUE "ProductName", "Flappy Bird"
-            VALUE "ProductVersion", "1.0.0.0"
+            VALUE "ProductVersion", "1.0.1.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -113,32 +113,69 @@ IDR_IMAGE_BG            IMAGE                   "res\\background.bmp"
 
 IDR_IMAGE_GND           IMAGE                   "res\\ground.bmp"
 
-IDR_IMAGE_BIRD1         IMAGE					"res\\bird1.bmp"
-IDR_IMAGE_BIRD1_M       IMAGE					"res\\bird1_m.bmp"
+IDR_IMAGE_HINT          IMAGE                   "res\\hint.bmp"
 
-IDR_IMAGE_BIRD2         IMAGE					"res\\bird2.bmp"
-IDR_IMAGE_BIRD2_M       IMAGE					"res\\bird2_m.bmp"
+IDR_IMAGE_HINT_M        IMAGE                   "res\\hint_m.bmp"
 
-IDR_IMAGE_BIRD3         IMAGE					"res\\bird3.bmp"
-IDR_IMAGE_BIRD3_M       IMAGE					"res\\bird3_m.bmp"
+IDR_IMAGE_BIRD1         IMAGE                   "res\\bird1.bmp"
 
-IDR_IMAGE_PIPE_UP       IMAGE					"res\\pipe_up.bmp"
-IDR_IMAGE_PIPE_UP_M     IMAGE					"res\\pipe_up_m.bmp"
+IDR_IMAGE_BIRD1_M       IMAGE                   "res\\bird1_m.bmp"
 
-IDR_IMAGE_PIPE_DN       IMAGE					"res\\pipe_dn.bmp"
-IDR_IMAGE_PIPE_DN_M     IMAGE					"res\\pipe_dn_m.bmp"
+IDR_IMAGE_BIRD2         IMAGE                   "res\\bird2.bmp"
 
-IDR_PNG_RESTART		    IMAGE                   "res\\restart.png"
+IDR_IMAGE_BIRD2_M       IMAGE                   "res\\bird2_m.bmp"
+
+IDR_IMAGE_BIRD3         IMAGE                   "res\\bird3.bmp"
+
+IDR_IMAGE_BIRD3_M       IMAGE                   "res\\bird3_m.bmp"
+
+IDR_IMAGE_PIPE_UP       IMAGE                   "res\\pipe_up.bmp"
+
+IDR_IMAGE_PIPE_UP_M     IMAGE                   "res\\pipe_up_m.bmp"
+
+IDR_IMAGE_PIPE_DN       IMAGE                   "res\\pipe_dn.bmp"
+
+IDR_IMAGE_PIPE_DN_M     IMAGE                   "res\\pipe_dn_m.bmp"
+
+IDR_PNG_LOGO            IMAGE                   "res\\logo.png"
+
+IDR_PNG_RESTART         IMAGE                   "res\\restart.png"
+
+IDR_PNG_GAMEOVER		IMAGE					"res\\gameover.png"
 
 IDR_PNG_SCOREBOARD      IMAGE                   "res\\scoreboard.png"
 
+IDR_PNG_HIGHSCORE       IMAGE                   "res\\highscore.png"
+
+IDR_PNG_PT_MEDAL        IMAGE                   "res\\platinum_medal.png"
+
+IDR_PNG_GOLDEN_MEDAL    IMAGE                   "res\\golden_medal.png"
+
+IDR_PNG_SILVER_MEDAL    IMAGE                   "res\\silver_medal.png"
+
+IDR_PNG_BRONZE_MEDAL    IMAGE                   "res\\bronze_medal.png"
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
-// TTF
+// RFONT
 //
 
-IDR_TTF_DEFAULT         TTF                     "res\\font.ttf"
+IDR_RFONT_DEFAULT       RFONT                   "res\\font.ttf"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AUDIO
+//
+
+IDR_AUDIO_DIE           AUDIO                   "res\\die.wav"
+
+IDR_AUDIO_HIT           AUDIO                   "res\\hit.wav"
+
+IDR_AUDIO_POINT         AUDIO                   "res\\point.wav"
+
+IDR_AUDIO_WING          AUDIO                   "res\\wing.wav"
 
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////

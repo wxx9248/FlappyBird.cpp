@@ -102,10 +102,51 @@
     <Image Include="res\pipe_up_m.bmp">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\bronze_medal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\golden_medal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\platinum_medal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\silver_medal.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\highscore.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\gameover.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\logo.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\hint.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\hint_m.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="res\font.ttf">
       <Filter>资源文件</Filter>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\die.wav">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="res\hit.wav">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="res\point.wav">
+      <Filter>资源文件</Filter>
+    </Media>
+    <Media Include="res\wing.wav">
+      <Filter>资源文件</Filter>
+    </Media>
   </ItemGroup>
 </Project>

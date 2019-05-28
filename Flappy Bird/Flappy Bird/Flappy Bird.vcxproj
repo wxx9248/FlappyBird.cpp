@@ -191,16 +191,31 @@
     <Image Include="res\bird2_m.bmp" />
     <Image Include="res\bird3.bmp" />
     <Image Include="res\bird3_m.bmp" />
+    <Image Include="res\bronze_medal.png" />
+    <Image Include="res\gameover.png" />
+    <Image Include="res\golden_medal.png" />
     <Image Include="res\ground.bmp" />
+    <Image Include="res\highscore.png" />
+    <Image Include="res\hint.bmp" />
+    <Image Include="res\hint_m.bmp" />
+    <Image Include="res\logo.png" />
     <Image Include="res\pipe_dn.bmp" />
     <Image Include="res\pipe_dn_m.bmp" />
     <Image Include="res\pipe_up.bmp" />
     <Image Include="res\pipe_up_m.bmp" />
+    <Image Include="res\platinum_medal.png" />
     <Image Include="res\restart.png" />
     <Image Include="res\scoreboard.png" />
+    <Image Include="res\silver_medal.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="res\font.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\die.wav" />
+    <Media Include="res\hit.wav" />
+    <Media Include="res\point.wav" />
+    <Media Include="res\wing.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

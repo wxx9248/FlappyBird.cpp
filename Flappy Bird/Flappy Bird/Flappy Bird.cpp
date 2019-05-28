@@ -5,6 +5,8 @@
 #include "Flappy Bird.hpp"
 #include "showHelp.hpp"
 
+#define sndPlaySoundW(X, Y, Z)
+
 int main(_In_ int argc, _In_ char *argv[])
 {
 	std::ios::sync_with_stdio(false);
@@ -107,16 +109,90 @@ int main(_In_ int argc, _In_ char *argv[])
 
 // Namespace: Game::
 
+
+// Class Hint
+
+Game::Hint::Hint() {}
+
+Game::Hint::Hint
+(
+	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
+	const LPCWSTR pResType
+) throw()
+{
+	init
+	(
+		pResName1, pResName1_m,
+		pResType
+	);
+}
+
+void Game::Hint::init
+(
+	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
+	const LPCWSTR pResType
+)
+{
+	loadimage(imgHint, pResType, pResName1_m);
+	loadimage(imgHint, pResType, pResName1_m, imgHint->getwidth() * hintSZMultiplier, imgHint->getheight() * hintSZMultiplier, true);
+	if (!(imgHint[0].getwidth() && imgHint[0].getheight()))
+	{
+		throw stdWCexception(L"Hint1 mask 资源加载失败！");
+	}
+
+	loadimage(imgHint + 1, pResType, pResName1);
+	loadimage(imgHint + 1, pResType, pResName1, imgHint[1].getwidth() * hintSZMultiplier, imgHint[1].getheight() * hintSZMultiplier, true);
+	if (!(imgHint[1].getwidth() && imgHint[1].getheight()))
+	{
+		throw stdWCexception(L"Hint1 资源加载失败！");
+	}
+	posxHint = (WNDWIDTH - imgHint[0].getwidth()) / 2;
+}
+
+void Game::Hint::draw()
+{
+	if (isVisible)
+	{
+		putimage(posxHint, posyHint, imgHint, SRCAND);
+		putimage(posxHint, posyHint, imgHint + 1, SRCPAINT);
+	}
+}
+
+void Game::Hint::changeVisibility()
+{
+	isVisible = !isVisible;
+}
+
+bool Game::Hint::getVisibility()
+{
+	return isVisible;
+}
+
+INT Game::Hint::getX()
+{
+	return posxHint;
+}
+
+INT Game::Hint::getY()
+{
+	return posyHint;
+}
+
+IMAGE &Game::Hint::operator[](INT index)
+{
+	return imgHint[index];
+}
+
 // Class Bird
 
 Game::Bird::Bird(){}
 
 Game::Bird::Bird
 (
-	LPCWSTR pResName1, LPCWSTR pResName1_m,
-	LPCWSTR pResName2, LPCWSTR pResName2_m,
-	LPCWSTR pResName3, LPCWSTR pResName3_m,
-	LPCWSTR pResType
+	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
+	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
+	const LPCWSTR pResName3, const LPCWSTR pResName3_m,
+	const LPCWSTR pResType
 ) throw()
 {
 	init
@@ -130,10 +206,10 @@ Game::Bird::Bird
 
 void Game::Bird::init
 (
-	LPCWSTR pResName1, LPCWSTR pResName1_m,
-	LPCWSTR pResName2, LPCWSTR pResName2_m,
-	LPCWSTR pResName3, LPCWSTR pResName3_m,
-	LPCWSTR pResType
+	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
+	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
+	const LPCWSTR pResName3, const LPCWSTR pResName3_m,
+	const LPCWSTR pResType
 )
 {
 	loadimage(imgBird, pResType, pResName1_m);
@@ -175,8 +251,12 @@ void Game::Bird::init
 
 void Game::Bird::draw()
 {
-	putimage(posxBird, posyBird, imgBird + birdState * 2, SRCAND);
-	putimage(posxBird, posyBird, imgBird + birdState * 2 + 1, SRCPAINT);
+	if (isVisible)
+	{
+		birdState %= 3;
+		putimage(posxBird, posyBird, imgBird + birdState * 2, SRCAND);
+		putimage(posxBird, posyBird, imgBird + birdState * 2 + 1, SRCPAINT);
+	}
 }
 
 void Game::Bird::changeState()
@@ -236,9 +316,9 @@ IMAGE &Game::Bird::operator[](INT index)
 Game::Pipe::Pipe() {}
 Game::Pipe::Pipe
 (
-	LPCWSTR pResName1, LPCWSTR pResName1_m,
-	LPCWSTR pResName2, LPCWSTR pResName2_m,
-	LPCWSTR pResType
+	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
+	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
+	const LPCWSTR pResType
 )
 {
 	init
@@ -251,9 +331,9 @@ Game::Pipe::Pipe
 
 void Game::Pipe::init
 (
-	LPCWSTR pResName1, LPCWSTR pResName1_m,
-	LPCWSTR pResName2, LPCWSTR pResName2_m,
-	LPCWSTR pResType
+	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
+	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
+	const LPCWSTR pResType
 )
 {
 	loadimage(imgPipe, pResType, pResName1_m);
@@ -276,7 +356,7 @@ void Game::Pipe::init
 	loadimage(imgPipe + 3, pResType, pResName2);
 	if (!(imgPipe[3].getwidth() && imgPipe[3].getheight()))
 	{
-		throw stdWCexception(L"Bird2 UP 资源加载失败！");
+		throw stdWCexception(L"Pipe UP 资源加载失败！");
 	}
 }
 
@@ -316,55 +396,161 @@ INT Game::Pipe::getYDn()
 	return posyPipeDn;
 }
 
-
 void Game::Pipe::draw()
 {
-	putimage(posxPipe, posyPipeDn, imgPipe, SRCAND);
-	putimage(posxPipe, posyPipeDn, imgPipe + 1, SRCPAINT);
-	putimage(posxPipe, posyPipeDn - dPipeVertical - imgPipe[2].getheight(), imgPipe + 2, SRCAND);
-	putimage(posxPipe, posyPipeDn - dPipeVertical - imgPipe[3].getheight(), imgPipe + 3, SRCPAINT);
+	if (isVisible)
+	{
+		putimage(posxPipe, posyPipeDn, imgPipe, SRCAND);
+		putimage(posxPipe, posyPipeDn, imgPipe + 1, SRCPAINT);
+		putimage(posxPipe, posyPipeDn - dPipeVertical - imgPipe[2].getheight(), imgPipe + 2, SRCAND);
+		putimage(posxPipe, posyPipeDn - dPipeVertical - imgPipe[3].getheight(), imgPipe + 3, SRCPAINT);
+	}
 }
-
 
 IMAGE &Game::Pipe::operator[](INT index)
 {
 	return imgPipe[index];
 }
 
-void Game::subGame()
+
+// Class Medal
+Game::Medal::Medal() {}
+
+Game::Medal::Medal
+(
+	const LPCWSTR pResName1, const LPCWSTR pResName2,
+	const LPCWSTR pResName3, const LPCWSTR pResName4,
+	const LPCWSTR pResType, const OBJCIMG &ScoreBoard,
+	const HWND hWnd
+) throw()
+{
+	init
+	(
+		pResName1, pResName2,
+		pResName3, pResName4,
+		pResType, ScoreBoard,
+		hWnd
+	);
+}
+
+void Game::Medal::init
+(
+	const LPCWSTR pResName1, const LPCWSTR pResName2,
+	const LPCWSTR pResName3, const LPCWSTR pResName4,
+	const LPCWSTR pResType, const OBJCIMG &ScoreBoard,
+	const HWND hWnd
+) throw()
+{
+	if (NULL == hWnd)
+		throw stdWCexception(L"窗口句柄无效");
+	else if (!(ScoreBoard.cim.GetHeight() && ScoreBoard.cim.GetWidth()))
+		throw stdWCexception(L"计分板图层未正确初始化");
+	else
+	{
+		imgMedal[0].Load(GetPNGStreamW(pResName1, pResType));
+		if (imgMedal[0].IsNull())
+			throw stdWCexception(L"Bronze 奖牌 资源无法加载");
+		imgMedal[1].Load(GetPNGStreamW(pResName2, pResType));
+		if (imgMedal[1].IsNull())
+			throw stdWCexception(L"Silver 奖牌 资源无法加载");
+		imgMedal[2].Load(GetPNGStreamW(pResName3, pResType));
+		if (imgMedal[2].IsNull())
+			throw stdWCexception(L"Golden 奖牌 资源无法加载");
+		imgMedal[3].Load(GetPNGStreamW(pResName4, pResType));
+		if (imgMedal[3].IsNull())
+			throw stdWCexception(L"Platinum 奖牌 资源无法加载");
+	}
+	Medal::hWnd = hWnd;
+	posxMedal;
+	posyMedal;
+}
+
+void Game::Medal::draw() throw()
+{
+	if (NULL == hWnd)
+		throw stdWCexception(L"窗口句柄无效");
+	else if (MedalState %= 5)
+		imgMedal[MedalState - 1].Draw
+		(
+			GetDC(hWnd),
+			posxMedal, posyMedal,
+			imgMedal[MedalState - 1].GetWidth() * ScoreboardSZMultiplier,
+			imgMedal[MedalState - 1].GetHeight() * ScoreboardSZMultiplier
+		);
+}
+
+void Game::Medal::changeState(INT state)
+{
+	MedalState = state;
+}
+
+INT Game::Medal::getState()
+{
+	return MedalState;
+}
+
+void Game::Medal::changeWindowHandle(HWND hWnd) throw()
+{
+	if (NULL == hWnd)
+		throw stdWCexception(L"窗口句柄无效");
+	else
+		Medal::hWnd = hWnd;
+}
+
+void Game::Medal::setX(INT pos)
+{
+	posxMedal = pos;
+}
+
+INT Game::Medal::getX()
+{
+	return posxMedal;
+}
+
+INT Game::Medal::getY()
+{
+	return posyMedal;
+}
+
+CImage &Game::Medal::operator[](INT index)
+{
+	return imgMedal[index];
+}
+
+
+void Game::subGame() throw()
 {
 	*logger << L"窗口句柄：0x" << hWnd << logger->endl;
 
-	// Initialize background picture object
+	// Initlialize background layer
 	*logger << L"初始化背景图层(BMP, IMAGE)……" << logger->endl;
 	loadimage(&(BG.im), L"IMAGE", L"IDR_IMAGE_BG");
 	BG.posx = BG.posy = 0;
 	BG.dwRop = SRCCOPY;
 	lBG.push_back(&BG);
-	
+	mainScene.push_back(lBG);
+
 	// Initlialize groud picture object
-	// Total number: 22
-	// Total width: 22 * 37 px = 814 px
-	// Screen width: 768 px
-	// Difference: 46 px (MAX_POSX_GND)
+	*logger << L"初始化地面图层(BMP, IMAGE)……" << logger->endl;
 	loadimage(&(Ground.im), L"IMAGE", L"IDR_IMAGE_GND");
 	Ground.posx = 0;
 	Ground.posy = BG.im.getheight();
 	Ground.dwRop = SRCCOPY;
-	//lBG.push_back(&Ground);
 
-	mainScene.push_back(lBG);
+	// Initlialize game logo
+	*logger << L"初始化Logo图层(PNG, CImage)……" << logger->endl;
+	Logo.cim.Load(GetPNGStreamW(L"IDR_PNG_LOGO", L"IMAGE"));
+	Logo.posx = (WNDWIDTH - Logo.cim.GetWidth() * logoSZMultiplier) / 2;
+	Logo.posy = logoPosY;
 
-	// Initlialize scoreboard layer
-	*logger << L"初始化结算界面图层(PNG, CImage)……" << logger->endl;
-
-	SB.cim.Load(GetPNGStreamW(L"IDR_PNG_SCOREBOARD", L"IMAGE"));
-	SB.posx = 293;
-	SB.posy = 240;
-
-	bRestart.cim.Load(GetPNGStreamW(L"IDR_PNG_RESTART", L"IMAGE"));
-	bRestart.posx = 275;
-	bRestart.posy = 550;
+	// Initialize hint layer
+	*logger << L"初始化Hint图层(BMP, IMAGE, Sealed)……" << logger->endl;
+	Hint hint
+	(
+		L"IDR_IMAGE_HINT", L"IDR_IMAGE_HINT_M",
+		L"IMAGE"
+	);
+	pHint = &hint;
 
 	// Initialize the picture object of pipes
 	*logger << L"初始化管道图层对象(BMP, IMAGE, Sealed)……" << logger->endl;
@@ -374,8 +560,6 @@ void Game::subGame()
 		L"IDR_IMAGE_PIPE_UP", L"IDR_IMAGE_PIPE_UP_M",
 		L"IMAGE"
 	);
-
-
 	pPipe = &pipe;
 
 	// Initialize the picture object of the Bird
@@ -391,13 +575,65 @@ void Game::subGame()
 
 	pBird = &bird;
 
+	// Inilialize game over mark layer
+	*logger << L"初始化游戏结束标记图层(PNG, CImage)……" << logger->endl;
+	GameOver.cim.Load(GetPNGStreamW(L"IDR_PNG_GAMEOVER", L"IMAGE"));
+	GameOver.posx = (WNDWIDTH - GameOver.cim.GetWidth() * GameOverBannerSZMultiplier) / 2;
+	GameOver.posy = GameOverBannerPosY;
+
+	// Initlialize scoreboard layer
+	*logger << L"初始化计分板图层(PNG, CImage)……" << logger->endl;
+	Scoreboard.cim.Load(GetPNGStreamW(L"IDR_PNG_SCOREBOARD", L"IMAGE"));
+	Scoreboard.posx = (WNDWIDTH - Scoreboard.cim.GetWidth() * ScoreboardSZMultiplier) / 2;
+	Scoreboard.posy = ScoreboardPosY;
+
+	// Initlialize medal layer
+	*logger << L"初始化奖牌图层(PNG, CImage, Sealed)……" << logger->endl;
+	Medal medal
+	(
+		L"IDR_PNG_BRONZE_MEDAL", L"IDR_PNG_SILVER_MEDAL",
+		L"IDR_PNG_GOLDEN_MEDAL", L"IDR_PNG_PT_MEDAL",
+		L"IMAGE", Scoreboard, hWnd
+	);
+	pMedal = &medal;
+	medal.setX(Scoreboard.posx + 27 * ScoreboardSZMultiplier);
+
+	// Initlilize highscore mark layer
+	*logger << L"初始化高分标记图层(PNG, CImage)……" << logger->endl;
+	Highscore.cim.Load(GetPNGStreamW(L"IDR_PNG_HIGHSCORE", L"IMAGE"));
+	Highscore.posx;
+	Highscore.posy;
+
+	// Initlialize replay button layer
+	*logger << L"初始化重玩按钮图层(PNG, CImage)……" << logger->endl;
+	bRestart.cim.Load(GetPNGStreamW(L"IDR_PNG_RESTART", L"IMAGE"));
+	bRestart.posx = (WNDWIDTH - bRestart.cim.GetWidth()) / 2;
+	bRestart.posy = RestartButtonPosY;
+
 	// Initialize font resource
-	*logger << L"初始化字体资源……" << logger->endl;
+	*logger << L"初始化默认字体资源……" << logger->endl;
 	*logger << L"TTF名称：" << lpFontName << logger->endl;
-	HANDLE DefFont = GetFontHandleW(L"IDR_TTF_DEFAULT", L"TTF");
+	HANDLE DefFont = GetFontHandleW(L"IDR_RFONT_DEFAULT", L"RFONT");
 	*logger << L"TTF资源句柄：0x" << DefFont << logger->endl;
 	if (NULL == DefFont)
 		throw stdWCexception(L"TTF资源句柄无效！");
+
+	// Initialize sound fx
+	*logger << L"初始化音效资源（翅膀扇动）……" << logger->endl;
+	lpWAVWing = GetRawWAVBufferW(L"IDR_AUDIO_WING", L"AUDIO");
+	*logger << L"资源指针：0x" << lpWAVWing << logger->endl;
+
+	*logger << L"初始化音效资源（撞击）……" << logger->endl;
+	lpWAVHit = GetRawWAVBufferW(L"IDR_AUDIO_HIT", L"AUDIO");
+	*logger << L"资源指针：0x" << lpWAVHit << logger->endl;
+
+	*logger << L"初始化音效资源（死亡）……" << logger->endl;
+	lpWAVDie = GetRawWAVBufferW(L"IDR_AUDIO_DIE", L"AUDIO");
+	*logger << L"资源指针：0x" << lpWAVDie << logger->endl;
+
+	*logger << L"初始化音效资源（得分）……" << logger->endl;
+	lpWAVPoint = GetRawWAVBufferW(L"IDR_AUDIO_POINT", L"AUDIO");
+	*logger << L"资源指针：0x" << lpWAVPoint << logger->endl;
 
 
 	// Initialize MUTEX
@@ -460,7 +696,7 @@ void Game::subGame()
 		static char c = '\0';
 
 		printBG();
-		printGameTitle();
+		Logo.cim.Draw(GetDC(hWnd), Logo.posx, Logo.posy, Logo.cim.GetWidth() * logoSZMultiplier, Logo.cim.GetHeight() * logoSZMultiplier);
 		printGameStartHint();
 		
 		*logger << L"等待用户开始信号……" << logger->endl;
@@ -473,8 +709,8 @@ void Game::subGame()
 
 		*logger << L"设定初始数据" << logger->endl;
 		bird.setY(birdDefPosY);
-		downSpeed = 1.414213562373095;
-		pPipe->setX(768);
+		downSpeed = defDownSpeed;
+		pPipe->setX(BG.im.getwidth());
 		pPipe->setYDn(rangePipeDn(rand));
 		bird.changeVisibility();
 		lockPipe = true;
@@ -482,6 +718,8 @@ void Game::subGame()
 		isGrounded = false;
 		score = 0;
 		canIgetonepoint = true;
+
+		hint.changeVisibility();
 
 		// Clear texts
 		*logger << L"释放异步刷新线程" << logger->endl;
@@ -503,7 +741,7 @@ void Game::subGame()
 			Sleep(500);
 		}
 
-		// Battle control online :P
+		hint.changeVisibility();
 		fxLayers.clear();
 
 		*logger << L"插入分数显示函数图层" << logger->endl;
@@ -516,6 +754,7 @@ void Game::subGame()
 		*logger << L"清空键盘事件队列" << logger->endl;
 		clearQueue(KBEMsgQueue);
 
+		// Battle control online :P
 		pPipe->changeVisibility();
 
 		// Game start
@@ -530,14 +769,18 @@ void Game::subGame()
 				break;
 			}
 
-			else if (bird.getX() + bird[0].getwidth() - 2 >= pipe.getX() && bird.getX() + 2 <= pipe.getX() + pipe[0].getwidth())
+			else if (bird.getX() + bird[0].getwidth() - 4 >= pipe.getX() && bird.getX() + 4 <= pipe.getX() + pipe[0].getwidth())
 			{
 				if (bird.getY() + 2 < pipe.getYDn() - dPipeVertical || bird.getY() + bird[0].getheight() - 2 > pipe.getYDn())		// On no...
+				{
+					sndPlaySoundW((LPWSTR)lpWAVHit, SND_MEMORY | SND_ASYNC);
 					break;
+				}
 				
 				if (bird.getX() == pipe.getX())		// Got one score~
 					if (canIgetonepoint)
 					{
+						sndPlaySoundW((LPWSTR)lpWAVPoint, SND_MEMORY | SND_ASYNC);
 						++score;
 						canIgetonepoint = false;
 					}
@@ -549,18 +792,26 @@ void Game::subGame()
 
 		// Battle control terminated.
 		*logger << L"游戏结束" << logger->endl;
-		*logger << L"锁定动画计算线程" << logger->endl;
+		*logger << L"锁定动画计算线程（地面）" << logger->endl;
 		WaitForSingleObject(hMutGNDAni, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
 
-		while (bird.getY() + bird[0].getheight() - 2 <= BG.im.getheight() + BG.posy);
+		if (!isGrounded)
+		{
+			stimulate();
+			downSpeed = defDownSpeed;
+			sndPlaySoundW((LPWSTR)lpWAVDie, SND_MEMORY | SND_ASYNC);
+			while (bird.getY() + bird[0].getheight() - 2 <= BG.im.getheight() + BG.posy);
+		}
+
+		*logger << L"锁定动画计算线程（Bird）" << logger->endl;
 		WaitForSingleObject(hMutBirdAni, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexBirdAnimation");
 		Sleep(1000);
 
 		*logger << L"删除 Bird 图层" << logger->endl;
 		bird.changeVisibility();
-		pPipe->changeVisibility();
+		pipe.changeVisibility();
 
 		*logger << L"删除分数显示函数图层" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
@@ -579,9 +830,27 @@ void Game::subGame()
 
 		*logger << L"显示分数结算界面" << logger->endl;
 
-		printGameOver();
-		SB.cim.Draw(GetDC(hWnd), SB.posx, SB.posy);;
+		GameOver.cim.Draw
+		(
+			GetDC(hWnd),
+			GameOver.posx, GameOver.posy,
+			GameOver.cim.GetWidth() * GameOverBannerSZMultiplier,
+			GameOver.cim.GetHeight() * GameOverBannerSZMultiplier
+		);
+		Scoreboard.cim.Draw
+		(
+			GetDC(hWnd),
+			Scoreboard.posx, Scoreboard.posy,
+			Scoreboard.cim.GetWidth() * ScoreboardSZMultiplier,
+			Scoreboard.cim.GetHeight() * ScoreboardSZMultiplier
+		);
+		medal.changeState(score / 10);
+		medal.draw();
+
 		bRestart.cim.Draw(GetDC(hWnd), bRestart.posx, bRestart.posy);
+		ScoreboardScorePosX = Scoreboard.posx + 160 * ScoreboardSZMultiplier;
+		ScoreboardHScorePosX = ScoreboardScorePosX;
+
 		printEndScore();
 		printEndHighScore();
 
@@ -600,10 +869,15 @@ void Game::subGame()
 	*logger << L"关闭键盘事件处理句柄……" << logger->endl;
 	CloseHandle(hThKBEHandler);
 
-	*logger << L"中止动画计算线程……" << logger->endl;
+	*logger << L"中止动画计算线程（地面）……" << logger->endl;
 	TerminateThread(hThGNDAni, 0);
-	*logger << L"关闭动画计算线程句柄……" << logger->endl;
+	*logger << L"关闭动画计算线程句柄（地面）……" << logger->endl;
 	CloseHandle(hThGNDAni);
+
+	*logger << L"中止动画计算线程（Bird）……" << logger->endl;
+	TerminateThread(hThBirdAni, 0);
+	*logger << L"关闭动画计算线程句柄（Bird）……" << logger->endl;
+	CloseHandle(hThBirdAni);
 
 	*logger << L"中止异步刷新线程……" << logger->endl;
 	TerminateThread(hThRef, 0);
@@ -619,37 +893,20 @@ void Game::printBG()
 	putimage(BG.posx, BG.posy, &BG.im, BG.dwRop);
 }
 
-void Game::printGameTitle()
-{
-	static bool firstrun = true;
-	static LOGFONTW LogFontDef = { 0 };
-	if (firstrun)
-	{	
-		LogFontDef.lfHeight = 72;
-		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
-		firstrun = false;
-	}
-
-	settextstyle(&LogFontDef);
-	setbkmode(TRANSPARENT);
-	outtextxy(180, 200, L"Flappy Bird");
-}
-
-
 void Game::printGameStartHint()
 {
 	static bool firstrun = true;
 	static LOGFONTW LogFontDef = { 0 };
 	if (firstrun)
 	{
-		LogFontDef.lfHeight = 32;
+		LogFontDef.lfHeight = startftsz;
 		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof (LogFontDef.lfFaceName) / sizeof (WCHAR));
 		firstrun = false;
 	}
 
 	settextstyle(&LogFontDef);
 	setbkmode(TRANSPARENT);
-	outtextxy(190, 600, L"Press any key to start");
+	outtextxy(startHintPosX, startHintPosY, L"Press any key to start");
 }
 
 
@@ -659,14 +916,14 @@ void Game::printCountdown()
 	static LOGFONTW LogFontDef = { 0 };
 	if (firstrun)
 	{
-		LogFontDef.lfHeight = 72;
+		LogFontDef.lfHeight = digitftsz;
 		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
 		firstrun = false;
 	}
 
 	settextstyle(&LogFontDef);
 	setbkmode(TRANSPARENT);
-	outtextxy(365, 100, cntdwnChar);
+	outtextxy(digitPosX, digitPosY, cntdwnChar);
 }
 
 
@@ -685,23 +942,7 @@ void Game::printScore()
 	settextstyle(&LogFontDef);
 	setbkmode(TRANSPARENT);
 	_itow_s(score, wstrScore, 10);
-	outtextxy(350, 100, wstrScore);
-}
-
-void Game::printGameOver()
-{
-	static bool firstrun = true;
-	static LOGFONTW LogFontDef = { 0 };
-	if (firstrun)
-	{
-		LogFontDef.lfHeight = 72;
-		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
-		firstrun = false;
-	}
-
-	settextstyle(&LogFontDef);
-	setbkmode(TRANSPARENT);
-	outtextxy(195, 100, L"Game Over");
+	outtextxy(digitPosX, digitPosY, wstrScore);
 }
 
 void Game::printEndScore()
@@ -711,7 +952,7 @@ void Game::printEndScore()
 	static WCHAR wstrScore[11];
 	if (firstrun)
 	{
-		LogFontDef.lfHeight = 48;
+		LogFontDef.lfHeight = Scoreboarddigitftsz;
 		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
 		firstrun = false;
 	}
@@ -719,7 +960,7 @@ void Game::printEndScore()
 	settextstyle(&LogFontDef);
 	setbkmode(TRANSPARENT);
 	_itow_s(score, wstrScore, 10);
-	outtextxy(353, 305, wstrScore);
+	outtextxy(ScoreboardScorePosX, ScoreboardScorePosY, wstrScore);
 }
 
 void Game::printEndHighScore()
@@ -729,7 +970,7 @@ void Game::printEndHighScore()
 	static WCHAR wstrHScore[11];
 	if (firstrun)
 	{
-		LogFontDef.lfHeight = 48;
+		LogFontDef.lfHeight = Scoreboarddigitftsz;
 		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
 		firstrun = false;
 	}
@@ -737,7 +978,7 @@ void Game::printEndHighScore()
 	settextstyle(&LogFontDef);
 	setbkmode(TRANSPARENT);
 	_itow_s(highscore, wstrHScore, 10);
-	outtextxy(353, 390, wstrHScore);
+	outtextxy(ScoreboardHScorePosX, ScoreboardHScorePosY, wstrHScore);
 }
 
 void Game::postKBEvent(CHAR event)
@@ -747,6 +988,7 @@ void Game::postKBEvent(CHAR event)
 
 void Game::stimulate()
 {
+	sndPlaySoundW((LPWSTR)lpWAVWing, SND_MEMORY | SND_ASYNC);
 	lockBird = true;
 	pBird->changeState(0);
 	for (double i = birdGain; i >= 11 && pBird->getY() >= 0; i -= 0.2)
@@ -816,16 +1058,17 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 				if (NULL != mainScene[i][j])
 					putimage(mainScene[i][j]->posx, mainScene[i][j]->posy, &(mainScene[i][j]->im), mainScene[i][j]->dwRop);
 		
-		// For class Pipe
-		if (pPipe->getVisibility())
-			pPipe->draw();
+		// For class Hint
+		pHint->draw();
 
-		// For Ground
+		// For class Pipe
+		pPipe->draw();
+
+		// For Ground (Have to cover pipes up)
 		putimage(Ground.posx, Ground.posy, &Ground.im, SRCCOPY);
 
 		// For class Bird
-		if (pBird->getVisibility())
-			pBird->draw();
+		pBird->draw();
 
 		// For Function layers
 		for (int i = 0; i < fxLayers.size(); ++i)
@@ -835,6 +1078,7 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 		EndBatchDraw();
 
 		ReleaseMutex((HANDLE *)lpParam);
+		Sleep(3);
 	}
 	return 0;
 }
@@ -876,21 +1120,21 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 
 		if (lockBird)					// Bird animation (static)
 		{
-			if (!(iSync % 30))
+			if (!(iSync % birdStaticWingPeriod))
 				pBird->changeState();
 
-			if (!(iSync % 15))
-				pBird->gain(2 * sinf(0.05 * iSync));
+			if (!(iSync % birdStaticFlucPeriod))
+				pBird->gain(birdStaticFlucAmplitude * sinf(birdStaticFlucAngFreq * iSync));
 		}
 		else							// Bird animation (dynamic)		
 		{
 			if (asyncGetKBEvent() && gameState)
 			{
 				stimulate();
-				downSpeed = 1.414213562373095;
+				downSpeed = defDownSpeed;
 			}
-			downSpeed += 0.05;
-			pBird->gain(0.2 * downSpeed * downSpeed);
+			downSpeed += downSpeedGain;
+			pBird->gain(downSpeedQRatio * downSpeed * downSpeed);
 		}
 
 		ReleaseMutex((HANDLE *)lpParam);
@@ -909,7 +1153,7 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
 
 		Ground.posx -= 1;			// Going-forward animation
-		if (Ground.posx < -36)
+		if (Ground.posx < lBoundGroundImg)
 			Ground.posx = 0;
 
 
@@ -918,7 +1162,7 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 			if (pPipe->getX() + (*pPipe)[0].getwidth() < 0)
 			{
 				rand.seed((UINT) time(NULL));
-				pPipe->setX(768);
+				pPipe->setX(BG.im.getwidth());
 				pPipe->setYDn(rangePipeDn(rand));
 				canIgetonepoint = true;
 			}
@@ -926,12 +1170,11 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 		}
 
 		ReleaseMutex((HANDLE *)lpParam);
-		Sleep(4);
+		Sleep(2);
 	}
 }
 
-
-HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType)
+HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw()
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
@@ -954,7 +1197,7 @@ HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType)
 	return hFont;
 }
 
-LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType)
+LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw()
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
@@ -988,6 +1231,23 @@ LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType)
 	}
 	else
 		return lpStream;
+}
+
+LPVOID Game::GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw()
+{
+	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
+	if (NULL == hResource)
+		throw stdWCexception(L"无法获取WAV声音资源！");
+
+	HGLOBAL hGlobal = LoadResource(NULL, hResource);
+	if (NULL == hGlobal)
+		throw stdWCexception(L"无法装载WAV声音资源！");
+
+	LPVOID lpRawWAV = LockResource(hGlobal);
+	if (NULL == lpRawWAV)
+		throw stdWCexception(L"WAV声音资源无效！");
+
+	return lpRawWAV;
 }
 
 template<class T>

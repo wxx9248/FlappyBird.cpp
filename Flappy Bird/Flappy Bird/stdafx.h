@@ -12,9 +12,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <tchar.h>
-
 #include <corecrt_wtime.h>
-
 #include <atlimage.h>
 
 // C++ 库头文件
