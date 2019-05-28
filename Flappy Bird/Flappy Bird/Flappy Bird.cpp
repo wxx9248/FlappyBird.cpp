@@ -601,8 +601,8 @@ void Game::subGame() throw()
 	// Initlilize highscore mark layer
 	*logger << L"初始化高分标记图层(PNG, CImage)……" << logger->endl;
 	Highscore.cim.Load(GetPNGStreamW(L"IDR_PNG_HIGHSCORE", L"IMAGE"));
-	Highscore.posx;
-	Highscore.posy;
+	Highscore.posx = Scoreboard.posx + 140 * ScoreboardSZMultiplier;
+	Highscore.posy = ScoreboardPosY + 57 * ScoreboardSZMultiplier;
 
 	// Initlialize replay button layer
 	*logger << L"初始化重玩按钮图层(PNG, CImage)……" << logger->endl;
@@ -823,7 +823,6 @@ void Game::subGame() throw()
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
 
-		highscore = score > highscore ? score : highscore;
 
 		*logger << L"清空键盘事件队列" << logger->endl;
 		clearQueue(KBEMsgQueue);;
@@ -850,6 +849,12 @@ void Game::subGame() throw()
 		bRestart.cim.Draw(GetDC(hWnd), bRestart.posx, bRestart.posy);
 		ScoreboardScorePosX = Scoreboard.posx + 160 * ScoreboardSZMultiplier;
 		ScoreboardHScorePosX = ScoreboardScorePosX;
+
+		if (score > highscore)
+		{
+			highscore = score;
+			Highscore.cim.Draw(GetDC(hWnd), Highscore.posx, Highscore.posy);
+		}
 
 		printEndScore();
 		printEndHighScore();
