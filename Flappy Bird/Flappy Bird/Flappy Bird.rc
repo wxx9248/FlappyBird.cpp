@@ -71,8 +71,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,1,0
- PRODUCTVERSION 1,0,1,0
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -89,12 +89,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "wxx9248"
             VALUE "FileDescription", "Flappy Bird"
-            VALUE "FileVersion", "1.0.1.0"
+            VALUE "FileVersion", "1.1.0.0"
             VALUE "internalName", "Flappy Bird.exe"
             VALUE "LegalCopyright", "Copyright (C) 2019 wxx9248"
             VALUE "OriginalFilename", "Flappy Bird.exe"
             VALUE "ProductName", "Flappy Bird"
-            VALUE "ProductVersion", "1.0.1.0"
+            VALUE "ProductVersion", "1.1.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -141,7 +141,7 @@ IDR_PNG_LOGO            IMAGE                   "res\\logo.png"
 
 IDR_PNG_RESTART         IMAGE                   "res\\restart.png"
 
-IDR_PNG_GAMEOVER		IMAGE					"res\\gameover.png"
+IDR_PNG_GAMEOVER        IMAGE                   "res\\gameover.png"
 
 IDR_PNG_SCOREBOARD      IMAGE                   "res\\scoreboard.png"
 

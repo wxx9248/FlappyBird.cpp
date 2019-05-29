@@ -145,7 +145,7 @@ void Outdev::close()
 	{
 		if (isOpened)
 		{
-			if(Outdev::logFile != NULL)
+			if (Outdev::logFile != NULL)
 				logFile->close();
 			isOpened = false;
 		}
@@ -283,9 +283,9 @@ Log &operator<<(Log &log, T &msg)
 
 		if (en)
 			throw en;
-		
+
 		wasctmbuf[wcslen(wasctmbuf) - 1] = L'\0';
-		*log.od <<  L"[" << wasctmbuf << L"] ";
+		*log.od << L"[" << wasctmbuf << L"] ";
 		log.isBOL = false;
 	}
 

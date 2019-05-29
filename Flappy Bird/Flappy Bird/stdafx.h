@@ -48,7 +48,16 @@
 // 自定义工具函数
 
 // 在字符串里匹配字符集
-int strchrs(const char *str, const char *chrs, bool strictmode = false);
+extern int strchrs(const char *str, const char *chrs, bool strictmode = false);
 
 // 转换宽字符（使用new开辟内存，如不使用请用delete[]释放）
-wchar_t *char2wchar(char *cstr);
+extern wchar_t *char2wchar(char *cstr);
+
+// 清除std::queue队列
+template<class T>
+std::queue<T> &clearQueue(std::queue<T> &q)
+{
+	std::queue<T> empty;
+	swap(empty, q);
+	return q;
+}

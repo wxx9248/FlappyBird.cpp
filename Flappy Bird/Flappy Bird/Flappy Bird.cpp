@@ -10,7 +10,7 @@
 int main(_In_ int argc, _In_ char *argv[])
 {
 	std::ios::sync_with_stdio(false);
-	
+
 	std::locale newLocale(std::locale(), "", std::locale::ctype);
 	std::locale prevLocale = std::locale::global(newLocale);
 
@@ -80,10 +80,10 @@ int main(_In_ int argc, _In_ char *argv[])
 		MessageBoxW(NULL, L"未知的内部错误", L"错误", MB_ICONERROR);
 		throw;
 	}
-	
+
 
 	*logger << L"预初始化完成，正在启动游戏……" << logger->endl;
-	
+
 	try
 	{
 		Game::subGame();
@@ -185,7 +185,7 @@ IMAGE &Game::Hint::operator[](INT index)
 
 // Class Bird
 
-Game::Bird::Bird(){}
+Game::Bird::Bird() {}
 
 Game::Bird::Bird
 (
@@ -553,14 +553,19 @@ void Game::subGame() throw()
 	pHint = &hint;
 
 	// Initialize the picture object of pipes
-	*logger << L"初始化管道图层对象(BMP, IMAGE, Sealed)……" << logger->endl;
-	Pipe pipe
-	(
-		L"IDR_IMAGE_PIPE_DN", L"IDR_IMAGE_PIPE_DN_M",
-		L"IDR_IMAGE_PIPE_UP", L"IDR_IMAGE_PIPE_UP_M",
-		L"IMAGE"
-	);
-	pPipe = &pipe;
+	*logger << L"初始化管道图层对象(BMP, IMAGE, Sealed, " << PipeObjNum << L")……" << logger->endl;
+	Pipe pipe[PipeObjNum];
+
+	for (INT i = 0; i < PipeObjNum; ++i)
+	{
+		pipe[i].init
+		(
+			L"IDR_IMAGE_PIPE_DN", L"IDR_IMAGE_PIPE_DN_M",
+			L"IDR_IMAGE_PIPE_UP", L"IDR_IMAGE_PIPE_UP_M",
+			L"IMAGE"
+		);
+	}
+	pPipe = pipe;
 
 	// Initialize the picture object of the Bird
 	*logger << L"初始化Bird对象(BMP, IMAGE, Sealed)……" << logger->endl;
@@ -572,7 +577,6 @@ void Game::subGame() throw()
 		L"IDR_IMAGE_BIRD3", L"IDR_IMAGE_BIRD3_M",
 		L"IMAGE"
 	);
-
 	pBird = &bird;
 
 	// Inilialize game over mark layer
@@ -638,19 +642,19 @@ void Game::subGame() throw()
 
 	// Initialize MUTEX
 	*logger << L"正在创建互斥锁（异步刷新线程）……" << logger->endl;
-	hMutRef = CreateMutexW(NULL, FALSE, L"MutexRefresh");
+	HANDLE hMutRef = CreateMutexW(NULL, FALSE, CWCStrMutexRef);
 	*logger << L"互斥锁句柄：0x" << hMutRef << logger->endl;
 	if (NULL == hMutRef)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
 	*logger << L"正在创建互斥锁（动画计算线程，地面）……" << logger->endl;
-	hMutGNDAni = CreateMutexW(NULL, TRUE, L"MutexGNDAnimation");
+	HANDLE hMutGNDAni = CreateMutexW(NULL, TRUE, CWCStrMutexGNDAni);
 	*logger << L"互斥锁句柄：0x" << hMutGNDAni << logger->endl;
 	if (NULL == hMutGNDAni)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
 	*logger << L"正在创建互斥锁（动画计算线程，Bird）……" << logger->endl;
-	hMutBirdAni = CreateMutexW(NULL, TRUE, L"MutexBirdAnimation");
+	HANDLE hMutBirdAni = CreateMutexW(NULL, TRUE, CWCStrMutexBird);
 	*logger << L"互斥锁句柄：0x" << hMutBirdAni << logger->endl;
 	if (NULL == hMutBirdAni)
 		throw stdWCexception(L"无效互斥锁句柄！");
@@ -695,45 +699,62 @@ void Game::subGame() throw()
 	{
 		static char c = '\0';
 
+		*logger << L"绘制背景……" << logger->endl;
 		printBG();
+		*logger << L"绘制Logo……" << logger->endl;
 		Logo.cim.Draw(GetDC(hWnd), Logo.posx, Logo.posy, Logo.cim.GetWidth() * logoSZMultiplier, Logo.cim.GetHeight() * logoSZMultiplier);
+		*logger << L"绘制游戏开始提示……" << logger->endl;
 		printGameStartHint();
-		
+
 		*logger << L"等待用户开始信号……" << logger->endl;
 		c = waitKBEvent();
 		if (c == 0x1b)
 		{
-			*logger << L"退出动作捕获，执行退出指令" << logger->endl;
+			*logger << L"退出动作捕获，执行退出指令……" << logger->endl;
 			break;
 		}
 
-		*logger << L"设定初始数据" << logger->endl;
-		bird.setY(birdDefPosY);
-		downSpeed = defDownSpeed;
-		pPipe->setX(BG.im.getwidth());
-		pPipe->setYDn(rangePipeDn(rand));
-		bird.changeVisibility();
-		lockPipe = true;
-		lockBird = true;
+		*logger << L"设定初始数据……" << logger->endl;
 		isGrounded = false;
+		downSpeed = defDownSpeed;
 		score = 0;
-		canIgetonepoint = true;
 
+		*logger << L"显示Hint图层……" << logger->endl;
 		hint.changeVisibility();
 
+		*logger << L"设置显示管道初始位置及显示图层……" << logger->endl;
+		for (INT i = 0; i < PipeObjNum; ++i)
+		{
+			pipe[i].setX(BG.im.getwidth() + i * dPipeHorizontal);
+			pipe[i].setYDn(rangePipeDn(rand));
+			pipe[i].changeVisibility();
+		}
+		*logger << L"锁定管道动作……" << logger->endl;
+		lockPipe = true;
+
+		*logger << L"设置显示Bird初始位置及显示图层……" << logger->endl;
+		bird.setY(birdDefPosY);
+		bird.changeVisibility();
+
+		*logger << L"锁定Bird动作……" << logger->endl;
+		lockBird = true;
+
+
 		// Clear texts
-		*logger << L"释放异步刷新线程" << logger->endl;
+		*logger << L"释放异步刷新线程……" << logger->endl;
 		ReleaseMutex(hMutRef);
 
-		*logger << L"释放动画计算线程" << logger->endl;
+		*logger << L"释放动画计算线程……" << logger->endl;
 		ReleaseMutex(hMutGNDAni);
 		ReleaseMutex(hMutBirdAni);
 
 		// Countdown
+		*logger << L"插入倒计时图层……" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexRef);
 		fxLayers.push_back(printCountdown);
 		ReleaseMutex(hMutRef);
+
 		*logger << L"倒计时……" << logger->endl;
 		for (cntdwnChar = L'3'; cntdwnChar > L'0'; --cntdwnChar)
 		{
@@ -741,94 +762,129 @@ void Game::subGame() throw()
 			Sleep(500);
 		}
 
+		*logger << L"隐藏Hint图层……" << logger->endl;
 		hint.changeVisibility();
+		*logger << L"删除倒计时图层……" << logger->endl;
 		fxLayers.clear();
 
-		*logger << L"插入分数显示函数图层" << logger->endl;
+		*logger << L"插入分数显示函数图层……" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexRef);
 		fxLayers.push_back(printScore);
 		ReleaseMutex(hMutRef);
 
+		*logger << L"解锁Bird动作……" << logger->endl;
 		lockBird = false;
-		*logger << L"清空键盘事件队列" << logger->endl;
+		*logger << L"清空键盘事件队列……" << logger->endl;
 		clearQueue(KBEMsgQueue);
 
 		// Battle control online :P
-		pPipe->changeVisibility();
+		*logger << L"用户操作限制已解除" << logger->endl;
 
 		// Game start
+		
 		gameState = true;
 		lockPipe = false;
+		INT lastPassedPipeNum = -1;
 
 		for (; ; )
 		{
+			const static INT birdLbound = bird.getX();
+			const static INT birdRbound = bird.getX() + bird[0].getwidth();
+			const static INT pipeWidth = pipe[0][0].getwidth();
+			const static INT birdHeight = bird[0].getheight();
+			// const static INT birdDbound = bird.getY() + bird[0].getheight();
+
+			static INT curPipeX[PipeObjNum] = { 0 };
+			static INT curPipeYDn[PipeObjNum] = { 0 };
+			static INT curBirdY = 0;
+
 			if (bird.getY() + bird[0].getheight() - 6 > BG.im.getheight() + BG.posy)	// Grounded
 			{
+				*logger << L"落地判定" << logger->endl;
 				isGrounded = true;
 				break;
 			}
 
-			else if (bird.getX() + bird[0].getwidth() - 4 >= pipe.getX() && bird.getX() + 4 <= pipe.getX() + pipe[0].getwidth())
+			for (INT i = 0; i < PipeObjNum; ++i)
 			{
-				if (bird.getY() + 2 < pipe.getYDn() - dPipeVertical || bird.getY() + bird[0].getheight() - 2 > pipe.getYDn())		// On no...
+				WaitForSingleObject(hMutGNDAni, INFINITE);
+				OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexGNDAni);
+				curPipeX[i] = (pPipe + i)->getX();
+				curPipeYDn[i] = (pPipe + i)->getYDn();
+				ReleaseMutex(hMutGNDAni);
+			}
+			curBirdY = bird.getY();
+
+			for (INT i = 0; i < PipeObjNum; ++i)
+			{
+				if (birdRbound - 4 >= curPipeX[i] && birdLbound + 4 <= curPipeX[i] + pipeWidth)
 				{
-					sndPlaySoundW((LPWSTR)lpWAVHit, SND_MEMORY | SND_ASYNC);
-					break;
-				}
-				
-				if (bird.getX() == pipe.getX())		// Got one score~
-					if (canIgetonepoint)
+					if (curBirdY + 2 < curPipeYDn[i] - dPipeVertical || curBirdY + birdHeight - 2 > curPipeYDn[i])		// On no...
 					{
-						sndPlaySoundW((LPWSTR)lpWAVPoint, SND_MEMORY | SND_ASYNC);
-						++score;
-						canIgetonepoint = false;
+						sndPlaySoundW((LPWSTR)lpWAVHit, SND_MEMORY | SND_ASYNC);
+						*logger << L"撞击判定" << logger->endl;
+						goto Gameover;
 					}
+
+					if (birdLbound == curPipeX[i])		// Got one score~
+						if (i != lastPassedPipeNum)
+						{
+							sndPlaySoundW((LPWSTR)lpWAVPoint, SND_MEMORY | SND_ASYNC);
+							*logger << L"得分" << logger->endl;
+							++score;
+							lastPassedPipeNum = i;
+						}
+				}
 			}
 		}
 
 		// Game Ends
+		Gameover:
 		gameState = false;
 
 		// Battle control terminated.
 		*logger << L"游戏结束" << logger->endl;
-		*logger << L"锁定动画计算线程（地面）" << logger->endl;
+		*logger << L"锁定动画计算线程（地面）……" << logger->endl;
 		WaitForSingleObject(hMutGNDAni, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexGNDAni);
 
 		if (!isGrounded)
 		{
 			stimulate();
 			downSpeed = defDownSpeed;
 			sndPlaySoundW((LPWSTR)lpWAVDie, SND_MEMORY | SND_ASYNC);
-			while (bird.getY() + bird[0].getheight() - 2 <= BG.im.getheight() + BG.posy);
+			while (bird.getY() + bird[0].getheight() - 4 <= BG.im.getheight() + BG.posy);
 		}
 
-		*logger << L"锁定动画计算线程（Bird）" << logger->endl;
+		*logger << L"锁定动画计算线程（Bird）……" << logger->endl;
 		WaitForSingleObject(hMutBirdAni, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexBirdAnimation");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexBird);
 		Sleep(1000);
 
-		*logger << L"删除 Bird 图层" << logger->endl;
+		*logger << L"隐藏Bird图层……" << logger->endl;
 		bird.changeVisibility();
-		pipe.changeVisibility();
 
-		*logger << L"删除分数显示函数图层" << logger->endl;
+		*logger << L"隐藏管道图层……" << logger->endl;
+		for (INT i = 0; i < PipeObjNum; ++i)
+			pipe[i].changeVisibility();
+
+		*logger << L"删除分数显示函数图层……" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexRef);
 		fxLayers.pop_back();
 		ReleaseMutex(hMutRef);
 
-		*logger << L"锁定异步刷新线程" << logger->endl;
+		*logger << L"锁定异步刷新线程……" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexRef);
 
 
-		*logger << L"清空键盘事件队列" << logger->endl;
+		*logger << L"清空键盘事件队列……" << logger->endl;
 		clearQueue(KBEMsgQueue);;
 
-		*logger << L"显示分数结算界面" << logger->endl;
-
+		*logger << L"显示分数结算界面……" << logger->endl;
+		*logger << L"显示Game Over标题图层……" << logger->endl;
 		GameOver.cim.Draw
 		(
 			GetDC(hWnd),
@@ -836,6 +892,8 @@ void Game::subGame() throw()
 			GameOver.cim.GetWidth() * GameOverBannerSZMultiplier,
 			GameOver.cim.GetHeight() * GameOverBannerSZMultiplier
 		);
+
+		*logger << L"显示计分板标题图层……" << logger->endl;
 		Scoreboard.cim.Draw
 		(
 			GetDC(hWnd),
@@ -843,20 +901,27 @@ void Game::subGame() throw()
 			Scoreboard.cim.GetWidth() * ScoreboardSZMultiplier,
 			Scoreboard.cim.GetHeight() * ScoreboardSZMultiplier
 		);
+
+		*logger << L"显示奖牌图层……" << logger->endl;
 		medal.changeState(score / 10);
 		medal.draw();
 
+		*logger << L"显示重玩按钮图层……" << logger->endl;
 		bRestart.cim.Draw(GetDC(hWnd), bRestart.posx, bRestart.posy);
 		ScoreboardScorePosX = Scoreboard.posx + 160 * ScoreboardSZMultiplier;
 		ScoreboardHScorePosX = ScoreboardScorePosX;
 
 		if (score > highscore)
 		{
+			*logger << L"显示新纪录标记图层……" << logger->endl;
 			highscore = score;
 			Highscore.cim.Draw(GetDC(hWnd), Highscore.posx, Highscore.posy);
 		}
 
+		*logger << L"显示分数……" << logger->endl;
 		printEndScore();
+
+		*logger << L"显示最高分……" << logger->endl;
 		printEndHighScore();
 
 		*logger << L"清空键盘事件队列" << logger->endl;
@@ -864,7 +929,6 @@ void Game::subGame() throw()
 		waitKBEvent();
 	}
 
-	
 	// Main loop ends
 
 	*logger << L"游戏退出中……" << logger->endl;
@@ -905,7 +969,7 @@ void Game::printGameStartHint()
 	if (firstrun)
 	{
 		LogFontDef.lfHeight = startftsz;
-		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof (LogFontDef.lfFaceName) / sizeof (WCHAR));
+		wcsncpy_s(LogFontDef.lfFaceName, Game::lpFontName, sizeof(LogFontDef.lfFaceName) / sizeof(WCHAR));
 		firstrun = false;
 	}
 
@@ -1053,7 +1117,7 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 	for (; ; )
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexRefresh");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexRef);
 
 		BeginBatchDraw();
 
@@ -1062,12 +1126,13 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 			for (int j = 0; j < mainScene[i].size(); ++j)
 				if (NULL != mainScene[i][j])
 					putimage(mainScene[i][j]->posx, mainScene[i][j]->posy, &(mainScene[i][j]->im), mainScene[i][j]->dwRop);
-		
+
 		// For class Hint
 		pHint->draw();
 
 		// For class Pipe
-		pPipe->draw();
+		for (INT i = 0; i < PipeObjNum; ++i)
+			(pPipe + i)->draw();
 
 		// For Ground (Have to cover pipes up)
 		putimage(Ground.posx, Ground.posy, &Ground.im, SRCCOPY);
@@ -1092,7 +1157,7 @@ DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 {
 	static char c;
 	static UCHAR asc;
-	
+
 	for (; ; )
 	{
 		c = _getch();
@@ -1121,7 +1186,7 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 	for (UINT iSync = 0; ; ++iSync)
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexBirdAnimation");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexBird);
 
 		if (lockBird)					// Bird animation (static)
 		{
@@ -1155,7 +1220,7 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 	for (; ; )
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
-		OpenMutexW(SYNCHRONIZE, FALSE, L"MutexGNDAnimation");
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexGNDAni);
 
 		Ground.posx -= 1;			// Going-forward animation
 		if (Ground.posx < lBoundGroundImg)
@@ -1163,19 +1228,19 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 
 
 		if (!lockPipe)				// Pipe animation (in sync with ground)
-		{
-			if (pPipe->getX() + (*pPipe)[0].getwidth() < 0)
+			for (INT i = 0; i < PipeObjNum; ++i)
 			{
-				rand.seed((UINT) time(NULL));
-				pPipe->setX(BG.im.getwidth());
-				pPipe->setYDn(rangePipeDn(rand));
-				canIgetonepoint = true;
+				if ((pPipe + i)->getX() + (*(pPipe + i))[0].getwidth() < 0)
+				{
+					rand.seed((UINT)time(NULL));
+					(pPipe + i)->setX(BG.im.getwidth() + dPipeHorizontal - (*pPipe)[0].getwidth());
+					(pPipe + i)->setYDn(rangePipeDn(rand));
+				}
+				(pPipe + i)->gain(-1);
 			}
-			pPipe->gain(-1);
-		}
 
 		ReleaseMutex((HANDLE *)lpParam);
-		Sleep(2);
+		Sleep(3);
 	}
 }
 
@@ -1255,15 +1320,6 @@ LPVOID Game::GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) th
 	return lpRawWAV;
 }
 
-template<class T>
-std::queue<T> &Game::clearQueue(std::queue<T> &q)
-{
-	std::queue<T> empty;
-	swap(empty, q);
-	return q;
-}
-
-
 // Namespace cmdLineCfg::
 
 bool cmdLineCfg::parseCmdLine(const _In_ int argc, _In_ char *argv[])
@@ -1292,4 +1348,3 @@ bool cmdLineCfg::parseCmdLine(const _In_ int argc, _In_ char *argv[])
 	}
 	return true;
 }
-

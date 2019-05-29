@@ -15,7 +15,7 @@ namespace cmdLineCfg
 	bool fileLogged = false;
 #endif
 
-	
+
 	bool showHelp = false;
 	INT argvLogFilePathIndex = 0;
 
@@ -46,8 +46,9 @@ namespace Game
 	const INT ScoreboardScorePosY = ScoreboardPosY + 32 * ScoreboardSZMultiplier;
 	const INT ScoreboardHScorePosY = ScoreboardScorePosY + 42 * ScoreboardSZMultiplier;
 	const INT RestartButtonPosY = 700;
+	const INT PipeObjNum = 3;
 	const INT dPipeVertical = 200;
-	const INT dPipeHorizontal = 128;
+	const INT dPipeHorizontal = 384;
 	const INT birdDefPosY = 450;
 	const INT birdGain = 20;
 	const INT birdStaticWingPeriod = 15;
@@ -63,6 +64,9 @@ namespace Game
 	const INT lBoundGroundImg = -36;
 	const INT lBoundPipeDn = 300;
 	const INT uBoundPipeDn = WNDWIDTH - 20;
+	const LPCWSTR CWCStrMutexRef = L"MutexRefresh";
+	const LPCWSTR CWCStrMutexGNDAni = L"MutexGNDAnimation";
+	const LPCWSTR CWCStrMutexBird = L"MutexBirdAnimation";
 
 	// Data structures
 	struct OBJIMG
@@ -77,7 +81,7 @@ namespace Game
 		CImage cim;
 		INT posx = NULL, posy = NULL;
 	};
-	
+
 	class Hint
 	{
 	public:
@@ -129,7 +133,7 @@ namespace Game
 			const LPCWSTR pResName3, const LPCWSTR pResName3_m,
 			const LPCWSTR pResType
 		) throw();
-		
+
 		void changeState();
 		void changeState(INT state);
 		void changeVisibility();
@@ -230,10 +234,10 @@ namespace Game
 	// Types
 	typedef std::vector<OBJIMG *> LAYER;
 	typedef std::vector<LAYER> SCENE;
-	typedef void (*fxpDrawing)();
+	typedef void(*fxpDrawing)();
 	typedef std::vector<fxpDrawing> FXLAYERS;
 	typedef std::queue<CHAR> KBEMSGQUEUE;
-	
+
 	// Variables
 	WCHAR cntdwnChar = L'3';
 	INT score = 0;
@@ -241,7 +245,6 @@ namespace Game
 	DOUBLE downSpeed;
 	volatile bool lockPipe = true;
 	volatile bool lockBird = true;
-	volatile bool canIgetonepoint = false;
 	bool gameState = false;
 	bool isGrounded = false;
 	INT ScoreboardScorePosX = 0;
@@ -267,9 +270,6 @@ namespace Game
 	OBJCIMG bRestart;
 
 	// Handles
-	HANDLE hMutRef = NULL;
-	HANDLE hMutGNDAni = NULL;
-	HANDLE hMutBirdAni = NULL;
 	HWND hWnd = NULL;
 
 	// Raw entities pointers
@@ -309,8 +309,6 @@ namespace Game
 	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw();
 	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw();
 	LPVOID GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw();
-	template<class T>
-	std::queue<T> &clearQueue(std::queue<T> &q);
 }
 
 // Global variables
