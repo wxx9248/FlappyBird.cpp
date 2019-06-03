@@ -35,6 +35,7 @@ int main(_In_ int argc, _In_ char *argv[])
 		return EXIT_SUCCESS;
 	}
 
+
 	// Initiate log object
 	try
 	{
@@ -69,6 +70,13 @@ int main(_In_ int argc, _In_ char *argv[])
 	try
 	{
 		Game::hWnd = Game::createEXWindow(Game::WNDWIDTH, Game::WNDHEIGHT, cmdLineCfg::isDebugMode);
+
+		// Disabling minimize button
+		LONG oldstyle = GetWindowLongW(Game::hWnd, GWL_STYLE);
+		SetWindowLongW(Game::hWnd, GWL_STYLE, oldstyle & ~WS_MINIMIZEBOX);
+		
+		// Always on top
+		SetWindowPos(Game::hWnd, HWND_TOPMOST, 0, 0, Game::WNDWIDTH, Game::WNDHEIGHT, 0);
 	}
 	catch (stdWCexception e)
 	{
@@ -461,8 +469,6 @@ void Game::Medal::init
 			throw stdWCexception(L"Platinum 奖牌 资源无法加载");
 	}
 	Medal::hWnd = hWnd;
-	posxMedal;
-	posyMedal;
 }
 
 void Game::Medal::draw() throw()
@@ -647,18 +653,17 @@ void Game::subGame() throw()
 	if (NULL == hMutRef)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
-	*logger << L"正在创建互斥锁（动画计算线程，地面）……" << logger->endl;
+	*logger << L"正在创建互斥锁（动画计算线程，地面，已冻结）……" << logger->endl;
 	HANDLE hMutGNDAni = CreateMutexW(NULL, TRUE, CWCStrMutexGNDAni);
 	*logger << L"互斥锁句柄：0x" << hMutGNDAni << logger->endl;
 	if (NULL == hMutGNDAni)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
-	*logger << L"正在创建互斥锁（动画计算线程，Bird）……" << logger->endl;
+	*logger << L"正在创建互斥锁（动画计算线程，Bird，已冻结）……" << logger->endl;
 	HANDLE hMutBirdAni = CreateMutexW(NULL, TRUE, CWCStrMutexBird);
 	*logger << L"互斥锁句柄：0x" << hMutBirdAni << logger->endl;
 	if (NULL == hMutBirdAni)
 		throw stdWCexception(L"无效互斥锁句柄！");
-
 
 	// Initialize refresh thread
 	*logger << L"正在创建异步刷新线程……" << logger->endl;
@@ -675,16 +680,15 @@ void Game::subGame() throw()
 	*logger << L"线程句柄：0x" << hThBirdAni << logger->endl;
 
 
-	// Initlialize keyboard event listening thread
+	// Initialize keyboard event listening thread
 	*logger << L"正在创建键盘事件处理线程……" << logger->endl;
 	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, NULL, 0, NULL);
 	*logger << L"线程句柄：0x" << hThKBEHandler << logger->endl;
 
-	// Initlialize keyboard event listening thread
+	// Initialize keyboard event listening thread
 	*logger << L"正在创建鼠标事件转换线程……" << logger->endl;
 	HANDLE hThMSEHandler = CreateThread(NULL, 0, MSELoop, NULL, 0, NULL);
 	*logger << L"线程句柄：0x" << hThMSEHandler << logger->endl;
-
 
 	*logger << L"等待互斥锁空闲……" << logger->endl;
 	WaitForSingleObject(hMutRef, INFINITE);
@@ -697,7 +701,7 @@ void Game::subGame() throw()
 
 	for (; ; )
 	{
-		static char c = '\0';
+		static CHAR c = '\0';
 
 		*logger << L"绘制背景……" << logger->endl;
 		printBG();
@@ -775,6 +779,7 @@ void Game::subGame() throw()
 
 		*logger << L"解锁Bird动作……" << logger->endl;
 		lockBird = false;
+		bird.changeState(2);
 		*logger << L"清空键盘事件队列……" << logger->endl;
 		clearQueue(KBEMsgQueue);
 
@@ -793,15 +798,16 @@ void Game::subGame() throw()
 			const static INT birdRbound = bird.getX() + bird[0].getwidth();
 			const static INT pipeWidth = pipe[0][0].getwidth();
 			const static INT birdHeight = bird[0].getheight();
-			// const static INT birdDbound = bird.getY() + bird[0].getheight();
 
 			static INT curPipeX[PipeObjNum] = { 0 };
 			static INT curPipeYDn[PipeObjNum] = { 0 };
 			static INT curBirdY = 0;
 
-			if (bird.getY() + bird[0].getheight() - 6 > BG.im.getheight() + BG.posy)	// Grounded
+			if (bird.getY() + bird[0].getheight() >= BG.im.getheight() + BG.posy)	// Grounded
 			{
 				*logger << L"落地判定" << logger->endl;
+				downSpeed = 0;
+				bird.setY(BG.im.getheight() - bird[0].getheight());
 				isGrounded = true;
 				break;
 			}
@@ -815,12 +821,12 @@ void Game::subGame() throw()
 				ReleaseMutex(hMutGNDAni);
 			}
 			curBirdY = bird.getY();
-
+			
 			for (INT i = 0; i < PipeObjNum; ++i)
 			{
-				if (birdRbound - 4 >= curPipeX[i] && birdLbound + 4 <= curPipeX[i] + pipeWidth)
+				if (birdRbound - 11 >= curPipeX[i] && birdLbound + 10 <= curPipeX[i] + pipeWidth)
 				{
-					if (curBirdY + 2 < curPipeYDn[i] - dPipeVertical || curBirdY + birdHeight - 2 > curPipeYDn[i])		// On no...
+					if (curBirdY + 5 < curPipeYDn[i] - dPipeVertical || curBirdY + birdHeight - 5 > curPipeYDn[i])		// On no...
 					{
 						sndPlaySoundW((LPWSTR)lpWAVHit, SND_MEMORY | SND_ASYNC);
 						*logger << L"撞击判定" << logger->endl;
@@ -840,21 +846,23 @@ void Game::subGame() throw()
 		}
 
 		// Game Ends
-		Gameover:
+	Gameover:
 		gameState = false;
 
 		// Battle control terminated.
 		*logger << L"游戏结束" << logger->endl;
+
 		*logger << L"锁定动画计算线程（地面）……" << logger->endl;
 		WaitForSingleObject(hMutGNDAni, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexGNDAni);
 
 		if (!isGrounded)
 		{
-			stimulate();
 			downSpeed = defDownSpeed;
 			sndPlaySoundW((LPWSTR)lpWAVDie, SND_MEMORY | SND_ASYNC);
-			while (bird.getY() + bird[0].getheight() - 4 <= BG.im.getheight() + BG.posy);
+			while (bird.getY() + bird[0].getheight() <= BG.im.getheight() + BG.posy);
+			downSpeed = 0;
+			bird.setY(BG.im.getheight() - bird[0].getheight());
 		}
 
 		*logger << L"锁定动画计算线程（Bird）……" << logger->endl;
@@ -1055,22 +1063,6 @@ void Game::postKBEvent(CHAR event)
 	KBEMsgQueue.push(event);
 }
 
-void Game::stimulate()
-{
-	sndPlaySoundW((LPWSTR)lpWAVWing, SND_MEMORY | SND_ASYNC);
-	lockBird = true;
-	pBird->changeState(0);
-	for (double i = birdGain; i >= 11 && pBird->getY() >= 0; i -= 0.2)
-	{
-		pBird->gain(0.01 * -i * i);
-		Sleep(3);
-	}
-	pBird->changeState(2);
-	clearQueue(KBEMsgQueue);
-	lockBird = false;
-}
-
-
 CHAR Game::asyncGetKBEvent()
 {
 	CHAR event = '\0';
@@ -1095,7 +1087,7 @@ CHAR Game::waitKBEvent()
 	return event;
 }
 
-HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In_ bool isWindowShow)
+HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In_ bool isWindowShow) throw()
 {
 	HWND hWnd;
 	if (isWindowShow)
@@ -1108,7 +1100,6 @@ HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In
 
 	return hWnd;
 }
-
 
 DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 {
@@ -1148,7 +1139,7 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 		EndBatchDraw();
 
 		ReleaseMutex((HANDLE *)lpParam);
-		Sleep(3);
+		Sleep(2);
 	}
 	return 0;
 }
@@ -1156,7 +1147,7 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 {
 	static char c;
-	static UCHAR asc;
+	static INT8 asc;
 
 	for (; ; )
 	{
@@ -1183,6 +1174,7 @@ DWORD WINAPI Game::MSELoop(LPVOID lpParam)
 
 DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 {
+	downSpeed = defDownSpeed;
 	for (UINT iSync = 0; ; ++iSync)
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
@@ -1190,6 +1182,7 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 
 		if (lockBird)					// Bird animation (static)
 		{
+			downSpeed = defDownSpeed;
 			if (!(iSync % birdStaticWingPeriod))
 				pBird->changeState();
 
@@ -1199,14 +1192,13 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 		else							// Bird animation (dynamic)		
 		{
 			if (asyncGetKBEvent() && gameState)
-			{
-				stimulate();
-				downSpeed = defDownSpeed;
-			}
-			downSpeed += downSpeedGain;
-			pBird->gain(downSpeedQRatio * downSpeed * downSpeed);
-		}
+				downSpeed = defDownSpeedUp;
 
+			pBird->gain(speedQRatio * downSpeed * downSpeed * (downSpeed < 0 ? -1 : 1) + (downSpeed < 0 ? -1 : 2));
+			downSpeed < 0 ? downSpeed += upSpeedGain : downSpeed += downSpeedGain;
+
+			Sleep(2);
+		}
 		ReleaseMutex((HANDLE *)lpParam);
 		Sleep(5);
 	}
@@ -1240,7 +1232,7 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 			}
 
 		ReleaseMutex((HANDLE *)lpParam);
-		Sleep(3);
+		Sleep(2);
 	}
 }
 

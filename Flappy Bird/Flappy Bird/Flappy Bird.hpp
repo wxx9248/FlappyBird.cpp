@@ -47,17 +47,18 @@ namespace Game
 	const INT ScoreboardHScorePosY = ScoreboardScorePosY + 42 * ScoreboardSZMultiplier;
 	const INT RestartButtonPosY = 700;
 	const INT PipeObjNum = 3;
-	const INT dPipeVertical = 200;
+	const INT dPipeVertical = 220;
 	const INT dPipeHorizontal = 384;
 	const INT birdDefPosY = 450;
-	const INT birdGain = 20;
 	const INT birdStaticWingPeriod = 15;
 	const INT birdStaticFlucPeriod = 15;
 	const DOUBLE birdStaticFlucAngFreq = 0.05;
 	const DOUBLE birdStaticFlucAmplitude = 2;
-	const DOUBLE defDownSpeed = 1.414213562373095;
-	const DOUBLE downSpeedGain = 0.05;
-	const DOUBLE downSpeedQRatio = 0.2;
+	const DOUBLE defDownSpeed = 0;
+	const DOUBLE defDownSpeedUp = -10.5;
+	const DOUBLE upSpeedGain = 0.42;
+	const DOUBLE downSpeedGain = 0.22;
+	const DOUBLE speedQRatio = 0.07;
 	const INT startftsz = 32;
 	const INT digitftsz = 72;
 	const INT Scoreboarddigitftsz = 48;
@@ -67,6 +68,7 @@ namespace Game
 	const LPCWSTR CWCStrMutexRef = L"MutexRefresh";
 	const LPCWSTR CWCStrMutexGNDAni = L"MutexGNDAnimation";
 	const LPCWSTR CWCStrMutexBird = L"MutexBirdAnimation";
+	const LPCWSTR CWCStrMutexTQStimulate = L"MutexTQStimulate";
 
 	// Data structures
 	struct OBJIMG
@@ -237,6 +239,7 @@ namespace Game
 	typedef void(*fxpDrawing)();
 	typedef std::vector<fxpDrawing> FXLAYERS;
 	typedef std::queue<CHAR> KBEMSGQUEUE;
+	typedef std::vector<HANDLE> THREADQUEUE;
 
 	// Variables
 	WCHAR cntdwnChar = L'3';
@@ -280,7 +283,7 @@ namespace Game
 
 	// Functions
 	void subGame() throw();
-	HWND createEXWindow(const int width, const int height, const bool isWindowShow);
+	HWND createEXWindow(const int width, const int height, const bool isWindowShow) throw();
 
 	// - Static drawing functions
 	void printBG();
@@ -289,9 +292,6 @@ namespace Game
 	void printScore();
 	void printEndScore();
 	void printEndHighScore();
-
-	// - Behavior functions
-	void stimulate();
 
 	// - Event handler functions
 	void postKBEvent(CHAR event);
