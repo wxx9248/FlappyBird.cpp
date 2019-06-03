@@ -5,7 +5,7 @@
 #include "Flappy Bird.hpp"
 #include "showHelp.hpp"
 
-#define sndPlaySoundW(X, Y, Z)
+#define sndPlaySoundW(X, Y)
 
 int main(_In_ int argc, _In_ char *argv[])
 {
@@ -126,7 +126,7 @@ Game::Hint::Hint
 (
 	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
 	const LPCWSTR pResType
-) throw()
+) throw(...)
 {
 	init
 	(
@@ -139,17 +139,17 @@ void Game::Hint::init
 (
 	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
 	const LPCWSTR pResType
-)
+) throw(...)
 {
 	loadimage(imgHint, pResType, pResName1_m);
-	loadimage(imgHint, pResType, pResName1_m, imgHint->getwidth() * hintSZMultiplier, imgHint->getheight() * hintSZMultiplier, true);
+	loadimage(imgHint, pResType, pResName1_m, INT(imgHint->getwidth() * hintSZMultiplier), INT(imgHint->getheight() * hintSZMultiplier), true);
 	if (!(imgHint[0].getwidth() && imgHint[0].getheight()))
 	{
 		throw stdWCexception(L"Hint1 mask 资源加载失败！");
 	}
 
 	loadimage(imgHint + 1, pResType, pResName1);
-	loadimage(imgHint + 1, pResType, pResName1, imgHint[1].getwidth() * hintSZMultiplier, imgHint[1].getheight() * hintSZMultiplier, true);
+	loadimage(imgHint + 1, pResType, pResName1, INT(imgHint[1].getwidth() * hintSZMultiplier), INT(imgHint[1].getheight() * hintSZMultiplier), true);
 	if (!(imgHint[1].getwidth() && imgHint[1].getheight()))
 	{
 		throw stdWCexception(L"Hint1 资源加载失败！");
@@ -201,7 +201,7 @@ Game::Bird::Bird
 	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
 	const LPCWSTR pResName3, const LPCWSTR pResName3_m,
 	const LPCWSTR pResType
-) throw()
+) throw(...)
 {
 	init
 	(
@@ -218,7 +218,7 @@ void Game::Bird::init
 	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
 	const LPCWSTR pResName3, const LPCWSTR pResName3_m,
 	const LPCWSTR pResType
-)
+) throw(...)
 {
 	loadimage(imgBird, pResType, pResName1_m);
 	if (!(imgBird[0].getwidth() && imgBird[0].getheight()))
@@ -327,7 +327,7 @@ Game::Pipe::Pipe
 	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
 	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
 	const LPCWSTR pResType
-)
+) throw(...)
 {
 	init
 	(
@@ -342,7 +342,7 @@ void Game::Pipe::init
 	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
 	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
 	const LPCWSTR pResType
-)
+) throw(...)
 {
 	loadimage(imgPipe, pResType, pResName1_m);
 	if (!(imgPipe[0].getwidth() && imgPipe[0].getheight()))
@@ -430,7 +430,7 @@ Game::Medal::Medal
 	const LPCWSTR pResName3, const LPCWSTR pResName4,
 	const LPCWSTR pResType, const OBJCIMG &ScoreBoard,
 	const HWND hWnd
-) throw()
+) throw(...)
 {
 	init
 	(
@@ -447,7 +447,7 @@ void Game::Medal::init
 	const LPCWSTR pResName3, const LPCWSTR pResName4,
 	const LPCWSTR pResType, const OBJCIMG &ScoreBoard,
 	const HWND hWnd
-) throw()
+) throw(...)
 {
 	if (NULL == hWnd)
 		throw stdWCexception(L"窗口句柄无效");
@@ -471,7 +471,7 @@ void Game::Medal::init
 	Medal::hWnd = hWnd;
 }
 
-void Game::Medal::draw() throw()
+void Game::Medal::draw() throw(...)
 {
 	if (NULL == hWnd)
 		throw stdWCexception(L"窗口句柄无效");
@@ -480,8 +480,8 @@ void Game::Medal::draw() throw()
 		(
 			GetDC(hWnd),
 			posxMedal, posyMedal,
-			imgMedal[MedalState - 1].GetWidth() * ScoreboardSZMultiplier,
-			imgMedal[MedalState - 1].GetHeight() * ScoreboardSZMultiplier
+			INT(imgMedal[MedalState - 1].GetWidth() * ScoreboardSZMultiplier),
+			INT(imgMedal[MedalState - 1].GetHeight() * ScoreboardSZMultiplier)
 		);
 }
 
@@ -495,7 +495,7 @@ INT Game::Medal::getState()
 	return MedalState;
 }
 
-void Game::Medal::changeWindowHandle(HWND hWnd) throw()
+void Game::Medal::changeWindowHandle(HWND hWnd) throw(...)
 {
 	if (NULL == hWnd)
 		throw stdWCexception(L"窗口句柄无效");
@@ -524,7 +524,7 @@ CImage &Game::Medal::operator[](INT index)
 }
 
 
-void Game::subGame() throw()
+void Game::subGame() throw(...)
 {
 	*logger << L"窗口句柄：0x" << hWnd << logger->endl;
 
@@ -546,7 +546,7 @@ void Game::subGame() throw()
 	// Initlialize game logo
 	*logger << L"初始化Logo图层(PNG, CImage)……" << logger->endl;
 	Logo.cim.Load(GetPNGStreamW(L"IDR_PNG_LOGO", L"IMAGE"));
-	Logo.posx = (WNDWIDTH - Logo.cim.GetWidth() * logoSZMultiplier) / 2;
+	Logo.posx = INT((WNDWIDTH - Logo.cim.GetWidth() * logoSZMultiplier)) / 2;
 	Logo.posy = logoPosY;
 
 	// Initialize hint layer
@@ -588,13 +588,13 @@ void Game::subGame() throw()
 	// Inilialize game over mark layer
 	*logger << L"初始化游戏结束标记图层(PNG, CImage)……" << logger->endl;
 	GameOver.cim.Load(GetPNGStreamW(L"IDR_PNG_GAMEOVER", L"IMAGE"));
-	GameOver.posx = (WNDWIDTH - GameOver.cim.GetWidth() * GameOverBannerSZMultiplier) / 2;
+	GameOver.posx = INT((WNDWIDTH - GameOver.cim.GetWidth() * GameOverBannerSZMultiplier)) / 2;
 	GameOver.posy = GameOverBannerPosY;
 
 	// Initlialize scoreboard layer
 	*logger << L"初始化计分板图层(PNG, CImage)……" << logger->endl;
 	Scoreboard.cim.Load(GetPNGStreamW(L"IDR_PNG_SCOREBOARD", L"IMAGE"));
-	Scoreboard.posx = (WNDWIDTH - Scoreboard.cim.GetWidth() * ScoreboardSZMultiplier) / 2;
+	Scoreboard.posx = INT((WNDWIDTH - Scoreboard.cim.GetWidth() * ScoreboardSZMultiplier)) / 2;
 	Scoreboard.posy = ScoreboardPosY;
 
 	// Initlialize medal layer
@@ -606,13 +606,13 @@ void Game::subGame() throw()
 		L"IMAGE", Scoreboard, hWnd
 	);
 	pMedal = &medal;
-	medal.setX(Scoreboard.posx + 27 * ScoreboardSZMultiplier);
+	medal.setX(INT(Scoreboard.posx + 27 * ScoreboardSZMultiplier));
 
 	// Initlilize highscore mark layer
 	*logger << L"初始化高分标记图层(PNG, CImage)……" << logger->endl;
 	Highscore.cim.Load(GetPNGStreamW(L"IDR_PNG_HIGHSCORE", L"IMAGE"));
-	Highscore.posx = Scoreboard.posx + 140 * ScoreboardSZMultiplier;
-	Highscore.posy = ScoreboardPosY + 57 * ScoreboardSZMultiplier;
+	Highscore.posx = INT(Scoreboard.posx + 140 * ScoreboardSZMultiplier);
+	Highscore.posy = INT(ScoreboardPosY + 57 * ScoreboardSZMultiplier);
 
 	// Initlialize replay button layer
 	*logger << L"初始化重玩按钮图层(PNG, CImage)……" << logger->endl;
@@ -706,7 +706,7 @@ void Game::subGame() throw()
 		*logger << L"绘制背景……" << logger->endl;
 		printBG();
 		*logger << L"绘制Logo……" << logger->endl;
-		Logo.cim.Draw(GetDC(hWnd), Logo.posx, Logo.posy, Logo.cim.GetWidth() * logoSZMultiplier, Logo.cim.GetHeight() * logoSZMultiplier);
+		Logo.cim.Draw(GetDC(hWnd), Logo.posx, Logo.posy, INT(Logo.cim.GetWidth() * logoSZMultiplier), INT(Logo.cim.GetHeight() * logoSZMultiplier));
 		*logger << L"绘制游戏开始提示……" << logger->endl;
 		printGameStartHint();
 
@@ -897,8 +897,8 @@ void Game::subGame() throw()
 		(
 			GetDC(hWnd),
 			GameOver.posx, GameOver.posy,
-			GameOver.cim.GetWidth() * GameOverBannerSZMultiplier,
-			GameOver.cim.GetHeight() * GameOverBannerSZMultiplier
+			INT(GameOver.cim.GetWidth() * GameOverBannerSZMultiplier),
+			INT(GameOver.cim.GetHeight() * GameOverBannerSZMultiplier)
 		);
 
 		*logger << L"显示计分板标题图层……" << logger->endl;
@@ -906,8 +906,8 @@ void Game::subGame() throw()
 		(
 			GetDC(hWnd),
 			Scoreboard.posx, Scoreboard.posy,
-			Scoreboard.cim.GetWidth() * ScoreboardSZMultiplier,
-			Scoreboard.cim.GetHeight() * ScoreboardSZMultiplier
+			INT(Scoreboard.cim.GetWidth() * ScoreboardSZMultiplier),
+			INT(Scoreboard.cim.GetHeight() * ScoreboardSZMultiplier)
 		);
 
 		*logger << L"显示奖牌图层……" << logger->endl;
@@ -916,7 +916,7 @@ void Game::subGame() throw()
 
 		*logger << L"显示重玩按钮图层……" << logger->endl;
 		bRestart.cim.Draw(GetDC(hWnd), bRestart.posx, bRestart.posy);
-		ScoreboardScorePosX = Scoreboard.posx + 160 * ScoreboardSZMultiplier;
+		ScoreboardScorePosX = INT(Scoreboard.posx + 160 * ScoreboardSZMultiplier);
 		ScoreboardHScorePosX = ScoreboardScorePosX;
 
 		if (score > highscore)
@@ -1087,7 +1087,7 @@ CHAR Game::waitKBEvent()
 	return event;
 }
 
-HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In_ bool isWindowShow) throw()
+HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In_ bool isWindowShow) throw(...)
 {
 	HWND hWnd;
 	if (isWindowShow)
@@ -1103,7 +1103,7 @@ HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In
 
 DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 {
-	HDC hDC;
+	HDC hDC = NULL;
 
 	for (; ; )
 	{
@@ -1187,16 +1187,22 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 				pBird->changeState();
 
 			if (!(iSync % birdStaticFlucPeriod))
-				pBird->gain(birdStaticFlucAmplitude * sinf(birdStaticFlucAngFreq * iSync));
+				pBird->gain(INT(birdStaticFlucAmplitude * sin(birdStaticFlucAngFreq * iSync)));
 		}
 		else							// Bird animation (dynamic)		
 		{
+			if (!(iSync % birdDynamicWingPeriod))
+				pBird->changeState();
+
 			if (asyncGetKBEvent() && gameState)
+			{
 				downSpeed = defDownSpeedUp;
-
-			pBird->gain(speedQRatio * downSpeed * downSpeed * (downSpeed < 0 ? -1 : 1) + (downSpeed < 0 ? -1 : 2));
+				// pBird->changeState(0);	// Ehhhh...Is there any human-being who can notice that instant change...?
+			}
+			
+			pBird->gain(INT(speedQRatio * downSpeed * downSpeed * (downSpeed < 0 ? -1 : 1) + (downSpeed < 0 ? -1 : 2)));
 			downSpeed < 0 ? downSpeed += upSpeedGain : downSpeed += downSpeedGain;
-
+			// pBird->changeState(2);
 			Sleep(2);
 		}
 		ReleaseMutex((HANDLE *)lpParam);
@@ -1236,7 +1242,7 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 	}
 }
 
-HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw()
+HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...)
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
@@ -1250,7 +1256,7 @@ HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) thro
 	if (NULL == lpRawFont)
 		throw stdWCexception(L"字体资源无效！");
 
-	size_t fontSize = SizeofResource(NULL, hResource);
+	DWORD fontSize = SizeofResource(NULL, hResource);
 	DWORD NumFonts;
 	HANDLE hFont = AddFontMemResourceEx(lpRawFont, fontSize, NULL, &NumFonts);
 	if (NULL == hFont)
@@ -1259,7 +1265,7 @@ HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) thro
 	return hFont;
 }
 
-LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw()
+LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...)
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
@@ -1295,7 +1301,7 @@ LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) thr
 		return lpStream;
 }
 
-LPVOID Game::GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw()
+LPVOID Game::GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...)
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)

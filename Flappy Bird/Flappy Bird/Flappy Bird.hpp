@@ -2,7 +2,7 @@
 #include "resource.h"
 #include "log.hpp"
 
-extern class stdWCexception;
+class stdWCexception;
 
 namespace cmdLineCfg
 {
@@ -43,8 +43,8 @@ namespace Game
 	const INT GameOverBannerPosY = 180;
 	const DOUBLE ScoreboardSZMultiplier = 2;
 	const INT ScoreboardPosY = 380;
-	const INT ScoreboardScorePosY = ScoreboardPosY + 32 * ScoreboardSZMultiplier;
-	const INT ScoreboardHScorePosY = ScoreboardScorePosY + 42 * ScoreboardSZMultiplier;
+	const INT ScoreboardScorePosY = int(ScoreboardPosY + 32 * ScoreboardSZMultiplier);
+	const INT ScoreboardHScorePosY = int(ScoreboardScorePosY + 42 * ScoreboardSZMultiplier);
 	const INT RestartButtonPosY = 700;
 	const INT PipeObjNum = 3;
 	const INT dPipeVertical = 220;
@@ -54,6 +54,7 @@ namespace Game
 	const INT birdStaticFlucPeriod = 15;
 	const DOUBLE birdStaticFlucAngFreq = 0.05;
 	const DOUBLE birdStaticFlucAmplitude = 2;
+	const INT birdDynamicWingPeriod = 10;
 	const DOUBLE defDownSpeed = 0;
 	const DOUBLE defDownSpeedUp = -10.5;
 	const DOUBLE upSpeedGain = 0.42;
@@ -92,13 +93,13 @@ namespace Game
 		(
 			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
 			const LPCWSTR pResType
-		) throw();
+		) throw(...);
 
 		void init
 		(
 			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
 			const LPCWSTR pResType
-		) throw();
+		) throw(...);
 
 		void changeVisibility();
 		bool getVisibility();
@@ -126,7 +127,7 @@ namespace Game
 			const LPCWSTR pResName2, const LPCWSTR pResName2_m,
 			const LPCWSTR pResName3, const LPCWSTR pResName3_m,
 			const LPCWSTR pResType
-		) throw();
+		) throw(...);
 
 		void init
 		(
@@ -134,7 +135,7 @@ namespace Game
 			const LPCWSTR pResName2, const LPCWSTR pResName2_m,
 			const LPCWSTR pResName3, const LPCWSTR pResName3_m,
 			const LPCWSTR pResType
-		) throw();
+		) throw(...);
 
 		void changeState();
 		void changeState(INT state);
@@ -166,14 +167,14 @@ namespace Game
 			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
 			const LPCWSTR pResName2, const LPCWSTR pResName2_m,
 			const LPCWSTR pResType
-		) throw();
+		) throw(...);
 
 		void init
 		(
 			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
 			const LPCWSTR pResName2, const LPCWSTR pResName2_m,
 			const LPCWSTR pResType
-		) throw();
+		) throw(...);
 
 		void changeVisibility();
 		bool getVisibility();
@@ -204,7 +205,7 @@ namespace Game
 			const LPCWSTR pResName3, const LPCWSTR pResName4,
 			const LPCWSTR pResType, const OBJCIMG &ScoreBoard,		// Automatic positioning
 			const HWND hWnd
-		) throw();
+		) throw(...);
 
 		void init
 		(
@@ -212,16 +213,16 @@ namespace Game
 			const LPCWSTR pResName3, const LPCWSTR pResName4,
 			const LPCWSTR pResType, const OBJCIMG &ScoreBoard,
 			const HWND hWnd
-		) throw();
+		) throw(...);
 
 		void changeState(INT state);
 		INT getState();
-		void changeWindowHandle(HWND hWnd) throw();
+		void changeWindowHandle(HWND hWnd) throw(...);
 		void setX(INT pos);
 		INT getX();
 		INT getY();
 
-		void draw() throw();
+		void draw() throw(...);
 
 		CImage &operator[](INT index);
 
@@ -229,7 +230,7 @@ namespace Game
 		HWND hWnd = NULL;
 		CImage imgMedal[4] = {};
 		INT posxMedal = 0;
-		INT posyMedal = ScoreboardPosY + 42 * ScoreboardSZMultiplier;
+		INT posyMedal = int(ScoreboardPosY + 42 * ScoreboardSZMultiplier);
 		INT MedalState = 0;		// 0, 1, 2, 3, 4
 	} *pMedal = NULL;
 
@@ -282,8 +283,8 @@ namespace Game
 	LPVOID lpWAVPoint = NULL;
 
 	// Functions
-	void subGame() throw();
-	HWND createEXWindow(const int width, const int height, const bool isWindowShow) throw();
+	void subGame() throw(...);
+	HWND createEXWindow(const int width, const int height, const bool isWindowShow) throw(...);
 
 	// - Static drawing functions
 	void printBG();
@@ -306,9 +307,9 @@ namespace Game
 	DWORD WINAPI BirdAnimationLoop(LPVOID lpParam);
 
 	// - Tool functions
-	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw();
-	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw();
-	LPVOID GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw();
+	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...);
+	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...);
+	LPVOID GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...);
 }
 
 // Global variables

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 // Exceptions
-extern class openFileFailed;
+class openFileFailed;
 
 class Outdev
 {
