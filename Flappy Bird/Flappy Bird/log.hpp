@@ -1,17 +1,20 @@
 ﻿#pragma once
 
+#include <iostream>
+#include <fstream>
+
 class Outdev
 {
 public:
 	Outdev();
 
-	Outdev(std::wstring &logFilePath);
+	Outdev(std::wstring &logFilePath) throw(stdWCexception);
 
 	~Outdev();
 
 	void init();
 
-	bool init(std::wstring &logFilePath);
+	bool init(std::wstring &logFilePath) throw(stdWCexception);
 
 	void reset();
 	void close();
@@ -34,12 +37,12 @@ public:
 	class _myendl {} endl;
 
 	Log();
-	Log(std::wstring &logFilePath);
+	Log(std::wstring &logFilePath) throw(stdWCexception);
 
 	~Log();
 
 	void init();
-	bool init(std::wstring &logFilePath);
+	bool init(std::wstring &logFilePath) throw(stdWCexception);
 
 	void reset();
 	void close();
@@ -62,7 +65,7 @@ Outdev::Outdev()
 	init();
 }
 
-Outdev::Outdev(std::wstring &logFilePath)
+Outdev::Outdev(std::wstring &logFilePath) throw(stdWCexception)
 {
 	init(logFilePath);
 }
@@ -84,16 +87,16 @@ void Outdev::init()
 	Outdev::logFile = NULL;
 }
 
-bool Outdev::init(std::wstring &logFilePath)
+bool Outdev::init(std::wstring &_logFilePath) throw(stdWCexception)
 {
-	std::wstring excwstr = L"不能打开文件:";
+	std::wstring excwstr = L"Log：不能打开文件:";
 	if (isInited)
 		close();
 
 	Outdev::logFilePath = new std::wstring;
 	if (Outdev::logFilePath == NULL)
 		throw std::bad_alloc();
-	Outdev::logFilePath = &logFilePath;
+	logFilePath = &_logFilePath;
 
 	isInited = true;
 
@@ -101,11 +104,11 @@ bool Outdev::init(std::wstring &logFilePath)
 	if (Outdev::logFilePath == NULL)
 		throw std::bad_alloc();
 
-	logFile->open(logFilePath);
+	logFile->open(_logFilePath);
 
 	if (!(*logFile))
 	{
-		throw stdWCexception(excwstr + logFilePath);
+		throw stdWCexception(excwstr + _logFilePath);
 		return false;
 	}
 	else
@@ -204,7 +207,7 @@ Log::Log()
 	init();
 }
 
-Log::Log(std::wstring &logFilePath)
+Log::Log(std::wstring &logFilePath) throw(stdWCexception)
 {
 	init(logFilePath);
 }
@@ -224,14 +227,14 @@ void Log::init()
 	Log::isIdle = true;
 }
 
-bool Log::init(std::wstring &logFilePath)
+bool Log::init(std::wstring &logFilePath) throw(stdWCexception)
 {
 	if (od != NULL)
 		close();
 
 	od = new Outdev;
-	return od->init(logFilePath);
 	Log::isIdle = true;
+	return od->init(logFilePath);
 }
 
 void Log::reset()

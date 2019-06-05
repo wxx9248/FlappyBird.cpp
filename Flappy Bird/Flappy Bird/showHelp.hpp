@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <Windows.h>
 
 LPCWSTR static hlpmsg = L"\
 用法：\"Flappy Bird.exe\" [参数列表]\

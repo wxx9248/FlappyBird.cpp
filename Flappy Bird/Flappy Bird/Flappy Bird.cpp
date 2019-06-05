@@ -1,12 +1,12 @@
 ﻿// Flappy Bird.cpp : 定义应用程序的入口点。
 //
 
-#include "stdafx.h"
+#include "stdafx.hpp"
 #include "Flappy Bird.hpp"
+#include "sfx.hpp"
 #include "showHelp.hpp"
 
 #define sndPlaySoundW(X, Y)
-
 
 int main(_In_ int argc, _In_ char *argv[])
 {
@@ -125,8 +125,8 @@ Game::Hint::Hint() {}
 
 Game::Hint::Hint
 (
-	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-	const LPCWSTR pResType
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResType
 ) throw(...)
 {
 	init
@@ -138,8 +138,8 @@ Game::Hint::Hint
 
 void Game::Hint::init
 (
-	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-	const LPCWSTR pResType
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResType
 ) throw(...)
 {
 	loadimage(imgHint, pResType, pResName1_m);
@@ -198,10 +198,10 @@ Game::Bird::Bird() {}
 
 Game::Bird::Bird
 (
-	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
-	const LPCWSTR pResName3, const LPCWSTR pResName3_m,
-	const LPCWSTR pResType
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResName2, LPCWSTR pResName2_m,
+	LPCWSTR pResName3, LPCWSTR pResName3_m,
+	LPCWSTR pResType
 ) throw(...)
 {
 	init
@@ -215,10 +215,10 @@ Game::Bird::Bird
 
 void Game::Bird::init
 (
-	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
-	const LPCWSTR pResName3, const LPCWSTR pResName3_m,
-	const LPCWSTR pResType
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResName2, LPCWSTR pResName2_m,
+	LPCWSTR pResName3, LPCWSTR pResName3_m,
+	LPCWSTR pResType
 ) throw(...)
 {
 	loadimage(imgBird, pResType, pResName1_m);
@@ -325,9 +325,9 @@ IMAGE &Game::Bird::operator[](INT index)
 Game::Pipe::Pipe() {}
 Game::Pipe::Pipe
 (
-	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
-	const LPCWSTR pResType
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResName2, LPCWSTR pResName2_m,
+	LPCWSTR pResType
 ) throw(...)
 {
 	init
@@ -340,9 +340,9 @@ Game::Pipe::Pipe
 
 void Game::Pipe::init
 (
-	const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-	const LPCWSTR pResName2, const LPCWSTR pResName2_m,
-	const LPCWSTR pResType
+	LPCWSTR pResName1, LPCWSTR pResName1_m,
+	LPCWSTR pResName2, LPCWSTR pResName2_m,
+	LPCWSTR pResType
 ) throw(...)
 {
 	loadimage(imgPipe, pResType, pResName1_m);
@@ -427,9 +427,9 @@ Game::Medal::Medal() {}
 
 Game::Medal::Medal
 (
-	const LPCWSTR pResName1, const LPCWSTR pResName2,
-	const LPCWSTR pResName3, const LPCWSTR pResName4,
-	const LPCWSTR pResType, const OBJCIMG &ScoreBoard,
+	LPCWSTR pResName1, LPCWSTR pResName2,
+	LPCWSTR pResName3, LPCWSTR pResName4,
+	LPCWSTR pResType, const OBJCIMG &ScoreBoard,
 	const HWND hWnd
 ) throw(...)
 {
@@ -444,13 +444,13 @@ Game::Medal::Medal
 
 void Game::Medal::init
 (
-	const LPCWSTR pResName1, const LPCWSTR pResName2,
-	const LPCWSTR pResName3, const LPCWSTR pResName4,
-	const LPCWSTR pResType, const OBJCIMG &ScoreBoard,
-	const HWND hWnd
+	LPCWSTR pResName1, LPCWSTR pResName2,
+	LPCWSTR pResName3, LPCWSTR pResName4,
+	LPCWSTR pResType, const OBJCIMG &ScoreBoard,
+	const HWND _hWnd
 ) throw(...)
 {
-	if (NULL == hWnd)
+	if (NULL == _hWnd)
 		throw stdWCexception(L"窗口句柄无效");
 	else if (!(ScoreBoard.cim.GetHeight() && ScoreBoard.cim.GetWidth()))
 		throw stdWCexception(L"计分板图层未正确初始化");
@@ -469,7 +469,7 @@ void Game::Medal::init
 		if (imgMedal[3].IsNull())
 			throw stdWCexception(L"Platinum 奖牌 资源无法加载");
 	}
-	Medal::hWnd = hWnd;
+	hWnd = _hWnd;
 }
 
 void Game::Medal::draw() throw(...)
@@ -496,12 +496,12 @@ INT Game::Medal::getState()
 	return MedalState;
 }
 
-void Game::Medal::changeWindowHandle(HWND hWnd) throw(...)
+void Game::Medal::changeWindowHandle(HWND _hWnd) throw(...)
 {
-	if (NULL == hWnd)
+	if (NULL == _hWnd)
 		throw stdWCexception(L"窗口句柄无效");
 	else
-		Medal::hWnd = hWnd;
+		hWnd = _hWnd;
 }
 
 void Game::Medal::setX(INT pos)
@@ -630,22 +630,8 @@ void Game::subGame() throw(...)
 		throw stdWCexception(L"TTF资源句柄无效！");
 
 	// Initialize sound fx
-	*logger << L"初始化音效资源（翅膀扇动）……" << logger->endl;
-	lpWAVWing = GetRawWAVBufferW(L"IDR_AUDIO_WING", L"AUDIO");
-	*logger << L"资源指针：0x" << lpWAVWing << logger->endl;
-
-	*logger << L"初始化音效资源（撞击）……" << logger->endl;
-	lpWAVHit = GetRawWAVBufferW(L"IDR_AUDIO_HIT", L"AUDIO");
-	*logger << L"资源指针：0x" << lpWAVHit << logger->endl;
-
-	*logger << L"初始化音效资源（死亡）……" << logger->endl;
-	lpWAVDie = GetRawWAVBufferW(L"IDR_AUDIO_DIE", L"AUDIO");
-	*logger << L"资源指针：0x" << lpWAVDie << logger->endl;
-
-	*logger << L"初始化音效资源（得分）……" << logger->endl;
-	lpWAVPoint = GetRawWAVBufferW(L"IDR_AUDIO_POINT", L"AUDIO");
-	*logger << L"资源指针：0x" << lpWAVPoint << logger->endl;
-
+	*logger << L"初始化音效对象……" << logger->endl;
+	SFX sfx(lpResIDs, L"AUDIO", sizeof(lpResIDs) / sizeof(LPCWSTR));
 
 	// Initialize MUTEX
 	*logger << L"正在创建互斥锁（异步刷新线程）……" << logger->endl;
@@ -714,7 +700,7 @@ void Game::subGame() throw(...)
 		printGameStartHint();
 
 		*logger << L"等待用户开始信号……" << logger->endl;
-		c = _getch();
+		c = CHAR(_getch());
 		if (c == 0x1b)
 		{
 			*logger << L"退出动作捕获，执行退出指令……" << logger->endl;
@@ -893,7 +879,7 @@ void Game::subGame() throw(...)
 		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexRef);
 
 		*logger << L"锁定键盘事件处理线程……" << logger->endl;
-		keybd_event(' ', 0, 0, 0);
+		PostMessageW(hWnd, WM_KEYDOWN, ' ', 1);
 		WaitForSingleObject(hMutKBE, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexKBE);
 
@@ -1096,22 +1082,20 @@ CHAR Game::waitKBEvent()
 
 HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In_ bool isWindowShow) throw(...)
 {
-	HWND hWnd;
+	HWND _hWnd;
 	if (isWindowShow)
-		hWnd = initgraph(width, height, SHOWCONSOLE);
+		_hWnd = initgraph(width, height, SHOWCONSOLE);
 	else
-		hWnd = initgraph(width, height);
+		_hWnd = initgraph(width, height);
 
-	if (NULL == hWnd)
+	if (NULL == _hWnd)
 		throw stdWCexception(L"无法创建窗口");
 
-	return hWnd;
+	return _hWnd;
 }
 
 DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 {
-	HDC hDC = NULL;
-
 	for (; ; )
 	{
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
@@ -1120,8 +1104,8 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 		BeginBatchDraw();
 
 		// For regular IMAGE
-		for (int i = 0; i < mainScene.size(); ++i)
-			for (int j = 0; j < mainScene[i].size(); ++j)
+		for (size_t i = 0; i < mainScene.size(); ++i)
+			for (size_t j = 0; j < mainScene[i].size(); ++j)
 				if (NULL != mainScene[i][j])
 					putimage(mainScene[i][j]->posx, mainScene[i][j]->posy, &(mainScene[i][j]->im), mainScene[i][j]->dwRop);
 
@@ -1139,7 +1123,7 @@ DWORD WINAPI Game::refreshLoop(LPVOID lpParam)
 		pBird->draw();
 
 		// For Function layers
-		for (int i = 0; i < fxLayers.size(); ++i)
+		for (size_t i = 0; i < fxLayers.size(); ++i)
 			if (NULL != fxLayers[i])
 				fxLayers[i]();
 
@@ -1161,7 +1145,7 @@ DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexKBE);
 
-		c = _getch();
+		c = CHAR(_getch());
 		asc = c;
 		*logger << L"捕获到键盘事件：" << logger->endl;
 		*logger << L"16进制机内码为：" << L"0x" << std::hex << asc << logger->endl;
@@ -1243,7 +1227,7 @@ DWORD WINAPI Game::GNDAnimationLoop(LPVOID lpParam)
 	}
 }
 
-HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...)
+HANDLE Game::GetFontHandleW(LPCWSTR lpResID, LPCWSTR lpResType) throw(...)
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
@@ -1266,7 +1250,7 @@ HANDLE Game::GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) thro
 	return hFont;
 }
 
-LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...)
+LPSTREAM Game::GetPNGStreamW(LPCWSTR lpResID, LPCWSTR lpResType) throw(...)
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
@@ -1300,23 +1284,6 @@ LPSTREAM Game::GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) thr
 	}
 	else
 		return lpStream;
-}
-
-LPVOID Game::GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...)
-{
-	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
-	if (NULL == hResource)
-		throw stdWCexception(L"无法获取WAV声音资源！");
-
-	HGLOBAL hGlobal = LoadResource(NULL, hResource);
-	if (NULL == hGlobal)
-		throw stdWCexception(L"无法装载WAV声音资源！");
-
-	LPVOID lpRawWAV = LockResource(hGlobal);
-	if (NULL == lpRawWAV)
-		throw stdWCexception(L"WAV声音资源无效！");
-
-	return lpRawWAV;
 }
 
 // Namespace cmdLineCfg::

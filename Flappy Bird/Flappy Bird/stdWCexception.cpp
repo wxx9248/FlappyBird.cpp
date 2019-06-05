@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+﻿#include "stdafx.hpp"
 #include "stdWCexception.hpp"
 
 LPCWSTR WCexception::WCwhat() const noexcept

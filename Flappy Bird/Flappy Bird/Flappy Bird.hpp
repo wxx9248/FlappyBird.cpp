@@ -2,8 +2,6 @@
 #include "resource.h"
 #include "log.hpp"
 
-class stdWCexception;
-
 namespace cmdLineCfg
 {
 	// Varibles
@@ -28,7 +26,7 @@ namespace cmdLineCfg
 namespace Game
 {
 	// Constants
-	const LPCWSTR lpFontName = L"04b_19";
+	LPCWSTR lpFontName = L"04b_19";
 	const INT WNDWIDTH = 768;
 	const INT WNDHEIGHT = 1024;
 	const INT logoPosY = 180;
@@ -66,10 +64,15 @@ namespace Game
 	const INT lBoundGroundImg = -36;
 	const INT lBoundPipeDn = 300;
 	const INT uBoundPipeDn = WNDWIDTH - 20;
-	const LPCWSTR CWCStrMutexRef = L"MutexRefresh";
-	const LPCWSTR CWCStrMutexGNDAni = L"MutexGNDAnimation";
-	const LPCWSTR CWCStrMutexBird = L"MutexBirdAnimation";
-	const LPCWSTR CWCStrMutexKBE = L"MutexKeyboardEvent";
+	LPCWSTR CWCStrMutexRef = L"MutexRefresh";
+	LPCWSTR CWCStrMutexGNDAni = L"MutexGNDAnimation";
+	LPCWSTR CWCStrMutexBird = L"MutexBirdAnimation";
+	LPCWSTR CWCStrMutexKBE = L"MutexKeyboardEvent";
+	LPCWSTR lpResIDs[] =
+	{
+		L"IDR_AUDIO_WING", L"IDR_AUDIO_HIT",
+		L"IDR_AUDIO_DIE", L"IDR_AUDIO_POINT"
+	};
 
 	// Data structures
 	struct OBJIMG
@@ -91,14 +94,14 @@ namespace Game
 		Hint();
 		Hint
 		(
-			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-			const LPCWSTR pResType
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResType
 		) throw(...);
 
 		void init
 		(
-			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-			const LPCWSTR pResType
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResType
 		) throw(...);
 
 		void changeVisibility();
@@ -123,18 +126,18 @@ namespace Game
 		Bird();
 		Bird
 		(
-			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-			const LPCWSTR pResName2, const LPCWSTR pResName2_m,
-			const LPCWSTR pResName3, const LPCWSTR pResName3_m,
-			const LPCWSTR pResType
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResName2, LPCWSTR pResName2_m,
+			LPCWSTR pResName3, LPCWSTR pResName3_m,
+			LPCWSTR pResType
 		) throw(...);
 
 		void init
 		(
-			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-			const LPCWSTR pResName2, const LPCWSTR pResName2_m,
-			const LPCWSTR pResName3, const LPCWSTR pResName3_m,
-			const LPCWSTR pResType
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResName2, LPCWSTR pResName2_m,
+			LPCWSTR pResName3, LPCWSTR pResName3_m,
+			LPCWSTR pResType
 		) throw(...);
 
 		void changeState();
@@ -164,16 +167,16 @@ namespace Game
 		Pipe();
 		Pipe
 		(
-			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-			const LPCWSTR pResName2, const LPCWSTR pResName2_m,
-			const LPCWSTR pResType
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResName2, LPCWSTR pResName2_m,
+			LPCWSTR pResType
 		) throw(...);
 
 		void init
 		(
-			const LPCWSTR pResName1, const LPCWSTR pResName1_m,
-			const LPCWSTR pResName2, const LPCWSTR pResName2_m,
-			const LPCWSTR pResType
+			LPCWSTR pResName1, LPCWSTR pResName1_m,
+			LPCWSTR pResName2, LPCWSTR pResName2_m,
+			LPCWSTR pResType
 		) throw(...);
 
 		void changeVisibility();
@@ -201,23 +204,23 @@ namespace Game
 		Medal();
 		Medal
 		(
-			const LPCWSTR pResName1, const LPCWSTR pResName2,
-			const LPCWSTR pResName3, const LPCWSTR pResName4,
-			const LPCWSTR pResType, const OBJCIMG &ScoreBoard,		// Automatic positioning
-			const HWND hWnd
+			LPCWSTR pResName1, LPCWSTR pResName2,
+			LPCWSTR pResName3, LPCWSTR pResName4,
+			LPCWSTR pResType, const OBJCIMG &ScoreBoard,		// Automatic positioning
+			const HWND _hWnd
 		) throw(...);
 
 		void init
 		(
-			const LPCWSTR pResName1, const LPCWSTR pResName2,
-			const LPCWSTR pResName3, const LPCWSTR pResName4,
-			const LPCWSTR pResType, const OBJCIMG &ScoreBoard,
-			const HWND hWnd
+			LPCWSTR pResName1, LPCWSTR pResName2,
+			LPCWSTR pResName3, LPCWSTR pResName4,
+			LPCWSTR pResType, const OBJCIMG &ScoreBoard,
+			const HWND _hWnd
 		) throw(...);
 
 		void changeState(INT state);
 		INT getState();
-		void changeWindowHandle(HWND hWnd) throw(...);
+		void changeWindowHandle(HWND _hWnd) throw(...);
 		void setX(INT pos);
 		INT getX();
 		INT getY();
@@ -306,9 +309,8 @@ namespace Game
 	DWORD WINAPI BirdAnimationLoop(LPVOID lpParam);
 
 	// - Tool functions
-	HANDLE GetFontHandleW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...);
-	LPSTREAM GetPNGStreamW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...);
-	LPVOID GetRawWAVBufferW(const LPCWSTR lpResID, const LPCWSTR lpResType) throw(...);
+	HANDLE GetFontHandleW(LPCWSTR lpResID, LPCWSTR lpResType) throw(...);
+	LPSTREAM GetPNGStreamW(LPCWSTR lpResID, LPCWSTR lpResType) throw(...);
 }
 
 // Global variables

@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <exception>
+
 class WCexception : public std::exception
 {
 public:
