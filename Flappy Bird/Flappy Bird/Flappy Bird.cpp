@@ -7,6 +7,7 @@
 
 #define sndPlaySoundW(X, Y)
 
+
 int main(_In_ int argc, _In_ char *argv[])
 {
 	std::ios::sync_with_stdio(false);
@@ -665,6 +666,13 @@ void Game::subGame() throw(...)
 	if (NULL == hMutBirdAni)
 		throw stdWCexception(L"无效互斥锁句柄！");
 
+	*logger << L"正在创建互斥锁（键盘事件处理线程，已冻结）……" << logger->endl;
+	HANDLE hMutKBE = CreateMutexW(NULL, TRUE, CWCStrMutexKBE);
+	*logger << L"互斥锁句柄：0x" << CWCStrMutexKBE << logger->endl;
+	if (NULL == CWCStrMutexKBE)
+		throw stdWCexception(L"无效互斥锁句柄！");
+
+
 	// Initialize refresh thread
 	*logger << L"正在创建异步刷新线程……" << logger->endl;
 	HANDLE hThRef = CreateThread(NULL, 0, refreshLoop, hMutRef, 0, NULL);
@@ -682,13 +690,8 @@ void Game::subGame() throw(...)
 
 	// Initialize keyboard event listening thread
 	*logger << L"正在创建键盘事件处理线程……" << logger->endl;
-	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, NULL, 0, NULL);
+	HANDLE hThKBEHandler = CreateThread(NULL, 0, KBELoop, hMutKBE, 0, NULL);
 	*logger << L"线程句柄：0x" << hThKBEHandler << logger->endl;
-
-	// Initialize keyboard event listening thread
-	*logger << L"正在创建鼠标事件转换线程……" << logger->endl;
-	HANDLE hThMSEHandler = CreateThread(NULL, 0, MSELoop, NULL, 0, NULL);
-	*logger << L"线程句柄：0x" << hThMSEHandler << logger->endl;
 
 	*logger << L"等待互斥锁空闲……" << logger->endl;
 	WaitForSingleObject(hMutRef, INFINITE);
@@ -711,7 +714,7 @@ void Game::subGame() throw(...)
 		printGameStartHint();
 
 		*logger << L"等待用户开始信号……" << logger->endl;
-		c = waitKBEvent();
+		c = _getch();
 		if (c == 0x1b)
 		{
 			*logger << L"退出动作捕获，执行退出指令……" << logger->endl;
@@ -752,6 +755,9 @@ void Game::subGame() throw(...)
 		ReleaseMutex(hMutGNDAni);
 		ReleaseMutex(hMutBirdAni);
 
+		*logger << L"释放键盘事件处理线程……" << logger->endl;
+		ReleaseMutex(hMutKBE);
+
 		// Countdown
 		*logger << L"插入倒计时图层……" << logger->endl;
 		WaitForSingleObject(hMutRef, INFINITE);
@@ -779,7 +785,6 @@ void Game::subGame() throw(...)
 
 		*logger << L"解锁Bird动作……" << logger->endl;
 		lockBird = false;
-		bird.changeState(2);
 		*logger << L"清空键盘事件队列……" << logger->endl;
 		clearQueue(KBEMsgQueue);
 
@@ -887,6 +892,10 @@ void Game::subGame() throw(...)
 		WaitForSingleObject(hMutRef, INFINITE);
 		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexRef);
 
+		*logger << L"锁定键盘事件处理线程……" << logger->endl;
+		keybd_event(' ', 0, 0, 0);
+		WaitForSingleObject(hMutKBE, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexKBE);
 
 		*logger << L"清空键盘事件队列……" << logger->endl;
 		clearQueue(KBEMsgQueue);;
@@ -932,9 +941,7 @@ void Game::subGame() throw(...)
 		*logger << L"显示最高分……" << logger->endl;
 		printEndHighScore();
 
-		*logger << L"清空键盘事件队列" << logger->endl;
-		clearQueue(KBEMsgQueue);
-		waitKBEvent();
+		_getch();
 	}
 
 	// Main loop ends
@@ -1151,25 +1158,19 @@ DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 
 	for (; ; )
 	{
+		WaitForSingleObject((HANDLE *)lpParam, INFINITE);
+		OpenMutexW(SYNCHRONIZE, FALSE, CWCStrMutexKBE);
+
 		c = _getch();
 		asc = c;
 		*logger << L"捕获到键盘事件：" << logger->endl;
 		*logger << L"16进制机内码为：" << L"0x" << std::hex << asc << logger->endl;
 		*logger << L"对应字符为：" << c << logger->endl;
 		postKBEvent(c);
+		
+		ReleaseMutex((HANDLE *)lpParam);
 	}
 	return 0;
-}
-
-DWORD WINAPI Game::MSELoop(LPVOID lpParam)
-{
-	static MOUSEMSG MouseMsg;
-	for (; ; )
-	{
-		MouseMsg = GetMouseMsg();
-		if (MouseMsg.uMsg == WM_LBUTTONDOWN)
-			postKBEvent('\n');
-	}
 }
 
 DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)

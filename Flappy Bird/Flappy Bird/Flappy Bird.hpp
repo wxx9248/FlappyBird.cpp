@@ -69,7 +69,7 @@ namespace Game
 	const LPCWSTR CWCStrMutexRef = L"MutexRefresh";
 	const LPCWSTR CWCStrMutexGNDAni = L"MutexGNDAnimation";
 	const LPCWSTR CWCStrMutexBird = L"MutexBirdAnimation";
-	const LPCWSTR CWCStrMutexTQStimulate = L"MutexTQStimulate";
+	const LPCWSTR CWCStrMutexKBE = L"MutexKeyboardEvent";
 
 	// Data structures
 	struct OBJIMG
@@ -299,7 +299,6 @@ namespace Game
 	CHAR asyncGetKBEvent();
 	CHAR waitKBEvent();
 	DWORD WINAPI KBELoop(LPVOID lpParam);
-	DWORD WINAPI MSELoop(LPVOID lpParam);
 
 	// - Dynamic drawing functions
 	DWORD WINAPI refreshLoop(LPVOID lpParam);

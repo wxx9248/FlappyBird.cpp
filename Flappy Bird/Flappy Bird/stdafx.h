@@ -14,6 +14,8 @@
 #include <tchar.h>
 #include <corecrt_wtime.h>
 #include <atlimage.h>
+#include <mmsystem.h>
+#include <dsound.h>
 
 // C++ 库头文件
 #include <iostream>

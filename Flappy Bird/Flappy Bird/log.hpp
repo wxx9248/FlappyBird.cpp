@@ -1,8 +1,5 @@
 ﻿#pragma once
 
-// Exceptions
-class openFileFailed;
-
 class Outdev
 {
 public:

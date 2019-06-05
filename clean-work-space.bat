@@ -5,6 +5,10 @@ DEL /F /Q /S *.ncb *.opt *.suo *.manifest *.dep *.sdf *.tlog *.log *.ipch *.last
 DEL /F /Q "Flappy Bird\.vs\Flappy Bird\v15\Browse.VC.db"
 rm -rf "Flappy Bird\x64"
 rm -rf "Flappy Bird\Flappy Bird\x64"
+rm -rf "Flappy Bird\Debug"
+rm -rf "Flappy Bird\Release"
+rm -rf "Flappy Bird\Flappy Bird\Debug"
+rm -rf "Flappy Bird\Flappy Bird\Release"
 rm -rf "Flappy Bird\.vs"
 
 PAUSE
