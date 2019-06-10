@@ -6,8 +6,6 @@
 #include "sfx.hpp"
 #include "showHelp.hpp"
 
-#define sndPlaySoundW(X, Y)
-
 int main(_In_ int argc, _In_ char *argv[])
 {
 	std::ios::sync_with_stdio(false);
@@ -61,12 +59,23 @@ int main(_In_ int argc, _In_ char *argv[])
 		wsLogPath = ws;
 		delete[] ws;
 
-		logger->init(wsLogPath);
+		try
+		{
+			logger->init(wsLogPath);
+		}
+		catch (stdWCexception e)
+		{
+			MessageBoxW(NULL, e.WCwhat(), L"错误", MB_ICONERROR);
+			throw;
+		}
+		catch (...)
+		{
+			MessageBoxW(NULL, L"未知的内部错误", L"错误", MB_ICONERROR);
+			throw;
+		}
 	}
 	else
-	{
 		logger->init();
-	}
 
 	try
 	{
@@ -146,14 +155,14 @@ void Game::Hint::init
 	loadimage(imgHint, pResType, pResName1_m, INT(imgHint->getwidth() * hintSZMultiplier), INT(imgHint->getheight() * hintSZMultiplier), true);
 	if (!(imgHint[0].getwidth() && imgHint[0].getheight()))
 	{
-		throw stdWCexception(L"Hint1 mask 资源加载失败！");
+		throw stdWCexception(L"Game::Hint::init()：Hint1 mask 资源加载失败！");
 	}
 
 	loadimage(imgHint + 1, pResType, pResName1);
 	loadimage(imgHint + 1, pResType, pResName1, INT(imgHint[1].getwidth() * hintSZMultiplier), INT(imgHint[1].getheight() * hintSZMultiplier), true);
 	if (!(imgHint[1].getwidth() && imgHint[1].getheight()))
 	{
-		throw stdWCexception(L"Hint1 资源加载失败！");
+		throw stdWCexception(L"Game::Hint::init()：Hint1 资源加载失败！");
 	}
 	posxHint = (WNDWIDTH - imgHint[0].getwidth()) / 2;
 }
@@ -224,35 +233,35 @@ void Game::Bird::init
 	loadimage(imgBird, pResType, pResName1_m);
 	if (!(imgBird[0].getwidth() && imgBird[0].getheight()))
 	{
-		throw stdWCexception(L"Bird1 mask 资源加载失败！");
+		throw stdWCexception(L"Game::Bird::init()：Bird1 mask 资源加载失败！");
 	}
 
 	loadimage(imgBird + 1, pResType, pResName1);
 	if (!(imgBird[1].getwidth() && imgBird[1].getheight()))
 	{
-		throw stdWCexception(L"Bird1 资源加载失败！");
+		throw stdWCexception(L"Game::Bird::init()：Bird1 资源加载失败！");
 	}
 
 	loadimage(imgBird + 2, pResType, pResName2_m);
 	if (!(imgBird[2].getwidth() && imgBird[2].getheight()))
 	{
-		throw stdWCexception(L"Bird2 mask 资源加载失败！");
+		throw stdWCexception(L"Game::Bird::init()：Bird2 mask 资源加载失败！");
 	}
 	loadimage(imgBird + 3, pResType, pResName2);
 	if (!(imgBird[3].getwidth() && imgBird[3].getheight()))
 	{
-		throw stdWCexception(L"Bird2 资源加载失败！");
+		throw stdWCexception(L"Game::Bird::init()：Bird2 资源加载失败！");
 	}
 
 	loadimage(imgBird + 4, pResType, pResName3_m);
 	if (!(imgBird[4].getwidth() && imgBird[4].getheight()))
 	{
-		throw stdWCexception(L"Bird3 mask 资源加载失败！");
+		throw stdWCexception(L"Game::Bird::init()：Bird3 mask 资源加载失败！");
 	}
 	loadimage(imgBird + 5, pResType, pResName3);
 	if (!(imgBird[5].getwidth() && imgBird[5].getheight()))
 	{
-		throw stdWCexception(L"Bird3 资源加载失败！");
+		throw stdWCexception(L"Game::Bird::init()：Bird3 资源加载失败！");
 	}
 
 	posxBird = (WNDWIDTH - imgBird[0].getwidth()) / 2;
@@ -348,24 +357,24 @@ void Game::Pipe::init
 	loadimage(imgPipe, pResType, pResName1_m);
 	if (!(imgPipe[0].getwidth() && imgPipe[0].getheight()))
 	{
-		throw stdWCexception(L"Pipe DN mask 资源加载失败！");
+		throw stdWCexception(L"Game::Pipe::init()：Pipe DN mask 资源加载失败！");
 	}
 
 	loadimage(imgPipe + 1, pResType, pResName1);
 	if (!(imgPipe[1].getwidth() && imgPipe[1].getheight()))
 	{
-		throw stdWCexception(L"Pipe DN 资源加载失败！");
+		throw stdWCexception(L"Game::Pipe::init()：Pipe DN 资源加载失败！");
 	}
 
 	loadimage(imgPipe + 2, pResType, pResName2_m);
 	if (!(imgPipe[2].getwidth() && imgPipe[2].getheight()))
 	{
-		throw stdWCexception(L"Pipe UP mask 资源加载失败！");
+		throw stdWCexception(L"Game::Pipe::init()：Pipe UP mask 资源加载失败！");
 	}
 	loadimage(imgPipe + 3, pResType, pResName2);
 	if (!(imgPipe[3].getwidth() && imgPipe[3].getheight()))
 	{
-		throw stdWCexception(L"Pipe UP 资源加载失败！");
+		throw stdWCexception(L"Game::Pipe::init()：Pipe UP 资源加载失败！");
 	}
 }
 
@@ -451,23 +460,23 @@ void Game::Medal::init
 ) throw(...)
 {
 	if (NULL == _hWnd)
-		throw stdWCexception(L"窗口句柄无效");
+		throw stdWCexception(L"Game::Medal::init()：窗口句柄无效");
 	else if (!(ScoreBoard.cim.GetHeight() && ScoreBoard.cim.GetWidth()))
-		throw stdWCexception(L"计分板图层未正确初始化");
+		throw stdWCexception(L"Game::Medal::init()：计分板图层未正确初始化");
 	else
 	{
 		imgMedal[0].Load(GetPNGStreamW(pResName1, pResType));
 		if (imgMedal[0].IsNull())
-			throw stdWCexception(L"Bronze 奖牌 资源无法加载");
+			throw stdWCexception(L"Game::Medal::init()：Bronze 奖牌 资源无法加载");
 		imgMedal[1].Load(GetPNGStreamW(pResName2, pResType));
 		if (imgMedal[1].IsNull())
-			throw stdWCexception(L"Silver 奖牌 资源无法加载");
+			throw stdWCexception(L"Game::Medal::init()：Silver 奖牌 资源无法加载");
 		imgMedal[2].Load(GetPNGStreamW(pResName3, pResType));
 		if (imgMedal[2].IsNull())
-			throw stdWCexception(L"Golden 奖牌 资源无法加载");
+			throw stdWCexception(L"Game::Medal::init()：Golden 奖牌 资源无法加载");
 		imgMedal[3].Load(GetPNGStreamW(pResName4, pResType));
 		if (imgMedal[3].IsNull())
-			throw stdWCexception(L"Platinum 奖牌 资源无法加载");
+			throw stdWCexception(L"Game::Medal::init()：Platinum 奖牌 资源无法加载");
 	}
 	hWnd = _hWnd;
 }
@@ -475,7 +484,7 @@ void Game::Medal::init
 void Game::Medal::draw() throw(...)
 {
 	if (NULL == hWnd)
-		throw stdWCexception(L"窗口句柄无效");
+		throw stdWCexception(L"Game::Medal::draw()：窗口句柄无效");
 	else if (MedalState %= 5)
 		imgMedal[MedalState - 1].Draw
 		(
@@ -499,7 +508,7 @@ INT Game::Medal::getState()
 void Game::Medal::changeWindowHandle(HWND _hWnd) throw(...)
 {
 	if (NULL == _hWnd)
-		throw stdWCexception(L"窗口句柄无效");
+		throw stdWCexception(L"Game::Medal::changeWindowHandle()：窗口句柄无效");
 	else
 		hWnd = _hWnd;
 }
@@ -631,7 +640,8 @@ void Game::subGame() throw(...)
 
 	// Initialize sound fx
 	*logger << L"初始化音效对象……" << logger->endl;
-	SFX sfx(lpResIDs, L"AUDIO", sizeof(lpResIDs) / sizeof(LPCWSTR));
+	SFX sfx(lpResIDs, L"AUDIO", sizeof(lpResIDs) / sizeof(LPCWSTR), hWnd);
+	psfx = &sfx;
 
 	// Initialize MUTEX
 	*logger << L"正在创建互斥锁（异步刷新线程）……" << logger->endl;
@@ -800,6 +810,8 @@ void Game::subGame() throw(...)
 				downSpeed = 0;
 				bird.setY(BG.im.getheight() - bird[0].getheight());
 				isGrounded = true;
+				SFXsnd = Snd_Hit;
+				sfx.play((INT)SFXsnd);
 				break;
 			}
 
@@ -819,7 +831,8 @@ void Game::subGame() throw(...)
 				{
 					if (curBirdY + 5 < curPipeYDn[i] - dPipeVertical || curBirdY + birdHeight - 5 > curPipeYDn[i])		// On no...
 					{
-						sndPlaySoundW((LPWSTR)lpWAVHit, SND_MEMORY | SND_ASYNC);
+						SFXsnd = Snd_Hit;
+						sfx.play((INT)SFXsnd);
 						*logger << L"撞击判定" << logger->endl;
 						goto Gameover;
 					}
@@ -827,7 +840,8 @@ void Game::subGame() throw(...)
 					if (birdLbound == curPipeX[i])		// Got one score~
 						if (i != lastPassedPipeNum)
 						{
-							sndPlaySoundW((LPWSTR)lpWAVPoint, SND_MEMORY | SND_ASYNC);
+							SFXsnd = Snd_Point;
+							sfx.play((INT)SFXsnd);
 							*logger << L"得分" << logger->endl;
 							++score;
 							lastPassedPipeNum = i;
@@ -850,7 +864,8 @@ void Game::subGame() throw(...)
 		if (!isGrounded)
 		{
 			downSpeed = defDownSpeed;
-			sndPlaySoundW((LPWSTR)lpWAVDie, SND_MEMORY | SND_ASYNC);
+			SFXsnd = Snd_Die;
+			sfx.play((INT)SFXsnd);
 			while (bird.getY() + bird[0].getheight() <= BG.im.getheight() + BG.posy);
 			downSpeed = 0;
 			bird.setY(BG.im.getheight() - bird[0].getheight());
@@ -1089,7 +1104,7 @@ HWND Game::createEXWindow(const _In_ int width, const _In_ int height, const _In
 		_hWnd = initgraph(width, height);
 
 	if (NULL == _hWnd)
-		throw stdWCexception(L"无法创建窗口");
+		throw stdWCexception(L"Game::createEXWindow()：无法创建窗口！");
 
 	return _hWnd;
 }
@@ -1147,9 +1162,9 @@ DWORD WINAPI Game::KBELoop(LPVOID lpParam)
 
 		c = CHAR(_getch());
 		asc = c;
-		*logger << L"捕获到键盘事件：" << logger->endl;
-		*logger << L"16进制机内码为：" << L"0x" << std::hex << asc << logger->endl;
-		*logger << L"对应字符为：" << c << logger->endl;
+		*logger << L"Game::KBELoop()：捕获到键盘事件：" << logger->endl;
+		*logger << L"Game::KBELoop()：16进制机内码为：" << L"0x" << std::hex << asc << logger->endl;
+		*logger << L"Game::KBELoop()：对应字符为：" << c << logger->endl;
 		postKBEvent(c);
 		
 		ReleaseMutex((HANDLE *)lpParam);
@@ -1182,6 +1197,8 @@ DWORD WINAPI Game::BirdAnimationLoop(LPVOID lpParam)
 			if (asyncGetKBEvent() && gameState)
 			{
 				downSpeed = defDownSpeedUp;
+				SFXsnd = Snd_Wing;
+				psfx->play((INT)SFXsnd);
 				// pBird->changeState(0);	// Ehhhh...Is there any human-being who can notice that instant change...?
 			}
 			
@@ -1231,21 +1248,21 @@ HANDLE Game::GetFontHandleW(LPCWSTR lpResID, LPCWSTR lpResType) throw(...)
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
-		throw stdWCexception(L"无法获取字体资源！");
+		throw stdWCexception(L"Game::GetFontHandleW()：无法获取字体资源！");
 
 	HGLOBAL hGlobal = LoadResource(NULL, hResource);
 	if (NULL == hGlobal)
-		throw stdWCexception(L"无法装载字体资源！");
+		throw stdWCexception(L"Game::GetFontHandleW()：无法装载字体资源！");
 
 	LPVOID lpRawFont = LockResource(hGlobal);
 	if (NULL == lpRawFont)
-		throw stdWCexception(L"字体资源无效！");
+		throw stdWCexception(L"Game::GetFontHandleW()：字体资源无效！");
 
 	DWORD fontSize = SizeofResource(NULL, hResource);
 	DWORD NumFonts;
 	HANDLE hFont = AddFontMemResourceEx(lpRawFont, fontSize, NULL, &NumFonts);
 	if (NULL == hFont)
-		throw stdWCexception(L"无法获取字体句柄！");
+		throw stdWCexception(L"Game::GetFontHandleW()：无法获取字体句柄！");
 
 	return hFont;
 }
@@ -1254,25 +1271,25 @@ LPSTREAM Game::GetPNGStreamW(LPCWSTR lpResID, LPCWSTR lpResType) throw(...)
 {
 	HRSRC hResource = FindResourceW(NULL, lpResID, lpResType);
 	if (NULL == hResource)
-		throw stdWCexception(L"无法获取PNG图像资源！");
+		throw stdWCexception(L" Game::GetPNGStreamW()：无法获取PNG图像资源！");
 
 	HGLOBAL hGlobal = LoadResource(NULL, hResource);
 	if (NULL == hGlobal)
-		throw stdWCexception(L"无法装载PNG图像资源！");
+		throw stdWCexception(L"Game::GetPNGStreamW()：无法装载PNG图像资源！");
 
 	LPVOID lpRawPNG = LockResource(hGlobal);
 	if (NULL == lpRawPNG)
-		throw stdWCexception(L"PNG图像资源无效！");
+		throw stdWCexception(L"Game::GetPNGStreamW()：PNG图像资源无效！");
 
 	LPSTREAM lpStream = NULL;
 
 	DWORD dwSize = SizeofResource(NULL, hResource);
 	HGLOBAL hGlNew = GlobalAlloc(GHND, dwSize);
 	if (NULL == hGlNew)
-		throw stdWCexception(L"全局堆内存申请失败！");
+		throw stdWCexception(L"Game::GetPNGStreamW()：全局堆内存申请失败！");
 	LPBYTE lpByte = (LPBYTE)GlobalLock(hGlNew);
 	if (NULL == lpByte)
-		throw stdWCexception(L"全局堆内存锁定失败！");
+		throw stdWCexception(L"Game::GetPNGStreamW()：全局堆内存锁定失败！");
 	memcpy(lpByte, lpRawPNG, dwSize);
 	GlobalUnlock(hGlNew);
 
@@ -1280,7 +1297,7 @@ LPSTREAM Game::GetPNGStreamW(LPCWSTR lpResID, LPCWSTR lpResType) throw(...)
 	if (hResult != S_OK && lpStream == NULL)
 	{
 		GlobalFree(hGlNew);
-		throw stdWCexception(L"创建PNG流失败！");
+		throw stdWCexception(L"Game::GetPNGStreamW()：创建PNG流失败！");
 	}
 	else
 		return lpStream;
@@ -1288,7 +1305,7 @@ LPSTREAM Game::GetPNGStreamW(LPCWSTR lpResID, LPCWSTR lpResType) throw(...)
 
 // Namespace cmdLineCfg::
 
-bool cmdLineCfg::parseCmdLine(const _In_ int argc, _In_ char *argv[])
+bool cmdLineCfg::parseCmdLine(_In_ int argc, _In_ char *argv[])
 {
 	for (int i = 1; i < argc; ++i)
 	{
@@ -1298,7 +1315,7 @@ bool cmdLineCfg::parseCmdLine(const _In_ int argc, _In_ char *argv[])
 		if (!_stricmp(argv[i], "/logfile"))
 		{
 			if (argv[i + 1] == NULL || strchrs(argv[i + 1], "\"/:*?<>|", true))
-				throw stdWCexception(L"/logfile 开关参数解析失败：非法路径");
+				throw stdWCexception(L"cmdLineCfg::parseCmdLine()：/logfile 开关参数解析失败：非法路径");
 			else
 			{
 				fileLogged = true;

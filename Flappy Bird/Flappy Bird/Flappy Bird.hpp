@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "resource.h"
 #include "log.hpp"
+#include "sfx.hpp"
 
 namespace cmdLineCfg
 {
@@ -19,7 +20,7 @@ namespace cmdLineCfg
 
 
 	// Functions
-	bool parseCmdLine(const _In_ int argc, _In_ char *argv[]);
+	bool parseCmdLine(_In_ int argc, _In_ char *argv[]);
 }
 
 
@@ -64,6 +65,7 @@ namespace Game
 	const INT lBoundGroundImg = -36;
 	const INT lBoundPipeDn = 300;
 	const INT uBoundPipeDn = WNDWIDTH - 20;
+
 	LPCWSTR CWCStrMutexRef = L"MutexRefresh";
 	LPCWSTR CWCStrMutexGNDAni = L"MutexGNDAnimation";
 	LPCWSTR CWCStrMutexBird = L"MutexBirdAnimation";
@@ -236,6 +238,13 @@ namespace Game
 		INT posyMedal = int(ScoreboardPosY + 42 * ScoreboardSZMultiplier);
 		INT MedalState = 0;		// 0, 1, 2, 3, 4
 	} *pMedal = NULL;
+
+	SFX *psfx = NULL;
+	enum
+	{
+		Snd_Wing, Snd_Hit,
+		Snd_Die, Snd_Point
+	} SFXsnd;
 
 	// Types
 	typedef std::vector<OBJIMG *> LAYER;

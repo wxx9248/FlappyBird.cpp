@@ -8,13 +8,13 @@ class Outdev
 public:
 	Outdev();
 
-	Outdev(std::wstring &logFilePath) throw(stdWCexception);
+	Outdev(std::wstring &logFilePath) throw(...);
 
 	~Outdev();
 
 	void init();
 
-	bool init(std::wstring &logFilePath) throw(stdWCexception);
+	bool init(std::wstring &logFilePath) throw(...);
 
 	void reset();
 	void close();
@@ -37,12 +37,12 @@ public:
 	class _myendl {} endl;
 
 	Log();
-	Log(std::wstring &logFilePath) throw(stdWCexception);
+	Log(std::wstring &logFilePath) throw(...);
 
 	~Log();
 
 	void init();
-	bool init(std::wstring &logFilePath) throw(stdWCexception);
+	bool init(std::wstring &logFilePath) throw(...);
 
 	void reset();
 	void close();
@@ -65,7 +65,7 @@ Outdev::Outdev()
 	init();
 }
 
-Outdev::Outdev(std::wstring &logFilePath) throw(stdWCexception)
+Outdev::Outdev(std::wstring &logFilePath) throw(...)
 {
 	init(logFilePath);
 }
@@ -87,7 +87,7 @@ void Outdev::init()
 	Outdev::logFile = NULL;
 }
 
-bool Outdev::init(std::wstring &_logFilePath) throw(stdWCexception)
+bool Outdev::init(std::wstring &_logFilePath) throw(...)
 {
 	std::wstring excwstr = L"Log：不能打开文件:";
 	if (isInited)
@@ -207,7 +207,7 @@ Log::Log()
 	init();
 }
 
-Log::Log(std::wstring &logFilePath) throw(stdWCexception)
+Log::Log(std::wstring &logFilePath) throw(...)
 {
 	init(logFilePath);
 }
@@ -227,7 +227,7 @@ void Log::init()
 	Log::isIdle = true;
 }
 
-bool Log::init(std::wstring &logFilePath) throw(stdWCexception)
+bool Log::init(std::wstring &logFilePath) throw(...)
 {
 	if (od != NULL)
 		close();
