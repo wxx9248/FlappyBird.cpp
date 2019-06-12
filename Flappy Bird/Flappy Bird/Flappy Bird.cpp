@@ -640,8 +640,10 @@ void Game::subGame() throw(...)
 
 	// Initialize sound fx
 	*logger << L"初始化音效对象……" << logger->endl;
-	SFX sfx(lpResIDs, L"AUDIO", sizeof(lpResIDs) / sizeof(LPCWSTR), hWnd);
+	SFX sfx(lpAudioResIDs, L"AUDIO", sizeof(lpAudioResIDs) / sizeof(LPCWSTR), hWnd);
 	psfx = &sfx;
+	SFXsnd = Snd_Mute;
+	sfx.play((UINT)SFXsnd);
 
 	// Initialize MUTEX
 	*logger << L"正在创建互斥锁（异步刷新线程）……" << logger->endl;

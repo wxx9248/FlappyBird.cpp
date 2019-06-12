@@ -70,10 +70,11 @@ namespace Game
 	LPCWSTR CWCStrMutexGNDAni = L"MutexGNDAnimation";
 	LPCWSTR CWCStrMutexBird = L"MutexBirdAnimation";
 	LPCWSTR CWCStrMutexKBE = L"MutexKeyboardEvent";
-	LPCWSTR lpResIDs[] =
+	LPCWSTR lpAudioResIDs[] =
 	{
 		L"IDR_AUDIO_WING", L"IDR_AUDIO_HIT",
-		L"IDR_AUDIO_DIE", L"IDR_AUDIO_POINT"
+		L"IDR_AUDIO_DIE", L"IDR_AUDIO_POINT",
+		L"IDR_AUDIO_MUTE"
 	};
 
 	// Data structures
@@ -243,7 +244,8 @@ namespace Game
 	enum
 	{
 		Snd_Wing, Snd_Hit,
-		Snd_Die, Snd_Point
+		Snd_Die, Snd_Point,
+		Snd_Mute
 	} SFXsnd;
 
 	// Types

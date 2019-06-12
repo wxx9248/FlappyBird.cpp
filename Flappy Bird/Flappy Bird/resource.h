@@ -31,6 +31,7 @@
 
 #define _IDR_FONT_DEFAULT                301
 
+#define _IDR_AUDIO_MUTE					 400
 #define _IDR_AUDIO_DIE					 401
 #define _IDR_AUDIO_HIT					 402
 #define _IDR_AUDIO_POINT				 403

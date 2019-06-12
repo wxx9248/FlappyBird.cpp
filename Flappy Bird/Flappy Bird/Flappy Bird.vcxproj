@@ -273,6 +273,7 @@
   <ItemGroup>
     <Media Include="res\die.wav" />
     <Media Include="res\hit.wav" />
+    <Media Include="res\mute.wav" />
     <Media Include="res\point.wav" />
     <Media Include="res\wing.wav" />
   </ItemGroup>

@@ -154,5 +154,8 @@
     <Media Include="res\wing.wav">
       <Filter>资源文件</Filter>
     </Media>
+    <Media Include="res\mute.wav">
+      <Filter>资源文件</Filter>
+    </Media>
   </ItemGroup>
 </Project>
