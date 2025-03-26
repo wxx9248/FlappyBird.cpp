@@ -88,8 +88,6 @@ The project is organized into several modules:
 
 - `core`: Core game functionality (game loop, resource management)
 - `game`: Game entities (bird, pipes)
-- `audio`: Audio management
-- `graphics`: Rendering functionality
 
 ## License
 
