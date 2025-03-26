@@ -71,14 +71,10 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 # Copy additional required DLLs based on build type
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E echo "Copying additional dependency DLLs..."
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin/freetyped.dll,${VCPKG_INSTALLED_DIR}/bin/freetype.dll>"
-        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin/vorbisfile.dll,${VCPKG_INSTALLED_DIR}/bin/vorbisfile.dll>"
-        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin/wavpackdll.dll,${VCPKG_INSTALLED_DIR}/bin/wavpackdll.dll>"
-        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin/libpng16d.dll,${VCPKG_INSTALLED_DIR}/bin/libpng16.dll>"
+    COMMAND ${CMAKE_COMMAND} -E echo "Copying all dependency DLLs..."
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin,${VCPKG_INSTALLED_DIR}/bin>"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
-    COMMAND_EXPAND_LISTS
 )
 
 # Also copy assets to output directory for Windows
