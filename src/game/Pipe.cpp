@@ -2,8 +2,16 @@
 #include "core/Constants.hpp"
 #include "core/ResourceManager.hpp"
 #include <algorithm>
+#include <random>
 
 namespace flappybird {
+
+    // Static random engine for all pipes - use thread-safe initialization
+    static std::mt19937 &getRandomEngine() {
+        static std::random_device rd;
+        static std::mt19937 engine(rd());
+        return engine;
+    }
 
     // Initialize static member to a reasonable middle position
     int Pipe::last_gap_y_ = kWindowHeight / 2;
@@ -99,8 +107,9 @@ namespace flappybird {
             max_allowed = max_gap_y;
         }
 
-        // Simple random number generation within the constrained range
-        gap_y_ = min_allowed + (rand() % (max_allowed - min_allowed + 1));
+        // Use C++ random library for better randomization
+        std::uniform_int_distribution<int> distribution(min_allowed, max_allowed);
+        gap_y_ = distribution(getRandomEngine());
 
         // Update the last gap position for the next pipe
         last_gap_y_ = gap_y_;

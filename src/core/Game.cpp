@@ -207,6 +207,8 @@ namespace flappybird {
     }
 
     void Game::Update(double delta_time) {
+        static double countdown_timer;
+
         // Update game based on current state
         switch (game_state_->GetState()) {
             case GameState::State::kMenu:
@@ -217,7 +219,7 @@ namespace flappybird {
 
             case GameState::State::kCountdown:
                 // Update countdown timer
-                static double countdown_timer = 0.0;
+                countdown_timer = 0.0;
                 countdown_timer += delta_time;
 
                 if (countdown_timer >= 1.0) {
