@@ -42,7 +42,7 @@ make
 #### Install required packages:
 
 ```cmd
-vcpkg install sdl2 sdl2-image sdl2-mixer sdl2-ttf --triplet=x64-windows
+vcpkg install
 ```
 
 #### Generate Visual Studio project:
