@@ -11,7 +11,7 @@ option(FLAPPYBIRD_BUILD_TESTS "Build test applications" OFF)
 
 # Source files
 file(GLOB_RECURSE SOURCES
-    ${PROJECT_SOURCE_DIR}/src/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/*.cpp
 )
 
 # Add executable
@@ -21,13 +21,13 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 find_package(Threads REQUIRED)
 
 # Platform-specific configurations
-if(APPLE)
+if (APPLE)
     include(${CMAKE_CURRENT_SOURCE_DIR}/macos-toolchain.cmake)
-elseif(WIN32)
+elseif (WIN32)
     include(${CMAKE_CURRENT_SOURCE_DIR}/windows-toolchain.cmake)
-else() # Linux/Unix
+else () # Linux/Unix
     include(${CMAKE_CURRENT_SOURCE_DIR}/linux-toolchain.cmake)
-endif()
+endif ()
 
 # Install targets
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
@@ -36,6 +36,6 @@ install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 install(DIRECTORY assets DESTINATION share/${PROJECT_NAME})
 
 # If building tests
-if(FLAPPYBIRD_BUILD_TESTS)
+if (FLAPPYBIRD_BUILD_TESTS)
     add_subdirectory(tests)
-endif()
+endif ()
