@@ -73,10 +73,10 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo "Copying additional dependency DLLs..."
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${VCPKG_INSTALLED_DIR}/bin/$<IF:$<CONFIG:Debug>,freetyped.dll,freetype.dll>"
-        "${VCPKG_INSTALLED_DIR}/bin/vorbisfile.dll"
-        "${VCPKG_INSTALLED_DIR}/bin/wavpackdll.dll"
-        "${VCPKG_INSTALLED_DIR}/bin/$<IF:$<CONFIG:Debug>,libpng16d.dll,libpng16.dll>"
+        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin/freetyped.dll,${VCPKG_INSTALLED_DIR}/bin/freetype.dll>"
+        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin/vorbisfile.dll,${VCPKG_INSTALLED_DIR}/bin/vorbisfile.dll>"
+        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin/wavpackdll.dll,${VCPKG_INSTALLED_DIR}/bin/wavpackdll.dll>"
+        "$<IF:$<CONFIG:Debug>,${VCPKG_INSTALLED_DIR}/debug/bin/libpng16d.dll,${VCPKG_INSTALLED_DIR}/bin/libpng16.dll>"
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     COMMAND_EXPAND_LISTS
 )
