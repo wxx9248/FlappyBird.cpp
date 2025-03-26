@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(FlappyBird VERSION 2.0.1)
 
-# macOS specific configurations for vcpkg
+# Platform specific configurations
 if (APPLE)
     include(${CMAKE_CURRENT_SOURCE_DIR}/macos-toolchain.cmake)
 endif ()
@@ -26,21 +26,37 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Configuration options
 option(FLAPPYBIRD_BUILD_TESTS "Build test applications" OFF)
 
-# Find required packages
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_ttf REQUIRED)
+# Find required packages - use CONFIG mode for vcpkg compatibility
+if(WIN32)
+    # Use CONFIG mode for vcpkg packages
+    find_package(SDL2 CONFIG REQUIRED)
+    find_package(SDL2_image CONFIG REQUIRED)
+    find_package(SDL2_mixer CONFIG REQUIRED)
+    find_package(SDL2_ttf CONFIG REQUIRED)
+else()
+    # Use MODULE mode for other platforms
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_image REQUIRED)
+    find_package(SDL2_mixer REQUIRED)
+    find_package(SDL2_ttf REQUIRED)
+endif()
+
 find_package(Threads REQUIRED)
 
-# Set include directories
-include_directories(
+# Set include directories - adjust for Windows
+if(WIN32)
+    include_directories(
+        ${PROJECT_SOURCE_DIR}/include
+    )
+else()
+    include_directories(
         ${PROJECT_SOURCE_DIR}/include
         ${SDL2_INCLUDE_DIRS}
         ${SDL2_IMAGE_INCLUDE_DIRS}
         ${SDL2_MIXER_INCLUDE_DIRS}
         ${SDL2_TTF_INCLUDE_DIRS}
-)
+    )
+endif()
 
 # Source files
 file(GLOB_RECURSE SOURCES
@@ -72,12 +88,11 @@ if (APPLE)
     )
 elseif(WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE
-            ${SDL2_LIBRARIES}
-            SDL2::SDL2
-            SDL2::SDL2main
-            SDL2_image::SDL2_image
-            SDL2_mixer::SDL2_mixer
-            SDL2_ttf::SDL2_ttf
+            $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+            $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+            $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+            $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>
+            $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
             Threads::Threads
     )
 else()
@@ -97,6 +112,13 @@ if(WIN32)
             $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}>
             $<TARGET_FILE_DIR:${PROJECT_NAME}>
         COMMAND_EXPAND_LISTS
+    )
+
+    # Also copy assets to output directory for Windows
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/assets
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
     )
 endif()
 
