@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(FlappyBird)
+project(FlappyBird VERSION 2.0.1)
 
 # macOS specific configurations for vcpkg
 if (APPLE)
