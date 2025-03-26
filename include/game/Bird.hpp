@@ -1,7 +1,7 @@
 #ifndef FLAPPYBIRD_BIRD_HPP
 #define FLAPPYBIRD_BIRD_HPP
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <array>
 #include "game/Entity.hpp"
 #include "core/AudioManager.hpp"

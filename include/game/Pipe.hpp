@@ -1,7 +1,7 @@
 #ifndef FLAPPYBIRD_PIPE_HPP
 #define FLAPPYBIRD_PIPE_HPP
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "game/Entity.hpp"
 
 namespace flappybird {

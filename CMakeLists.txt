@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
 project(FlappyBird)
 
+# macOS specific configuration
+if (APPLE)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/macos-toolchain.cmake)
+endif ()
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -34,13 +39,23 @@ file(GLOB_RECURSE SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME}
-        ${SDL2_LIBRARIES}
-        SDL2_image
-        SDL2_mixer
-        SDL2_ttf
-        Threads::Threads
-)
+if (APPLE)
+    target_link_libraries(${PROJECT_NAME}
+            ${SDL2_LIBRARIES}
+            ${SDL2_IMAGE_LIBRARIES}
+            ${SDL2_MIXER_LIBRARIES}
+            ${SDL2_TTF_LIBRARIES}
+            Threads::Threads
+    )
+else ()
+    target_link_libraries(${PROJECT_NAME}
+            ${SDL2_LIBRARIES}
+            SDL2_image
+            SDL2_mixer
+            SDL2_ttf
+            Threads::Threads
+    )
+endif ()
 
 # Install targets
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)

@@ -1,7 +1,7 @@
 #ifndef FLAPPYBIRD_AUDIO_MANAGER_HPP
 #define FLAPPYBIRD_AUDIO_MANAGER_HPP
 
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 #include <string>
 #include <unordered_map>
 

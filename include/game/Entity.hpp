@@ -1,7 +1,7 @@
 #ifndef FLAPPYBIRD_ENTITY_HPP
 #define FLAPPYBIRD_ENTITY_HPP
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 namespace flappybird {
 
