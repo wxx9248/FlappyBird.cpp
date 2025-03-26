@@ -66,9 +66,9 @@ namespace flappybird {
     constexpr int kRestartButtonY = 700;
 
 // Scoreboard elements positioning
-    constexpr int kScoreboardCurrentScoreOffsetX = 170;  // X offset from scoreboard left for current score
+    constexpr int kScoreboardCurrentScoreOffsetX = 180;  // X offset from scoreboard left for current score
     constexpr int kScoreboardCurrentScoreOffsetY = 33;   // Y offset from scoreboard top for current score
-    constexpr int kScoreboardHighScoreOffsetX = 170;     // X offset from scoreboard left for high score
+    constexpr int kScoreboardHighScoreOffsetX = 180;     // X offset from scoreboard left for high score
     constexpr int kScoreboardHighScoreOffsetY = 75;     // Y offset from scoreboard top for high score
 
 // Medal positioning and scaling
