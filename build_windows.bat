@@ -26,22 +26,11 @@ if not exist "%VCPKG_ROOT%\vcpkg.exe" (
     goto :error
 )
 
-REM Check if using manifest mode
-if exist "vcpkg.json" (
-    echo Detected vcpkg.json - Using manifest mode
-    
-    REM Install dependencies through manifest
-    echo Installing dependencies through manifest...
-    echo This might take a while for the first build...
-    %VCPKG_ROOT%\vcpkg install --triplet=x64-windows
-    if %ERRORLEVEL% neq 0 goto :vcpkg_error
-) else (
-    REM Install required packages using explicit triplet
-    echo Installing required packages directly...
-    echo This might take a while for the first build...
-    %VCPKG_ROOT%\vcpkg install sdl2:x64-windows sdl2-image:x64-windows sdl2-mixer:x64-windows sdl2-ttf:x64-windows
-    if %ERRORLEVEL% neq 0 goto :vcpkg_error
-)
+REM Install required packages using explicit triplet
+echo Installing required packages...
+echo This might take a while for the first build...
+%VCPKG_ROOT%\vcpkg install sdl2:x64-windows sdl2-image:x64-windows sdl2-mixer:x64-windows sdl2-ttf:x64-windows
+if %ERRORLEVEL% neq 0 goto :vcpkg_error
 
 REM Create build directory
 if not exist build mkdir build
@@ -49,7 +38,7 @@ cd build
 
 REM Generate Visual Studio solution
 echo Generating Visual Studio solution...
-cmake .. -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake" -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake" -DCMAKE_GENERATOR_PLATFORM=x64
 if %ERRORLEVEL% neq 0 goto :cmake_error
 
 REM Build the project
@@ -59,9 +48,9 @@ if %ERRORLEVEL% neq 0 goto :build_error
 
 REM Copy asset files to output directory
 echo.
-echo Ensuring assets are copied...
+echo Copying asset files...
 if not exist "Release\assets" (
-    mkdir "Release\assets" 2>nul
+    mkdir "Release\assets"
     xcopy /E /I /Y "..\assets" "Release\assets"
 )
 
