@@ -17,6 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     freopen("CONOUT$", "w", stderr);
 #endif
 #else
+
 // Standard entry point for other platforms
 int main() {
 #endif

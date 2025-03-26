@@ -7,7 +7,7 @@
 namespace flappybird {
 
     // Static random engine for all pipes - use thread-safe initialization
-    static std::mt19937& getRandomEngine() {
+    static std::mt19937 &getRandomEngine() {
         static std::random_device rd;
         static std::mt19937 engine(rd());
         return engine;
@@ -110,7 +110,7 @@ namespace flappybird {
         // Use C++ random library for better randomization
         std::uniform_int_distribution<int> distribution(min_allowed, max_allowed);
         gap_y_ = distribution(getRandomEngine());
-        
+
         // Update the last gap position for the next pipe
         last_gap_y_ = gap_y_;
 
