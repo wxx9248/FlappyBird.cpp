@@ -27,19 +27,53 @@ sound effects, and a familiar gameplay experience.
 
 ## Building
 
-To build the project, follow these steps:
+### Linux/macOS
+
+To build the project on Linux or macOS, follow these steps:
 
 ```bash
-cmake .
+mkdir build && cd build
+cmake ..
 make
 ```
 
+### Windows with vcpkg and Visual Studio
+
+#### Install required packages:
+
+```cmd
+vcpkg install sdl2 sdl2-image sdl2-mixer sdl2-ttf --triplet=x64-windows
+```
+
+#### Generate Visual Studio project:
+
+```cmd
+mkdir build && cd build
+cmake .. -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake" -DCMAKE_GENERATOR_PLATFORM=x64
+```
+
+#### Open the generated .sln file in Visual Studio and build the project, or build from command line:
+
+```cmd
+cmake --build . --config Release
+```
+
 ## Running
+
+### Linux/macOS
 
 After building, you can run the game from the build directory:
 
 ```bash
 ./FlappyBird
+```
+
+### Windows
+
+After building, you can run the game from the build directory:
+
+```cmd
+.\Release\FlappyBird.exe
 ```
 
 ## Controls

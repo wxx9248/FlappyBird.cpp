@@ -1,30 +1,30 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+# Build artifacts
+#-----------------
+# Object files
 *.o
 *.obj
+*.lo
+*.slo
 
 # Precompiled Headers
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
+# Compiled libraries
 *.so
-*.dylib
 *.dll
+*.dylib
+*.a
+*.lib
+*.la
+*.lai
 
-# Fortran module files
+# Module files
 *.mod
 *.smod
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Dependency files
+*.d
 
 # Executables
 *.exe
@@ -32,20 +32,81 @@
 *.app
 FlappyBird*
 
-# CMake
+# Project-specific build outputs
+#------------------------------
+# Build directories
+build/
+cmake-build-*/
+out/
+bin/
+lib/
+
+# CMake specific
 CMakeLists.txt.user
 CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
+CMakeFiles/
+CMakeScripts/
+Testing/
 Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
-_deps
+_deps/
 CMakeUserPresets.json
-.cmake
+.cmake/
 
-# Old files
-.old
+# IDE and editor files
+#---------------------
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+*.suo
+
+# VSCode
+.vscode/
+
+# IntelliJ/CLion
+.idea/
+*.iml
+*.iws
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+*.pbxproj
+*.xcscheme
+*.xcuserstate
+xcuserdata/
+
+# Package management
+#------------------
+# vcpkg
+vcpkg_installed/
+
+# Platform-specific files
+#-----------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Project-specific exclusions
+#---------------------------
+# Legacy/backup files
+.old/
+
+# Assets that shouldn't be in repository
+build-assets/

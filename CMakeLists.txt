@@ -1,10 +1,22 @@
 cmake_minimum_required(VERSION 3.20)
 project(FlappyBird)
 
-# macOS specific configuration
+# macOS specific configurations for vcpkg
 if (APPLE)
     include(${CMAKE_CURRENT_SOURCE_DIR}/macos-toolchain.cmake)
 endif ()
+
+# Windows specific configurations for vcpkg
+if (WIN32)
+    # Set vcpkg toolchain file if not already set
+    if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+        set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+        if(NOT EXISTS "${CMAKE_TOOLCHAIN_FILE}")
+            message(WARNING "VCPKG toolchain file not found: ${CMAKE_TOOLCHAIN_FILE}")
+            message(STATUS "Please set VCPKG_ROOT environment variable to your vcpkg installation directory")
+        endif()
+    endif()
+endif()
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 23)
@@ -38,7 +50,18 @@ file(GLOB_RECURSE SOURCES
 # Add executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# Link libraries
+# Set Windows-specific properties
+if(WIN32)
+    # Add windows subsystem for GUI applications
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+            WIN32_EXECUTABLE TRUE
+    )
+    
+    # Add the entry point for Windows GUI application
+    target_sources(${PROJECT_NAME} PRIVATE src/Main.cpp)
+endif()
+
+# Link libraries based on platform
 if (APPLE)
     target_link_libraries(${PROJECT_NAME}
             ${SDL2_LIBRARIES}
@@ -47,7 +70,17 @@ if (APPLE)
             ${SDL2_TTF_LIBRARIES}
             Threads::Threads
     )
-else ()
+elseif(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+            ${SDL2_LIBRARIES}
+            SDL2::SDL2
+            SDL2::SDL2main
+            SDL2_image::SDL2_image
+            SDL2_mixer::SDL2_mixer
+            SDL2_ttf::SDL2_ttf
+            Threads::Threads
+    )
+else()
     target_link_libraries(${PROJECT_NAME}
             ${SDL2_LIBRARIES}
             SDL2_image
@@ -55,7 +88,17 @@ else ()
             SDL2_ttf
             Threads::Threads
     )
-endif ()
+endif()
+
+# Copy DLLs to output directory for Windows
+if(WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}>
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        COMMAND_EXPAND_LISTS
+    )
+endif()
 
 # Install targets
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
@@ -66,4 +109,4 @@ install(DIRECTORY assets DESTINATION share/${PROJECT_NAME})
 # If building tests
 if (FLAPPYBIRD_BUILD_TESTS)
     add_subdirectory(tests)
-endif ()
+endif()

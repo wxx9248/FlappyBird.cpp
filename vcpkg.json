@@ -1,0 +1,12 @@
+{
+  "name": "flappybird",
+  "version": "2.0.1",
+  "description": "Modern C++ implementation of the Flappy Bird game using SDL2",
+  "homepage": "https://github.com/wxx9248/FlappyBird.cpp",
+  "dependencies": [
+    "sdl2",
+    "sdl2-image",
+    "sdl2-mixer",
+    "sdl2-ttf"
+  ]
+}
