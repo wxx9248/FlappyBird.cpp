@@ -74,7 +74,7 @@ if(WIN32)
     )
     
     # Add the entry point for Windows GUI application
-    target_sources(${PROJECT_NAME} PRIVATE src/Main.cpp)
+    target_sources(${PROJECT_NAME} PRIVATE src/main.cpp)
 endif()
 
 # Link libraries based on platform
